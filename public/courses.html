@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Courses - Smart Steps Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        /* Header Styles */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nav-menu a:hover {
+            color: #667eea;
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-top: 100px;
+            padding: 2rem 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .page-title {
+            text-align: center;
+            color: white;
+            margin-bottom: 3rem;
+        }
+
+        .page-title h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .page-title p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        /* Subject Cards */
+        .subjects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .subject-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        .subject-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .subject-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .subject-card.mathematics .subject-icon { color: #e74c3c; }
+        .subject-card.physics .subject-icon { color: #3498db; }
+        .subject-card.chemistry .subject-icon { color: #f39c12; }
+        .subject-card.biology .subject-icon { color: #27ae60; }
+        .subject-card.english .subject-icon { color: #9b59b6; }
+
+        .subject-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .subject-card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .subject-stats {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .select-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        .select-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Subject Details Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 2% auto;
+            padding: 2rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .close {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            font-size: 2rem;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s ease;
+        }
+
+        .close:hover {
+            color: #333;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .modal-header .subject-icon {
+            font-size: 2.5rem;
+            margin-bottom: 0;
+        }
+
+        .modal-header h2 {
+            font-size: 2rem;
+            color: #333;
+        }
+
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+
+        .modal-section h3 {
+            color: #667eea;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .tutors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tutor-card {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .tutor-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .tutor-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .tutor-card h4 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .tutor-card p {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tutor-experience {
+            background: #667eea;
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            display: inline-block;
+        }
+
+        .curriculum-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .curriculum-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .curriculum-list li:last-child {
+            border-bottom: none;
+        }
+
+        .curriculum-list li i {
+            color: #667eea;
+            width: 20px;
+        }
+
+        .download-section {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+        }
+
+        .download-btn {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-btn:hover {
+            background: #219a52;
+            transform: translateY(-2px);
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                position: fixed;
+                left: -100%;
+                top: 70px;
+                flex-direction: column;
+                background: rgba(255, 255, 255, 0.95);
+                width: 100%;
+                text-align: center;
+                transition: 0.3s;
+                box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
+                padding: 2rem 0;
+                backdrop-filter: blur(10px);
+            }
+
+            .nav-menu.active {
+                left: 0;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .subjects-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .modal-content {
+                margin: 5% auto;
+                width: 95%;
+                padding: 1.5rem;
+            }
+
+            .tutors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .download-btn {
+                display: block;
+                width: 100%;
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="#" class="logo">Smart Steps Tutorial</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="home.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="courses.html"><i class="fas fa-book"></i> Courses</a></li>
+                    <li><a href="About Us.html"><i class="fas fa-info-circle"></i> About Us</a></li>
+                    <li><a href="Contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                 
+                </ul>
+            </nav>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <div class="page-title">
+                <h1><i class="fas fa-graduation-cap"></i> JAMB/UTME Preparation Courses</h1>
+                <p>Comprehensive courses designed to help you excel in your JAMB/UTME examinations</p>
+            </div>
+
+            <div class="subjects-grid">
+                <!-- Mathematics -->
+                <div class="subject-card mathematics" data-subject="mathematics">
+                    <i class="fas fa-calculator subject-icon"></i>
+                    <h3>Mathematics</h3>
+                    <p>Master mathematical concepts with our expert tutors and comprehensive curriculum.</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <span>40 Hours</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span>2 Tutors</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.9/5</span>
+                        </div>
+                    </div>
+                    <button class="select-btn">View Details</button>
+                </div>
+
+                <!-- Physics -->
+                <div class="subject-card physics" data-subject="physics">
+                    <i class="fas fa-atom subject-icon"></i>
+                    <h3>Physics</h3>
+                    <p>Explore the fundamental laws of nature with practical applications and problem-solving.</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <span>45 Hours</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span>2 Tutors</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.8/5</span>
+                        </div>
+                    </div>
+                    <button class="select-btn">View Details</button>
+                </div>
+
+                <!-- Chemistry -->
+                <div class="subject-card chemistry" data-subject="chemistry">
+                    <i class="fas fa-flask subject-icon"></i>
+                    <h3>Chemistry</h3>
+                    <p>Dive deep into chemical reactions, organic and inorganic chemistry concepts.</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <span>42 Hours</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span>2 Tutors</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.7/5</span>
+                        </div>
+                    </div>
+                    <button class="select-btn">View Details</button>
+                </div>
+
+                <!-- Biology -->
+                <div class="subject-card biology" data-subject="biology">
+                    <i class="fas fa-leaf subject-icon"></i>
+                    <h3>Biology</h3>
+                    <p>Understand life processes, genetics, ecology, and human biology comprehensively.</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <span>38 Hours</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span>2 Tutors</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.9/5</span>
+                        </div>
+                    </div>
+                    <button class="select-btn">View Details</button>
+                </div>
+
+                <!-- English -->
+                <div class="subject-card english" data-subject="english">
+                    <i class="fas fa-pen-fancy subject-icon"></i>
+                    <h3>English Language</h3>
+                    <p>Enhance your English proficiency with comprehensive language skills development.</p>
+                    <div class="subject-stats">
+                        <div class="stat">
+                            <i class="fas fa-clock"></i>
+                            <span>35 Hours</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-users"></i>
+                            <span>2 Tutors</span>
+                        </div>
+                        <div class="stat">
+                            <i class="fas fa-star"></i>
+                            <span>4.8/5</span>
+                        </div>
+                    </div>
+                    <button class="select-btn">View Details</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Subject Details Modal -->
+    <div id="subjectModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <div class="modal-header">
+                <i class="fas fa-calculator subject-icon" id="modalIcon"></i>
+                <h2 id="modalTitle">Subject Details</h2>
+            </div>
+            
+            <div class="modal-section">
+                <h3><i class="fas fa-chalkboard-teacher"></i> Our Expert Tutors</h3>
+                <div class="tutors-grid" id="tutorsGrid">
+                    <!-- Tutors will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <div class="modal-section">
+                <h3><i class="fas fa-list-ul"></i> Course Curriculum</h3>
+                <ul class="curriculum-list" id="curriculumList">
+                    <!-- Curriculum will be populated by JavaScript -->
+                </ul>
+            </div>
+
+            <div class="modal-section">
+                <h3><i class="fas fa-download"></i> Resources</h3>
+                <div class="download-section">
+                    <p>Download course materials and timetables</p>
+                    <button class="download-btn" onclick="downloadTimetable()">
+                        <i class="fas fa-calendar-alt"></i> Download Timetable
+                    </button>
+                    <button class="download-btn" onclick="downloadSyllabus()">
+                        <i class="fas fa-file-pdf"></i> Download Syllabus
+                    </button>
+                    <button class="download-btn" onclick="downloadNotes()">
+                        <i class="fas fa-sticky-note"></i> Download Study Notes
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Subject data
+        const subjectData = {
+            mathematics: {
+                title: "Mathematics",
+                icon: "fas fa-calculator",
+                color: "#e74c3c",
+                tutors: [
+                    {
+                        name: "Dr. Adeyemi Johnson",
+                        qualification: "Ph.D. Mathematics, University of Lagos",
+                        experience: "12 Years",
+                        specialty: "Calculus & Algebra"
+                    },
+                    {
+                        name: "Prof. Sarah Okafor",
+                        qualification: "M.Sc. Applied Mathematics, OAU",
+                        experience: "8 Years",
+                        specialty: "Statistics & Geometry"
+                    }
+                ],
+                curriculum: [
+                    "Number and Numeration",
+                    "Algebraic Processes",
+                    "Geometry and Trigonometry",
+                    "Calculus",
+                    "Statistics and Probability",
+                    "Coordinate Geometry",
+                    "Sequences and Series",
+                    "Logarithms and Indices"
+                ]
+            },
+            physics: {
+                title: "Physics",
+                icon: "fas fa-atom",
+                color: "#3498db",
+                tutors: [
+                    {
+                        name: "Dr. Emeka Nwachukwu",
+                        qualification: "Ph.D. Physics, University of Ibadan",
+                        experience: "15 Years",
+                        specialty: "Mechanics & Thermodynamics"
+                    },
+                    {
+                        name: "Mr. Fatai Abdullahi",
+                        qualification: "M.Sc. Physics, ABU Zaria",
+                        experience: "10 Years",
+                        specialty: "Electricity & Magnetism"
+                    }
+                ],
+                curriculum: [
+                    "Mechanics",
+                    "Thermal Physics",
+                    "Waves and Optics",
+                    "Electricity and Magnetism",
+                    "Modern Physics",
+                    "Atomic and Nuclear Physics",
+                    "Electronics",
+                    "Field and Wave Theory"
+                ]
+            },
+            chemistry: {
+                title: "Chemistry",
+                icon: "fas fa-flask",
+                color: "#f39c12",
+                tutors: [
+                    {
+                        name: "Dr. Kemi Adesanya",
+                        qualification: "Ph.D. Chemistry, University of Ilorin",
+                        experience: "11 Years",
+                        specialty: "Organic Chemistry"
+                    },
+                    {
+                        name: "Mr. Ibrahim Yusuf",
+                        qualification: "M.Sc. Industrial Chemistry, FUTO",
+                        experience: "9 Years",
+                        specialty: "Physical & Analytical Chemistry"
+                    }
+                ],
+                curriculum: [
+                    "Atomic Structure and Bonding",
+                    "Chemical Equilibrium",
+                    "Acids, Bases and Salts",
+                    "Oxidation and Reduction",
+                    "Hydrocarbons",
+                    "Nitrogen and Sulfur",
+                    "Metals and their Compounds",
+                    "Organic Chemistry"
+                ]
+            },
+            biology: {
+                title: "Biology",
+                icon: "fas fa-leaf",
+                color: "#27ae60",
+                tutors: [
+                    {
+                        name: "Dr. Grace Okoro",
+                        qualification: "Ph.D. Botany, University of Nigeria",
+                        experience: "13 Years",
+                        specialty: "Plant Biology & Ecology"
+                    },
+                    {
+                        name: "Mr. Tunde Adebayo",
+                        qualification: "M.Sc. Zoology, UNILAG",
+                        experience: "7 Years",
+                        specialty: "Animal Biology & Genetics"
+                    }
+                ],
+                curriculum: [
+                    "Cell Biology and Genetics",
+                    "Evolution",
+                    "Diversity of Living Things",
+                    "Ecology",
+                    "Nutrition",
+                    "Gaseous Exchange",
+                    "Transport",
+                    "Excretion",
+                    "Reproduction",
+                    "Growth and Development"
+                ]
+            },
+            english: {
+                title: "English Language",
+                icon: "fas fa-pen-fancy",
+                color: "#9b59b6",
+                tutors: [
+                    {
+                        name: "Mrs. Funmi Adebola",
+                        qualification: "M.A. English Literature, UI",
+                        experience: "14 Years",
+                        specialty: "Literature & Composition"
+                    },
+                    {
+                        name: "Mr. David Ogundimu",
+                        qualification: "B.A. English Language, LASU",
+                        experience: "6 Years",
+                        specialty: "Grammar & Comprehension"
+                    }
+                ],
+                curriculum: [
+                    "Comprehension and Summary",
+                    "Lexis and Structure",
+                    "Oral English",
+                    "Essay Writing",
+                    "Letter Writing",
+                    "Speech Work",
+                    "Reading Comprehension",
+                    "Vocabulary and Usage"
+                ]
+            }
+        };
+
+        // DOM elements
+        const modal = document.getElementById('subjectModal');
+        const modalIcon = document.getElementById('modalIcon');
+        const modalTitle = document.getElementById('modalTitle');
+        const tutorsGrid = document.getElementById('tutorsGrid');
+        const curriculumList = document.getElementById('curriculumList');
+        const closeBtn = document.querySelector('.close');
+        const hamburger = document.querySelector('.hamburger');
+        const navMenu = document.querySelector('.nav-menu');
+
+        // Mobile menu toggle
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navMenu.classList.toggle('active');
+        });
+
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Subject card click handlers
+        document.querySelectorAll('.subject-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const subject = card.dataset.subject;
+                showSubjectDetails(subject);
+            });
+        });
+
+        // Modal close handlers
+        closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // Show subject details
+        function showSubjectDetails(subject) {
+            const data = subjectData[subject];
+            
+            // Update modal header
+            modalIcon.className = `${data.icon} subject-icon`;
+            modalIcon.style.color = data.color;
+            modalTitle.textContent = data.title;
+            
+            // Populate tutors
+            tutorsGrid.innerHTML = '';
+            data.tutors.forEach(tutor => {
+                const tutorCard = document.createElement('div');
+                tutorCard.className = 'tutor-card';
+                tutorCard.innerHTML = `
+                    <div class="tutor-avatar">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <h4>${tutor.name}</h4>
+                    <p>${tutor.qualification}</p>
+                    <p><strong>Specialty:</strong> ${tutor.specialty}</p>
+                    <span class="tutor-experience">${tutor.experience} Experience</span>
+                `;
+                tutorsGrid.appendChild(tutorCard);
+            });
+            
+            // Populate curriculum
+            curriculumList.innerHTML = '';
+            data.curriculum.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fas fa-check"></i> ${item}`;
+                curriculumList.appendChild(li);
+            });
+            
+            // Show modal
+            modal.style.display = 'block';
+        }
+
+        // Download functions
+        function downloadTimetable() {
+            alert('Timetable PDF will be downloaded. This feature would connect to your backend to serve the actual PDF file.');
+        }
+
+        function downloadSyllabus() {
+            alert('Syllabus PDF will be downloaded. This feature would connect to your backend to serve the actual PDF file.');
+        }
+
+        function downloadNotes() {
+            alert('Study Notes PDF will be downloaded. This feature would connect to your backend to serve the actual PDF file.');
+        }
+
+        // Smooth scrolling for better UX
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
