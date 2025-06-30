@@ -1,77 +1,4 @@
 <!DOCTYPE html>
-<style>
-    /* Responsive Navigation Styles */
-    @media (max-width: 1024px) {
-        .nav-container {
-            padding: 0 10px;
-        }
-    }
-    @media (max-width: 900px) {
-        .nav-container {
-            max-width: 100%;
-        }
-    }
-    @media (max-width: 768px) {
-        .nav-menu {
-            position: fixed;
-            top: 80px;
-            left: 0;
-            width: 100vw;
-            height: calc(100vh - 80px);
-            background: rgba(255,255,255,0.98);
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 0;
-            padding-top: 30px;
-            transform: translateY(-120%);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.3s, opacity 0.3s;
-            z-index: 999;
-        }
-        .nav-menu.active {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-        .nav-menu li {
-            width: 100%;
-            text-align: center;
-            margin: 0;
-        }
-        .nav-link {
-            display: block;
-            width: 100%;
-            padding: 18px 0;
-            font-size: 1.2rem;
-            border-radius: 0;
-        }
-        .nav-link.register-btn {
-            margin: 20px 0 0 0;
-            width: 80%;
-            font-size: 1.1rem;
-        }
-        .hamburger {
-            display: flex;
-            z-index: 1001;
-        }
-    }
-    @media (max-width: 480px) {
-        .nav-logo h2 {
-            font-size: 1.2rem;
-        }
-        .hero-header h1, .header h1 {
-            font-size: 1.3rem;
-        }
-        .section h2 {
-            font-size: 1.1rem;
-        }
-        .section, .header, .hero-header {
-            padding: 10px;
-        }
-    }
-</style>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -81,8 +8,6 @@
         * {
             margin: 0;
             padding: 0;
-            /* Ensure hamburger is above nav-menu on mobile */
-            z-index: 1002;
             box-sizing: border-box;
         }
 
@@ -93,6 +18,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding-top: 80px;
+            overflow-x: hidden;
         }
 
         /* Navigation Styles */
@@ -170,31 +96,142 @@
             color: white;
         }
 
+        /* Hamburger Menu Styles */
         .hamburger {
             display: none;
             flex-direction: column;
             cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+            transition: all 0.3s ease;
         }
 
-        .bar {
+        .hamburger span {
             width: 25px;
             height: 3px;
             background: #333;
-            margin: 3px 0;
-            transition: 0.3s;
-            border-radius: 3px;
+            margin: 2px 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: center;
+            border-radius: 2px;
         }
 
-        .hamburger.active .bar:nth-child(2) {
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: #667eea;
+        }
+
+        .hamburger.active span:nth-child(2) {
             opacity: 0;
+            transform: translateX(-20px);
         }
 
-        .hamburger.active .bar:nth-child(1) {
-            transform: translateY(9px) rotate(45deg);
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+            background: #667eea;
         }
 
-        .hamburger.active .bar:nth-child(3) {
-            transform: translateY(-9px) rotate(-45deg);
+        /* Mobile Menu Overlay - Half Width */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .mobile-menu-links li {
+            margin: 2rem 0;
+            transform: translateX(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-links li {
+            transform: translateX(0);
+            opacity: 1;
+        }
+
+        .mobile-menu.active .mobile-menu-links li:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(2) { transition-delay: 0.2s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(3) { transition-delay: 0.3s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(4) { transition-delay: 0.4s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(5) { transition-delay: 0.5s; }
+
+        .mobile-menu-links a {
+            color: white;
+            font-size: 2rem;
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .mobile-menu-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .mobile-menu-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: white;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .mobile-menu-links a:hover::before {
+            width: 80%;
+        }
+
+        /* Mobile Menu Background Animation */
+        .mobile-menu::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Footer Styles */
@@ -611,7 +648,20 @@
             50% { transform: translateY(-20px) rotate(180deg); }
         }
 
+        /* Responsive Design */
         @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .mobile-menu {
+                width: 50%;
+            }
+            
             .header h1 {
                 font-size: 2rem;
             }
@@ -630,6 +680,30 @@
                 grid-template-columns: 1fr;
                 gap: 20px;
             }
+
+            .mobile-menu-links a {
+                font-size: 1.5rem;
+                padding: 0.8rem 1.5rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-menu {
+                width: 60%;
+            }
+            
+            .mobile-menu-links a {
+                font-size: 1.3rem;
+            }
+
+            .hamburger span {
+                width: 20px;
+                height: 2px;
+            }
         }
     </style>
 </head>
@@ -647,20 +721,29 @@
                 <h2>Smart Steps Tutorial</h2>
             </div>
             <ul class="nav-menu">
-                <li><a href="home.html" class="nav-link">Home</a></li>
+                <li><a href="index.html" class="nav-link">Home</a></li>
                 <li><a href="#about" class="nav-link active">About</a></li>
                 <li><a href="courses.html" class="nav-link">Courses</a></li>
-               
                 <li><a href="Contact.html" class="nav-link">Contact</a></li>
-                
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <!-- Hamburger Menu Button -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-menu-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="Contact.html">Contact</a></li>
+        </ul>
+    </div>
 
     <div class="container">
         <div class="hero-header">
@@ -800,20 +883,55 @@
     </footer>
 
     <script>
-        // Mobile menu toggle
-        const hamburger = document.querySelector('.hamburger');
-        const navMenu = document.querySelector('.nav-menu');
+        // Hamburger Menu Toggle Functionality
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const body = document.body;
 
-        hamburger.addEventListener('click', () => {
+        function toggleMobileMenu() {
             hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            if (mobileMenu.classList.contains('active')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = 'auto';
+            }
+        }
+
+        // Toggle menu on hamburger click
+        hamburger.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking on mobile menu links
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            });
         });
 
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('.nav-link').forEach(n => n.addEventListener('click', () => {
-            hamburger.classList.remove('active');
-            navMenu.classList.remove('active');
-        }));
+        // Close menu when clicking outside of it (on the left side)
+        document.addEventListener('click', (e) => {
+            if (mobileMenu.classList.contains('active') && 
+                !mobileMenu.contains(e.target) && 
+                !hamburger.contains(e.target)) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        });
+
+        // Close menu on escape key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        });
 
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -839,6 +957,7 @@
             }
         });
     </script>
+    
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
 
