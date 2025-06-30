@@ -11,6 +11,7 @@
             padding: 0;
             box-sizing: border-box;
         }
+        
           li a {
   color: inherit;          /* Inherits parent color, or set a specific color like black */
   text-decoration: none;   /* Removes underline */
@@ -169,6 +170,139 @@
         .nav-links a:hover {
             color: #667eea;
             transform: translateY(-2px);
+        }
+
+        /* Hamburger Menu Styles */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            margin: 2px 0;
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            transform-origin: center;
+            border-radius: 2px;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+            background: #667eea;
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(7px, -6px);
+            background: #667eea;
+        }
+
+        /* Mobile Menu Overlay */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
+            backdrop-filter: blur(20px);
+            z-index: 999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(-100%);
+            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .mobile-menu.active {
+            transform: translateX(0);
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .mobile-menu-links {
+            list-style: none;
+            text-align: center;
+            padding: 0;
+        }
+
+        .mobile-menu-links li {
+            margin: 2rem 0;
+            transform: translateY(50px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu.active .mobile-menu-links li {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .mobile-menu.active .mobile-menu-links li:nth-child(1) { transition-delay: 0.1s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(2) { transition-delay: 0.2s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(3) { transition-delay: 0.3s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(4) { transition-delay: 0.4s; }
+        .mobile-menu.active .mobile-menu-links li:nth-child(5) { transition-delay: 0.5s; }
+
+        .mobile-menu-links a {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            position: relative;
+            display: inline-block;
+            padding: 1rem 2rem;
+            transition: all 0.3s ease;
+            border-radius: 50px;
+        }
+
+        .mobile-menu-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: scale(1.1);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .mobile-menu-links a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: white;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .mobile-menu-links a:hover::before {
+            width: 80%;
+        }
+
+        /* Mobile Menu Background Animation */
+        .mobile-menu::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+            z-index: -1;
         }
 
         .hero-content {
@@ -638,6 +772,14 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
             .hero h1 {
                 font-size: 2.5rem;
             }
@@ -651,10 +793,6 @@
                 align-items: center;
             }
             
-            .nav-links {
-                display: none;
-            }
-            
             .section-title h2 {
                 font-size: 2rem;
             }
@@ -663,6 +801,36 @@
             .subjects-grid,
             .testimonial-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .mobile-menu-links a {
+                font-size: 2rem;
+                padding: 0.8rem 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .nav-container {
+                padding: 0 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .mobile-menu-links a {
+                font-size: 1.8rem;
+            }
+
+            .hamburger span {
+                width: 20px;
+                height: 2px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
             }
         }
     </style>
@@ -679,8 +847,25 @@
                 <li><a href="Contact.html">Contact</a></li>
                 <li><a href="teacher-login.html">Login</a></li>
             </ul>
+            <!-- Hamburger Menu Button -->
+            <div class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu" id="mobileMenu">
+        <ul class="mobile-menu-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="About Us.html">About Us</a></li>
+            <li><a href="courses.html">Courses</a></li>
+            <li><a href="Contact.html">Contact</a></li>
+            <li><a href="teacher-login.html">Login</a></li>
+        </ul>
+    </div>
 
     <!-- Hero Section with Dynamic Backgrounds -->
     <section class="hero" id="home">
@@ -866,6 +1051,54 @@
     </footer>
 
     <script>
+        // Hamburger Menu Toggle Functionality
+        const hamburger = document.getElementById('hamburger');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const body = document.body;
+
+        function toggleMobileMenu() {
+            hamburger.classList.toggle('active');
+            mobileMenu.classList.toggle('active');
+            
+            // Prevent body scroll when menu is open
+            if (mobileMenu.classList.contains('active')) {
+                body.style.overflow = 'hidden';
+            } else {
+                body.style.overflow = 'auto';
+            }
+        }
+
+        // Toggle menu on hamburger click
+        hamburger.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking on mobile menu links
+        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            });
+        });
+
+        // Close menu when clicking outside of it
+        mobileMenu.addEventListener('click', (e) => {
+            if (e.target === mobileMenu) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        });
+
+        // Close menu on escape key press
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                hamburger.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                body.style.overflow = 'auto';
+            }
+        });
+
         // Dynamic Background Changer
         let currentBackground = 0;
         const backgrounds = document.querySelectorAll('.hero-background');
@@ -906,10 +1139,13 @@
                 navbar.classList.remove('scrolled');
             }
             
-            if (scrollTop > lastScrollTop && scrollTop > 100) {
-                navbar.style.transform = 'translateY(-100%)';
-            } else {
-                navbar.style.transform = 'translateY(0)';
+            // Hide/show navbar on scroll (but not when mobile menu is open)
+            if (!mobileMenu.classList.contains('active')) {
+                if (scrollTop > lastScrollTop && scrollTop > 100) {
+                    navbar.style.transform = 'translateY(-100%)';
+                } else {
+                    navbar.style.transform = 'translateY(0)';
+                }
             }
             lastScrollTop = scrollTop;
         });
