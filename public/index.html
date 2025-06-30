@@ -207,12 +207,31 @@
             background: #667eea;
         }
 
-        /* Mobile Menu Overlay */
-        .mobile-menu {
+        /* Mobile Menu Backdrop */
+        .mobile-menu-backdrop {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Half-Screen Mobile Menu Overlay */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: 0;
+            width: 50%;
             height: 100vh;
             background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
             backdrop-filter: blur(20px);
@@ -221,10 +240,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            transform: translateX(-100%);
+            transform: translateX(100%);
             transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
             opacity: 0;
             visibility: hidden;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.3);
         }
 
         .mobile-menu.active {
@@ -240,7 +260,7 @@
         }
 
         .mobile-menu-links li {
-            margin: 2rem 0;
+            margin: 1.5rem 0;
             transform: translateY(50px);
             opacity: 0;
             transition: all 0.3s ease;
@@ -259,19 +279,19 @@
 
         .mobile-menu-links a {
             color: white;
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 600;
             text-decoration: none;
             position: relative;
             display: inline-block;
-            padding: 1rem 2rem;
+            padding: 0.8rem 1.5rem;
             transition: all 0.3s ease;
-            border-radius: 50px;
+            border-radius: 25px;
         }
 
         .mobile-menu-links a:hover {
             background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
+            transform: scale(1.05);
             text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
@@ -697,14 +717,16 @@
             font-family: serif;
         }
 
-        /* Enhanced Footer */
+        /* Enhanced Footer with Moving Dots */
         .footer {
             background: linear-gradient(135deg, #2c3e50, #34495e);
             color: white;
             padding: 4rem 0 2rem;
             position: relative;
+            overflow: hidden;
         }
 
+        /* Moving Dots Background */
         .footer::before {
             content: '';
             position: absolute;
@@ -712,7 +734,220 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0-16.569 13.431-30 30-30s30 13.431 30 30-13.431 30-30 30-30-13.431-30-30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            z-index: 1;
+        }
+
+        .footer-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .dot {
+            position: absolute;
+            background: rgba(102, 126, 234, 0.6);
+            border-radius: 50%;
+            animation: moveDot linear infinite;
+        }
+
+        .dot:nth-child(1) {
+            width: 4px;
+            height: 4px;
+            left: 10%;
+            animation-duration: 15s;
+            animation-delay: 0s;
+        }
+
+        .dot:nth-child(2) {
+            width: 6px;
+            height: 6px;
+            left: 20%;
+            animation-duration: 18s;
+            animation-delay: 2s;
+            background: rgba(118, 75, 162, 0.5);
+        }
+
+        .dot:nth-child(3) {
+            width: 3px;
+            height: 3px;
+            left: 30%;
+            animation-duration: 12s;
+            animation-delay: 4s;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .dot:nth-child(4) {
+            width: 5px;
+            height: 5px;
+            left: 40%;
+            animation-duration: 20s;
+            animation-delay: 1s;
+            background: rgba(102, 126, 234, 0.4);
+        }
+
+        .dot:nth-child(5) {
+            width: 7px;
+            height: 7px;
+            left: 50%;
+            animation-duration: 16s;
+            animation-delay: 3s;
+            background: rgba(118, 75, 162, 0.6);
+        }
+
+        .dot:nth-child(6) {
+            width: 4px;
+            height: 4px;
+            left: 60%;
+            animation-duration: 14s;
+            animation-delay: 5s;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .dot:nth-child(7) {
+            width: 6px;
+            height: 6px;
+            left: 70%;
+            animation-duration: 22s;
+            animation-delay: 2.5s;
+            background: rgba(102, 126, 234, 0.5);
+        }
+
+        .dot:nth-child(8) {
+            width: 3px;
+            height: 3px;
+            left: 80%;
+            animation-duration: 13s;
+            animation-delay: 4.5s;
+            background: rgba(118, 75, 162, 0.4);
+        }
+
+        .dot:nth-child(9) {
+            width: 5px;
+            height: 5px;
+            left: 90%;
+            animation-duration: 19s;
+            animation-delay: 1.5s;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .dot:nth-child(10) {
+            width: 4px;
+            height: 4px;
+            left: 15%;
+            animation-duration: 17s;
+            animation-delay: 3.5s;
+            background: rgba(102, 126, 234, 0.3);
+        }
+
+        .dot:nth-child(11) {
+            width: 6px;
+            height: 6px;
+            left: 25%;
+            animation-duration: 21s;
+            animation-delay: 0.5s;
+            background: rgba(118, 75, 162, 0.7);
+        }
+
+        .dot:nth-child(12) {
+            width: 3px;
+            height: 3px;
+            left: 35%;
+            animation-duration: 11s;
+            animation-delay: 2.8s;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .dot:nth-child(13) {
+            width: 5px;
+            height: 5px;
+            left: 45%;
+            animation-duration: 24s;
+            animation-delay: 4.2s;
+            background: rgba(102, 126, 234, 0.8);
+        }
+
+        .dot:nth-child(14) {
+            width: 7px;
+            height: 7px;
+            left: 55%;
+            animation-duration: 15.5s;
+            animation-delay: 1.8s;
+            background: rgba(118, 75, 162, 0.3);
+        }
+
+        .dot:nth-child(15) {
+            width: 4px;
+            height: 4px;
+            left: 65%;
+            animation-duration: 18.5s;
+            animation-delay: 3.2s;
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .dot:nth-child(16) {
+            width: 6px;
+            height: 6px;
+            left: 75%;
+            animation-duration: 16.5s;
+            animation-delay: 0.8s;
+            background: rgba(102, 126, 234, 0.6);
+        }
+
+        .dot:nth-child(17) {
+            width: 3px;
+            height: 3px;
+            left: 85%;
+            animation-duration: 13.5s;
+            animation-delay: 4.8s;
+            background: rgba(118, 75, 162, 0.5);
+        }
+
+        .dot:nth-child(18) {
+            width: 5px;
+            height: 5px;
+            left: 95%;
+            animation-duration: 20.5s;
+            animation-delay: 2.2s;
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .dot:nth-child(19) {
+            width: 4px;
+            height: 4px;
+            left: 5%;
+            animation-duration: 14.5s;
+            animation-delay: 3.8s;
+            background: rgba(102, 126, 234, 0.7);
+        }
+
+        .dot:nth-child(20) {
+            width: 6px;
+            height: 6px;
+            left: 12%;
+            animation-duration: 23s;
+            animation-delay: 1.2s;
+            background: rgba(118, 75, 162, 0.4);
+        }
+
+        @keyframes moveDot {
+            0% {
+                transform: translateY(100vh) translateX(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0;
+            }
         }
 
         .footer-content {
@@ -804,8 +1039,8 @@
             }
 
             .mobile-menu-links a {
-                font-size: 2rem;
-                padding: 0.8rem 1.5rem;
+                font-size: 1.6rem;
+                padding: 0.7rem 1.2rem;
             }
 
             .stats-grid {
@@ -816,11 +1051,16 @@
             .nav-container {
                 padding: 0 1rem;
             }
+
+            /* Adjust mobile menu width for smaller screens */
+            .mobile-menu {
+                width: 60%;
+            }
         }
 
         @media (max-width: 480px) {
             .mobile-menu-links a {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
             }
 
             .hamburger span {
@@ -831,6 +1071,11 @@
             .stats-grid {
                 grid-template-columns: 1fr;
                 gap: 1.5rem;
+            }
+
+            /* Full width on very small screens */
+            .mobile-menu {
+                width: 75%;
             }
         }
     </style>
@@ -855,6 +1100,9 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Backdrop -->
+    <div class="mobile-menu-backdrop" id="mobileMenuBackdrop"></div>
 
     <!-- Mobile Menu Overlay -->
     <div class="mobile-menu" id="mobileMenu">
@@ -1005,6 +1253,30 @@
 
     <!-- Footer -->
     <footer class="footer" id="contact">
+        <!-- Moving Dots Background -->
+        <div class="footer-dots">
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+            <div class="dot"></div>
+        </div>
+        
         <div class="container">
             <div class="footer-content">
                 <div class="footer-section">
@@ -1054,11 +1326,13 @@
         // Hamburger Menu Toggle Functionality
         const hamburger = document.getElementById('hamburger');
         const mobileMenu = document.getElementById('mobileMenu');
+        const mobileMenuBackdrop = document.getElementById('mobileMenuBackdrop');
         const body = document.body;
 
         function toggleMobileMenu() {
             hamburger.classList.toggle('active');
             mobileMenu.classList.toggle('active');
+            mobileMenuBackdrop.classList.toggle('active');
             
             // Prevent body scroll when menu is open
             if (mobileMenu.classList.contains('active')) {
@@ -1068,34 +1342,29 @@
             }
         }
 
+        function closeMobileMenu() {
+            hamburger.classList.remove('active');
+            mobileMenu.classList.remove('active');
+            mobileMenuBackdrop.classList.remove('active');
+            body.style.overflow = 'auto';
+        }
+
         // Toggle menu on hamburger click
         hamburger.addEventListener('click', toggleMobileMenu);
+
+        // Close menu when clicking on backdrop
+        mobileMenuBackdrop.addEventListener('click', closeMobileMenu);
 
         // Close menu when clicking on mobile menu links
         const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
         mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
-            });
-        });
-
-        // Close menu when clicking outside of it
-        mobileMenu.addEventListener('click', (e) => {
-            if (e.target === mobileMenu) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
-            }
+            link.addEventListener('click', closeMobileMenu);
         });
 
         // Close menu on escape key press
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
+                closeMobileMenu();
             }
         });
 
