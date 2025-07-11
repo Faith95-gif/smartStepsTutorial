@@ -53,13 +53,13 @@
                     {
                         name: "Dr. Lawal Faith",
                         qualification: "Ph.D. Physics, University of Ibadan",
-                        experience: "15 Years",
+                        experience: "Physics Tutor",
                         specialty: "Mechanics & Thermodynamics"
                     },
                     {
                         name: "Miss. Omotoso Iyanuoluwa",
                         qualification: "M.Sc. Physics, ABU Zaria",
-                        experience: "10 Years",
+                        experience: "Physics Tutor",
                         specialty: "Electricity & Magnetism"
                     }
                 ],
