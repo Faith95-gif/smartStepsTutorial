@@ -2,7 +2,7 @@
         // Subject data
         const subjectData = {
             mathematics: {
-                title: "Mathematics",
+                title: "Maths",
                 icon: "fas fa-calculator",
                 color: "#e53e3e",
                 tutors: [
