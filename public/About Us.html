@@ -4,988 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Us - Smart Steps Tutorial</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Arial', sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding-top: 80px;
-            overflow-x: hidden;
-        }
-
-        /* Navigation Styles */
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
-            transition: all 0.3s ease;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar.scrolled {
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            height: 80px;
-        }
-
-        .nav-logo h2 {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
-
-        .nav-menu {
-            display: flex;
-            list-style: none;
-            gap: 30px;
-            align-items: center;
-        }
-
-        .nav-link {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 8px 16px;
-            border-radius: 25px;
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
-            color: #667eea;
-            background: rgba(102, 126, 234, 0.1);
-        }
-
-        .nav-link.register-btn {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-
-        .nav-link.register-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-            color: white;
-        }
-
-        /* Hamburger Menu Styles */
-        .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
-            padding: 0.5rem;
-            z-index: 1001;
-            transition: all 0.3s ease;
-        }
-
-        .hamburger span {
-            width: 25px;
-            height: 3px;
-            background: #333;
-            margin: 2px 0;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            transform-origin: center;
-            border-radius: 2px;
-        }
-
-        .hamburger.active span:nth-child(1) {
-            transform: rotate(45deg) translate(5px, 5px);
-            background: #667eea;
-        }
-
-        .hamburger.active span:nth-child(2) {
-            opacity: 0;
-            transform: translateX(-20px);
-        }
-
-        .hamburger.active span:nth-child(3) {
-            transform: rotate(-45deg) translate(7px, -6px);
-            background: #667eea;
-        }
-
-        /* Mobile Menu Overlay - Half Width */
-        .mobile-menu {
-            position: fixed;
-            top: 0;
-            right: 0;
-            width: 50%;
-            height: 100vh;
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.98), rgba(118, 75, 162, 0.98));
-            backdrop-filter: blur(20px);
-            z-index: 999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            transform: translateX(100%);
-            transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            opacity: 0;
-            visibility: hidden;
-        }
-
-        .mobile-menu.active {
-            transform: translateX(0);
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .mobile-menu-links {
-            list-style: none;
-            text-align: center;
-            padding: 0;
-        }
-
-        .mobile-menu-links li {
-            margin: 2rem 0;
-            transform: translateX(50px);
-            opacity: 0;
-            transition: all 0.3s ease;
-        }
-
-        .mobile-menu.active .mobile-menu-links li {
-            transform: translateX(0);
-            opacity: 1;
-        }
-
-        .mobile-menu.active .mobile-menu-links li:nth-child(1) { transition-delay: 0.1s; }
-        .mobile-menu.active .mobile-menu-links li:nth-child(2) { transition-delay: 0.2s; }
-        .mobile-menu.active .mobile-menu-links li:nth-child(3) { transition-delay: 0.3s; }
-        .mobile-menu.active .mobile-menu-links li:nth-child(4) { transition-delay: 0.4s; }
-        .mobile-menu.active .mobile-menu-links li:nth-child(5) { transition-delay: 0.5s; }
-
-        .mobile-menu-links a {
-            color: white;
-            font-size: 2rem;
-            font-weight: 600;
-            text-decoration: none;
-            position: relative;
-            display: inline-block;
-            padding: 1rem 2rem;
-            transition: all 0.3s ease;
-            border-radius: 50px;
-        }
-
-        .mobile-menu-links a:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-        }
-
-        .mobile-menu-links a::before {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 3px;
-            background: white;
-            transition: width 0.3s ease;
-            border-radius: 2px;
-        }
-
-        .mobile-menu-links a:hover::before {
-            width: 80%;
-        }
-
-        /* Mobile Menu Background Animation */
-        .mobile-menu::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: rotate 20s linear infinite;
-            z-index: -1;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Footer Styles */
-        .footer {
-            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-            color: white;
-            padding: 60px 0 20px;
-            margin-top: 80px;
-        }
-
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
-        }
-
-        .footer-section h3 {
-            color: #667eea;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-        }
-
-        .footer-section h4 {
-            color: #667eea;
-            font-size: 1.2rem;
-            margin-bottom: 15px;
-        }
-
-        .footer-section p {
-            line-height: 1.8;
-            margin-bottom: 20px;
-            opacity: 0.9;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 15px;
-        }
-
-        .social-link {
-            display: inline-block;
-            width: 40px;
-            height: 40px;
-            background: rgba(102, 126, 234, 0.2);
-            border-radius: 50%;
-            text-align: center;
-            line-height: 40px;
-            text-decoration: none;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
-        }
-
-        .social-link:hover {
-            background: #667eea;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 10px;
-        }
-
-        .footer-links a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            display: block;
-            padding: 5px 0;
-        }
-
-        .footer-links a:hover {
-            color: #667eea;
-            padding-left: 10px;
-        }
-
-        .contact-info p {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 30px;
-        }
-
-        .footer-bottom-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .footer-bottom-links {
-            display: flex;
-            gap: 20px;
-        }
-
-        .footer-bottom-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .footer-bottom-links a:hover {
-            color: #667eea;
-        }
-
-        /* Hero Header Update */
-        .hero-header {
-            text-align: center;
-            padding: 60px 0 40px;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .hero-header h1 {
-            font-size: 3rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-header p {
-            font-size: 1.2rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .header {
-            text-align: center;
-            padding: 40px 0;
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-        }
-
-        .header h1 {
-            font-size: 3rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .header p {
-            font-size: 1.2rem;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .section {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            padding: 40px;
-            margin-bottom: 40px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .section:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-        }
-
-        .section h2 {
-            font-size: 2.5rem;
-            color: #2c3e50;
-            margin-bottom: 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .section h2::after {
-            content: '';
-            display: block;
-            width: 100px;
-            height: 4px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            margin: 15px auto;
-            border-radius: 2px;
-        }
-
-        .what-we-do {
-            text-align: center;
-            font-size: 1.1rem;
-            color: #555;
-            line-height: 1.8;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .service-card {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            border-radius: 15px;
-            padding: 30px;
-            text-align: center;
-            color: white;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .service-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-            transform: rotate(45deg);
-            transition: all 0.5s ease;
-        }
-
-        .service-card:hover::before {
-            transform: rotate(45deg) translate(20px, 20px);
-        }
-
-        .service-card:hover {
-            transform: translateY(-10px) scale(1.05);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .service-card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            position: relative;
-            z-index: 2;
-        }
-
-        .service-card p {
-            font-size: 1rem;
-            opacity: 0.9;
-            position: relative;
-            z-index: 2;
-        }
-
-        .lecturers-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 30px;
-        }
-
-        .lecturer-card {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .lecturer-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .lecturer-card:hover::before {
-            left: 100%;
-        }
-
-        .lecturer-card:hover {
-            transform: translateY(-10px) rotateY(5deg);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-        }
-
-        .lecturer-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            margin: 0 auto 20px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .lecturer-image::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
-        }
-
-        .lecturer-card h3 {
-            font-size: 1.4rem;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
-
-        .lecturer-card .subjects {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            margin: 10px 0;
-            display: inline-block;
-        }
-
-        .lecturer-card p {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 15px;
-            line-height: 1.6;
-        }
-
-        .floating-elements {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .floating-element {
-            position: absolute;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            animation: float 6s ease-in-out infinite;
-        }
-
-        .floating-element:nth-child(1) {
-            width: 80px;
-            height: 80px;
-            top: 20%;
-            left: 10%;
-            animation-delay: 0s;
-        }
-
-        .floating-element:nth-child(2) {
-            width: 120px;
-            height: 120px;
-            top: 60%;
-            right: 10%;
-            animation-delay: 2s;
-        }
-
-        .floating-element:nth-child(3) {
-            width: 60px;
-            height: 60px;
-            bottom: 20%;
-            left: 20%;
-            animation-delay: 4s;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-20px) rotate(180deg); }
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .nav-menu {
-                display: none;
-            }
-            
-            .hamburger {
-                display: flex;
-            }
-            
-            .mobile-menu {
-                width: 50%;
-            }
-            
-            .header h1 {
-                font-size: 2rem;
-            }
-            
-            .section {
-                padding: 20px;
-                margin-bottom: 20px;
-            }
-            
-            .section h2 {
-                font-size: 2rem;
-            }
-            
-            .services-grid,
-            .lecturers-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
-
-            .mobile-menu-links a {
-                font-size: 1.5rem;
-                padding: 0.8rem 1.5rem;
-            }
-
-            .nav-container {
-                padding: 0 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .mobile-menu {
-                width: 60%;
-            }
-            
-            .mobile-menu-links a {
-                font-size: 1.3rem;
-            }
-
-            .hamburger span {
-                width: 20px;
-                height: 2px;
-            }
-        }
-    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/aboutUs.css">
+    <script src="js/aboutUs.js" defer></script>
 </head>
 <body>
-    <div class="floating-elements">
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-        <div class="floating-element"></div>
-    </div>
+    <!-- Floating particles -->
+    <div class="particles" id="particles"></div>
 
-    <!-- Navigation Header -->
-    <nav class="navbar">
+    <!-- Header -->
+    <header class="header">
         <div class="nav-container">
-            <div class="nav-logo">
-                <h2>Smart Steps Tutorial</h2>
-            </div>
-            <ul class="nav-menu">
-                <li><a href="index.html" class="nav-link">Home</a></li>
-                <li><a href="#about" class="nav-link active">About</a></li>
-                <li><a href="courses.html" class="nav-link">Courses</a></li>
-                <li><a href="Contact.html" class="nav-link">Contact</a></li>
-            </ul>
-            <!-- Hamburger Menu Button -->
-            <div class="hamburger" id="hamburger">
+            <a href="#" class="logo">
+                <i class="fas fa-graduation-cap"></i>
+                Smart Steps Tutorial
+            </a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="#about"> About</a></li>
+                    <li><a href="courses.html">Courses</a></li>
+                    <li><a href="Contact.html"> Contact</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger">
                 <span></span>
                 <span></span>
                 <span></span>
             </div>
         </div>
-    </nav>
+    </header>
 
-    <!-- Mobile Menu Overlay -->
-    <div class="mobile-menu" id="mobileMenu">
-        <ul class="mobile-menu-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="courses.html">Courses</a></li>
-            <li><a href="Contact.html">Contact</a></li>
-        </ul>
-    </div>
-
-    <div class="container">
-        <div class="hero-header">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-background active" id="bg1"></div>
+        <div class="hero-background" id="bg2"></div>
+        <div class="hero-background" id="bg3"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
             <h1>About Smart Steps Tutorial</h1>
-            <p>Empowering Students to Excel in JAMB & UTME Examinations</p>
+            <p>One Smart Step Closer to Success</p>
+            <a href="#about" class="cta-button">
+                <i class="fas fa-arrow-down"></i> Discover Our Story
+            </a>
         </div>
+    </section>
 
-        <div class="section">
-            <h2>What We Do</h2>
-            <div class="what-we-do">
-                <p>At Smart Steps Tutorial, we are dedicated to transforming the educational journey of aspiring students preparing for JAMB and UTME examinations. Our comprehensive approach combines innovative teaching methods with personalized attention to ensure every student reaches their full potential.</p>
-                
-                <p>We believe that success in academics comes from understanding concepts deeply, practicing consistently, and having the right guidance. Our experienced team of educators works tirelessly to create an environment where learning is engaging, effective, and enjoyable.</p>
-                
-                <p>With years of proven results and countless success stories, we continue to be the trusted partner for students aiming to secure admission into their dream universities across Nigeria.</p>
-            </div>
-        </div>
-
-        <div class="section">
-            <h2>Our Services</h2>
-            <div class="services-grid">
-                <div class="service-card">
-                    <h3>Online Classes</h3>
-                    <p>Interactive live sessions with expert tutors, featuring real-time Q&A and personalized feedback to enhance your learning experience.</p>
+    <!-- About Section -->
+    <section class="about-section" id="about">
+        <div class="container">
+            <h2 class="section-title">Why Choose Smart Steps?</h2>
+            <div class="about-grid">
+                <div class="about-card">
+                    <i class="fas fa-users"></i>
+                    <h3>Expert Tutors</h3>
+                    <p>Our experienced educators provide personalized guidance to help you master every subject with proven teaching methodologies.</p>
                 </div>
-                <div class="service-card">
-                    <h3>Video Tutorials</h3>
-                    <p>Comprehensive recorded lessons available 24/7, allowing you to learn at your own pace and revisit complex topics anytime.</p>
+                <div class="about-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Proven Results</h3>
+                    <p>Track record of success with thousands of students achieving their desired university admissions across Nigeria's top institutions.</p>
                 </div>
-                <div class="service-card">
-                    <h3>Study Materials</h3>
-                    <p>Carefully curated resources including past questions, practice tests, and detailed explanations to boost your exam confidence.</p>
+                <div class="about-card">
+                    <i class="fas fa-laptop"></i>
+                    <h3>Modern Learning</h3>
+                    <p>Interactive digital platform with practice tests, video lessons, and real-time progress tracking for optimized learning experience.</p>
                 </div>
             </div>
+            
+            <div class="story-section">
+                <h3>Our Mission & Vision</h3>
+                <p>
+                    Smart Steps Tutorial is Nigeria's premier educational platform dedicated to helping students excel in their JAMB/UTME examinations. Founded with a mission to bridge the gap between academic potential and achievement, we combine innovative teaching methods with cutting-edge technology to provide comprehensive exam preparation. Our expert tutors, proven curriculum, and personalized approach have helped thousands of students secure admission into their dream universities across Nigeria. We believe every student deserves the opportunity to succeed, and we're committed to making that success achievable through smart, strategic learning approaches.
+                </p>
+            </div>
         </div>
+    </section>
 
-        <div class="section" style="display: none;">
-            <h2>Meet Our Expert Lecturers</h2>
-            <div class="lecturers-grid">
-                <div class="lecturer-card">
-                    <div class="lecturer-image">DR</div>
-                    <h3>Dr. Adebayo Johnson</h3>
-                    <div class="subjects">Mathematics</div>
-                    <p>PhD in Mathematics with 15+ years of teaching experience. Specializes in making complex mathematical concepts simple and accessible to all students.</p>
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2 class="section-title">One Smart Step Closer to Success</h2>
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                     Smart Steps Tutorial equips students with expert guidance and proven techniques to boost their JAMB scores and achieve academic success. </div>
+                    <div style="display: none;" class="testimonial-author">- Adebayo Oluwaseun, University of Lagos</div>
                 </div>
-                
-                <div class="lecturer-card">
-                    <div class="lecturer-image">MS</div>
-                    <h3>Mrs. Sarah Okafor</h3>
-                    <div class="subjects">English Language</div>
-                    <p>Masters in English Literature and certified JAMB examiner. Expert in grammar, comprehension, and essay writing techniques.</p>
-                </div>
-                
-                <div class="lecturer-card">
-                    <div class="lecturer-image">PR</div>
-                    <h3>Prof. Michael Eze</h3>
-                    <div class="subjects">Physics</div>
-                    <p>Professor of Physics with extensive research background. Known for practical demonstrations and clear explanations of physics principles.</p>
-                </div>
-                
-                <div class="lecturer-card">
-                    <div class="lecturer-image">DR</div>
-                    <h3>Dr. Fatima Aliyu</h3>
-                    <div class="subjects">Chemistry</div>
-                    <p>PhD in Analytical Chemistry. Excels at breaking down chemical equations and reactions into easy-to-understand steps for students.</p>
-                </div>
-                
-                <div class="lecturer-card">
-                    <div class="lecturer-image">MR</div>
-                    <h3>Mr. Emmanuel Okoro</h3>
-                    <div class="subjects">Biology</div>
-                    <p>Masters in Biological Sciences with a passion for life sciences. Uses innovative teaching methods to make biology concepts memorable.</p>
+                <div class="testimonial-card">
+                    <div class="testimonial-text">
+                    With our interactive lessons and realistic practice tests, students walk into their JAMB exams prepared, confident, and ready to win.</div>
+                    <div style="display: none;" class="testimonial-author">- Chioma Okafor, University of Nigeria</div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section style="display: none;" class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">5000+</div>
+                    <div class="stat-label">Students Trained</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Success Rate</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50+</div>
+                    <div class="stat-label">Expert Tutors</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">10+</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h3>Smart Steps Tutorial</h3>
-                    <p>Your trusted partner in JAMB & UTME preparation. Excellence in education, success in examinations.</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link">📘</a>
-                        <a href="#" class="social-link">📱</a>
-                        <a href="#" class="social-link">📧</a>
-                        <a href="#" class="social-link">📞</a>
-                    </div>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Quick Links</h4>
-                    <ul class="footer-links">
-                        <li><a href="#home">Home</a></li>
-                        <li><a href="#about">About Us</a></li>
-                        <li><a href="#courses">Courses</a></li>
-                        <li><a href="#resources">Study Materials</a></li>
-                        <li><a href="#contact">Contact</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Our Subjects</h4>
-                    <ul class="footer-links">
-                        <li><a href="#mathematics">Mathematics</a></li>
-                        <li><a href="#english">English Language</a></li>
-                        <li><a href="#physics">Physics</a></li>
-                        <li><a href="#chemistry">Chemistry</a></li>
-                        <li><a href="#biology">Biology</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-section">
-                    <h4>Contact Info</h4>
-                    <div class="contact-info">
-                        <p>📍 Lagos, Nigeria</p>
-                        <p>📞 +234 XXX XXX XXXX</p>
-                        <p>📧 info@smartstepstutorial.com</p>
-                        <p>🕒 Mon - Sat: 8AM - 8PM</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="footer-bottom">
-                <div class="footer-bottom-content">
-                    <p>&copy; 2024 Smart Steps Tutorial. All Rights Reserved.</p>
-                    <div class="footer-bottom-links">
-                        <a href="#privacy">Privacy Policy</a>
-                        <a href="#terms">Terms of Service</a>
-                        <a href="#support">Support</a>
-                    </div>
-                </div>
-            </div>
+        <div class="container">
+            <p>&copy; 2025 Smart Steps Tutorial. All rights reserved. | One Smart Step Closer to Success</p>
         </div>
     </footer>
 
-    <script>
-        // Hamburger Menu Toggle Functionality
-        const hamburger = document.getElementById('hamburger');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const body = document.body;
-
-        function toggleMobileMenu() {
-            hamburger.classList.toggle('active');
-            mobileMenu.classList.toggle('active');
-            
-            // Prevent body scroll when menu is open
-            if (mobileMenu.classList.contains('active')) {
-                body.style.overflow = 'hidden';
-            } else {
-                body.style.overflow = 'auto';
-            }
-        }
-
-        // Toggle menu on hamburger click
-        hamburger.addEventListener('click', toggleMobileMenu);
-
-        // Close menu when clicking on mobile menu links
-        const mobileMenuLinks = document.querySelectorAll('.mobile-menu-links a');
-        mobileMenuLinks.forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
-            });
-        });
-
-        // Close menu when clicking outside of it (on the left side)
-        document.addEventListener('click', (e) => {
-            if (mobileMenu.classList.contains('active') && 
-                !mobileMenu.contains(e.target) && 
-                !hamburger.contains(e.target)) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
-            }
-        });
-
-        // Close menu on escape key press
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
-                hamburger.classList.remove('active');
-                mobileMenu.classList.remove('active');
-                body.style.overflow = 'auto';
-            }
-        });
-
-        // Smooth scrolling for navigation links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
-                }
-            });
-        });
-
-        // Navbar background on scroll
-        window.addEventListener('scroll', () => {
-            const navbar = document.querySelector('.navbar');
-            if (window.scrollY > 100) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
-    </script>
-    
-    <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
-
-    <script>
-        // Replace emoji icons in footer with Font Awesome icons
-        document.addEventListener('DOMContentLoaded', function () {
-            // Social links
-            const socialLinks = document.querySelector('.social-links');
-            if (socialLinks) {
-                socialLinks.innerHTML = `
-                    <a href="#" class="social-link" title="Facebook"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social-link" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-                    <a href="#" class="social-link" title="Email"><i class="fas fa-envelope"></i></a>
-                    <a href="#" class="social-link" title="Phone"><i class="fas fa-phone"></i></a>
-                `;
-            }
-
-            // Contact info
-            const contactInfo = document.querySelector('.contact-info');
-            if (contactInfo) {
-                contactInfo.innerHTML = `
-                    <p><i class="fas fa-map-marker-alt"></i> Lagos, Nigeria</p>
-                    <p><i class="fas fa-phone"></i> +234 XXX XXX XXXX</p>
-                    <p><i class="fas fa-envelope"></i> info@smartstepstutorial.com</p>
-                    <p><i class="fas fa-clock"></i> Mon - Sat: 8AM - 8PM</p>
-                `;
-            }
-        });
-    </script>
+  
 </body>
 </html>
