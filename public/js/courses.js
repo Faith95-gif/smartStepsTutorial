@@ -231,12 +231,7 @@
                         experience: "English Language Tutor",
                         specialty: "Literature & Composition"
                     },
-                    {
-                        name: "Mr. David Ogundimu",
-                        qualification: "B.A. English Language, LASU",
-                        experience: "6 Years",
-                        specialty: "Grammar & Comprehension"
-                    }
+                
                 ],
                 curriculum: [
                     "Comprehension and Summary",
