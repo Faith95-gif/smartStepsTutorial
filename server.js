@@ -55,7 +55,13 @@ const quizSchema = new mongoose.Schema({
   questions: [{
     question: { type: String, required: true },
     options: [{ type: String, required: true }],
-    correctAnswer: { type: Number, required: true }
+    correctAnswer: { type: Number, required: true },
+    passageId: { type: String } // Optional: links question to a reading passage
+  }],
+  passages: [{
+    id: { type: String, required: true },
+    text: { type: String, required: true },
+    questionCount: { type: Number, required: true }
   }],
   timeLimit: { type: Number, default: 0 }, // Time limit in minutes (0 = no limit)
   shareId: { type: String, unique: true, default: uuidv4 },
@@ -213,13 +219,14 @@ app.post('/api/logout', (req, res) => {
 // Create quiz
 app.post('/api/quiz', authenticateTeacher, async (req, res) => {
   try {
-    const { title, questions, timeLimit } = req.body;
+    const { title, questions, passages, timeLimit } = req.body;
     
     const quiz = new Quiz({
       title,
       subject: req.teacher.subject,
       teacherId: req.teacher.id,
       questions,
+      passages: passages || [],
       timeLimit: timeLimit || 0,
       shareId: uuidv4()
     });
@@ -271,11 +278,22 @@ app.get('/api/quizzes', authenticateTeacher, async (req, res) => {
 // Get quiz by share ID (for students)
 app.get('/api/quiz/:shareId', async (req, res) => {
   try {
-    const quiz = await Quiz.findOne({ shareId: req.params.shareId }).select('-questions.correctAnswer');
+    const quiz = await Quiz.findOne({ shareId: req.params.shareId });
     if (!quiz) {
       return res.status(404).json({ error: 'Quiz not found' });
     }
-    res.json(quiz);
+    
+    // Remove correct answers for student view but keep passages
+    const studentQuiz = {
+      ...quiz.toObject(),
+      questions: quiz.questions.map(q => ({
+        question: q.question,
+        options: q.options,
+        passageId: q.passageId
+      }))
+    };
+    
+    res.json(studentQuiz);
   } catch (error) {
     res.status(500).json({ error: 'Error fetching quiz' });
   }

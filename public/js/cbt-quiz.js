@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let timerInterval = null;
     let currentQuestionIndex = 0;
     let studentAnswers = [];
+    let passages = {};
 
     // DOM Elements
     const studentNameForm = document.getElementById('studentNameForm');
@@ -65,6 +66,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
             quizData = await response.json();
             startTime = Date.now();
+            
+            // Store passages for easy access
+            if (quizData.passages) {
+                quizData.passages.forEach(passage => {
+                    passages[passage.id] = passage;
+                });
+            }
             
             // Initialize student answers array
             studentAnswers = new Array(quizData.questions.length).fill(null);
@@ -136,6 +144,9 @@ document.addEventListener('DOMContentLoaded', function() {
         progressFill.style.width = `${progress}%`;
         progressText.textContent = `Question ${index + 1} of ${quizData.questions.length}`;
         
+        // Display reading passage if this question has one
+        displayReadingPassage(question);
+        
         // Display options
         displayOptions(question.options, index);
         
@@ -152,6 +163,36 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 10);
     }
 
+    function displayReadingPassage(question) {
+        // Remove existing passage
+        const existingPassage = document.querySelector('.reading-passage');
+        if (existingPassage) {
+            existingPassage.remove();
+        }
+        
+        // Check if this question has a passage
+        if (question.passageId && passages[question.passageId]) {
+            const passage = passages[question.passageId];
+            
+            // Calculate passage progress
+            const passageQuestions = quizData.questions.filter(q => q.passageId === question.passageId);
+            const currentPassageIndex = passageQuestions.findIndex(q => q === question) + 1;
+            
+            const passageHTML = `
+                <div class="reading-passage">
+                    <div class="passage-info">
+                        <span>Reading Comprehension</span>
+                        <span class="passage-progress">Question ${currentPassageIndex} of ${passage.questionCount}</span>
+                    </div>
+                    <div class="passage-text">${passage.text}</div>
+                </div>
+            `;
+            
+            // Insert passage before question card
+            const questionContainer = document.getElementById('questionContainer');
+            questionContainer.insertAdjacentHTML('afterbegin', passageHTML);
+        }
+    }
     function displayOptions(options, questionIndex) {
         optionsContainer.innerHTML = '';
         

@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let questionCount = 0;
     
     document.getElementById('addQuestionBtn').addEventListener('click', addQuestion);
+    document.getElementById('addPassageBtn').addEventListener('click', addReadingPassage);
     document.getElementById('quizForm').addEventListener('submit', createQuiz);
     document.getElementById('logoutBtn').addEventListener('click', logout);
 
@@ -21,6 +22,109 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function addReadingPassage() {
+        questionCount++;
+        const questionsContainer = document.getElementById('questionsContainer');
+        
+        const passageHTML = `
+            <div class="passage-item" id="question-${questionCount}">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-book-open"></i>
+                        Reading Passage ${questionCount}
+                    </label>
+                    <textarea name="passage-${questionCount}" class="form-input" required 
+                              placeholder="Enter the reading passage here..." 
+                              style="min-height: 200px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-list-ol"></i>
+                        Number of Questions for this Passage
+                    </label>
+                    <select name="passage-questions-${questionCount}" class="form-input" required>
+                        <option value="">Select number of questions</option>
+                        <option value="3">3 Questions</option>
+                        <option value="5">5 Questions</option>
+                        <option value="7">7 Questions</option>
+                        <option value="10">10 Questions</option>
+                        <option value="15">15 Questions</option>
+                    </select>
+                </div>
+
+                <div id="passage-questions-${questionCount}" class="passage-questions-container">
+                    <!-- Questions will be added here dynamically -->
+                </div>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-error" onclick="removeQuestion(${questionCount})">
+                        <i class="fas fa-trash"></i>
+                        Remove Passage
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        questionsContainer.insertAdjacentHTML('beforeend', passageHTML);
+        
+        // Add event listener for question count change
+        const questionCountSelect = document.querySelector(`select[name="passage-questions-${questionCount}"]`);
+        questionCountSelect.addEventListener('change', function() {
+            generatePassageQuestions(questionCount, parseInt(this.value));
+        });
+    }
+
+    function generatePassageQuestions(passageId, questionCount) {
+        const container = document.getElementById(`passage-questions-${passageId}`);
+        container.innerHTML = '';
+        
+        if (!questionCount) return;
+        
+        for (let i = 1; i <= questionCount; i++) {
+            const questionHTML = `
+                <div class="question-item" style="margin-top: 2rem; border-left: 4px solid #667eea; padding-left: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-question-circle"></i>
+                            Question ${i}
+                        </label>
+                        <input type="text" name="passage-${passageId}-question-${i}" class="form-input" required 
+                               placeholder="Enter question ${i} for this passage">
+                    </div>
+                    
+                    <div class="option-group">
+                        <label class="form-label">
+                            <i class="fas fa-list"></i>
+                            Options (Select the correct answer)
+                        </label>
+                        
+                        <div class="option-item">
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="0" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-0" class="form-input" required placeholder="Option A">
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="1" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-1" class="form-input" required placeholder="Option B">
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="2" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-2" class="form-input" required placeholder="Option C">
+                        </div>
+                        
+                        <div class="option-item">
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="3" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-3" class="form-input" required placeholder="Option D">
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            container.insertAdjacentHTML('beforeend', questionHTML);
+        }
+    }
     function addQuestion() {
         questionCount++;
         const questionsContainer = document.getElementById('questionsContainer');
@@ -88,32 +192,49 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     function renumberQuestions() {
-        const questions = document.querySelectorAll('.question-item');
+        const questions = document.querySelectorAll('.question-item, .passage-item');
         questions.forEach((question, index) => {
             const newNumber = index + 1;
             question.id = `question-${newNumber}`;
             
-            // Update question label
-            const label = question.querySelector('.form-label');
-            label.innerHTML = `<i class="fas fa-question-circle"></i> Question ${newNumber}`;
-            
-            // Update input names
-            const questionInput = question.querySelector('input[type="text"]');
-            questionInput.name = `question-${newNumber}`;
-            
-            const radioInputs = question.querySelectorAll('input[type="radio"]');
-            radioInputs.forEach(radio => {
-                radio.name = `correct-${newNumber}`;
-            });
-            
-            const optionInputs = question.querySelectorAll('input[type="text"]:not(:first-child)');
-            optionInputs.forEach((input, optionIndex) => {
-                input.name = `option-${newNumber}-${optionIndex}`;
-            });
+            if (question.classList.contains('passage-item')) {
+                // Update passage label
+                const label = question.querySelector('.form-label');
+                label.innerHTML = `<i class="fas fa-book-open"></i> Reading Passage ${newNumber}`;
+                
+                // Update passage input names
+                const passageTextarea = question.querySelector('textarea');
+                if (passageTextarea) passageTextarea.name = `passage-${newNumber}`;
+                
+                const questionCountSelect = question.querySelector('select');
+                if (questionCountSelect) questionCountSelect.name = `passage-questions-${newNumber}`;
+                
+                // Update passage questions container
+                const questionsContainer = question.querySelector('.passage-questions-container');
+                if (questionsContainer) questionsContainer.id = `passage-questions-${newNumber}`;
+            } else {
+                // Update regular question label
+                const label = question.querySelector('.form-label');
+                label.innerHTML = `<i class="fas fa-question-circle"></i> Question ${newNumber}`;
+                
+                // Update input names
+                const questionInput = question.querySelector('input[type="text"]');
+                if (questionInput) questionInput.name = `question-${newNumber}`;
+                
+                const radioInputs = question.querySelectorAll('input[type="radio"]');
+                radioInputs.forEach(radio => {
+                    radio.name = `correct-${newNumber}`;
+                });
+                
+                const optionInputs = question.querySelectorAll('input[type="text"]:not(:first-child)');
+                optionInputs.forEach((input, optionIndex) => {
+                    input.name = `option-${newNumber}-${optionIndex}`;
+                });
+            }
             
             // Update remove button
             const removeBtn = question.querySelector('.btn-error');
-            removeBtn.setAttribute('onclick', `removeQuestion(${newNumber})`);
+            if (removeBtn) removeBtn.setAttribute('onclick', `removeQuestion(${newNumber})`);
         });
         
         questionCount = questions.length;
@@ -128,22 +249,58 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Parse questions
         const questions = [];
+        const passages = [];
+        
         for (let i = 1; i <= questionCount; i++) {
-            const question = formData.get(`question-${i}`);
-            if (question) {
-                const options = [
-                    formData.get(`option-${i}-0`),
-                    formData.get(`option-${i}-1`),
-                    formData.get(`option-${i}-2`),
-                    formData.get(`option-${i}-3`)
-                ];
-                const correctAnswer = parseInt(formData.get(`correct-${i}`));
+            // Check if this is a passage
+            const passageText = formData.get(`passage-${i}`);
+            if (passageText) {
+                const passageQuestionCount = parseInt(formData.get(`passage-questions-${i}`));
+                const passageQuestions = [];
                 
-                questions.push({
-                    question,
-                    options,
-                    correctAnswer
+                for (let j = 1; j <= passageQuestionCount; j++) {
+                    const question = formData.get(`passage-${i}-question-${j}`);
+                    const options = [
+                        formData.get(`passage-${i}-option-${j}-0`),
+                        formData.get(`passage-${i}-option-${j}-1`),
+                        formData.get(`passage-${i}-option-${j}-2`),
+                        formData.get(`passage-${i}-option-${j}-3`)
+                    ];
+                    const correctAnswer = parseInt(formData.get(`passage-${i}-correct-${j}`));
+                    
+                    passageQuestions.push({
+                        question,
+                        options,
+                        correctAnswer,
+                        passageId: `passage-${i}`
+                    });
+                }
+                
+                passages.push({
+                    id: `passage-${i}`,
+                    text: passageText,
+                    questionCount: passageQuestionCount
                 });
+                
+                questions.push(...passageQuestions);
+            } else {
+                // Regular question
+                const question = formData.get(`question-${i}`);
+                if (question) {
+                    const options = [
+                        formData.get(`option-${i}-0`),
+                        formData.get(`option-${i}-1`),
+                        formData.get(`option-${i}-2`),
+                        formData.get(`option-${i}-3`)
+                    ];
+                    const correctAnswer = parseInt(formData.get(`correct-${i}`));
+                    
+                    questions.push({
+                        question,
+                        options,
+                        correctAnswer
+                    });
+                }
             }
         }
 
@@ -164,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ title, questions, timeLimit })
+                body: JSON.stringify({ title, questions, passages, timeLimit })
             });
 
             const result = await response.json();

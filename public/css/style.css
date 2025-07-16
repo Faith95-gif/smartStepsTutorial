@@ -453,6 +453,33 @@ body {
     margin-bottom: 2rem;
 }
 
+.passage-item {
+    background: var(--bg-secondary);
+    padding: 2rem;
+    border-radius: var(--border-radius);
+    margin-bottom: 2rem;
+    border: 2px solid #667eea;
+    position: relative;
+}
+
+.passage-item::before {
+    content: 'READING PASSAGE';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #667eea;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.passage-questions-container {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+}
 .question-item {
     background: var(--bg-secondary);
     padding: 1.5rem;
