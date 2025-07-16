@@ -6,6 +6,7 @@
     <title>Take Quiz - Smart Steps Tutorial</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/cbt-quiz.css">
 </head>
 <body>
     <header class="header">
@@ -41,25 +42,71 @@
         </div>
 
         <div id="quizContainer" class="quiz-container hidden">
-            <div id="quizHeader" class="dashboard-header">
-                <h1 id="quizTitle" class="dashboard-title"></h1>
-                <p id="quizSubject" class="dashboard-subtitle"></p>
-                <div class="dashboard-stats">
-                    <div class="stat-card">
-                        <div class="stat-number" id="questionCount">0</div>
-                        <div class="stat-label">Questions</div>
+            <!-- Quiz Header -->
+            <div id="quizHeader" class="cbt-header">
+                <div class="quiz-info">
+                    <h1 id="quizTitle" class="quiz-title"></h1>
+                    <p id="quizSubject" class="quiz-subject"></p>
+                </div>
+                
+                <div class="quiz-stats">
+                    <div class="stat-item">
+                        <span class="stat-label">Question</span>
+                        <span class="stat-value">
+                            <span id="currentQuestionNum">1</span> of <span id="totalQuestions">0</span>
+                        </span>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="currentQuestion">1</div>
-                        <div class="stat-label">Current Question</div>
+                    <div class="stat-item" id="timerDisplay" style="display: none;">
+                        <span class="stat-label">Time Left</span>
+                        <span class="stat-value" id="timeRemaining">00:00</span>
                     </div>
                 </div>
             </div>
 
-            <div id="questionsContainer"></div>
+            <!-- Progress Bar -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text">
+                    <span id="progressText">Question 1 of 0</span>
+                </div>
+            </div>
 
-            <div class="text-center mt-4">
-                <button id="submitQuizBtn" class="btn btn-success btn-large">
+            <!-- Question Container -->
+            <div id="questionContainer" class="question-container">
+                <div class="question-card">
+                    <div class="question-header">
+                        <h3 class="question-number">Question <span id="questionNumber">1</span></h3>
+                    </div>
+                    
+                    <div class="question-content">
+                        <p id="questionText" class="question-text"></p>
+                        
+                        <div id="optionsContainer" class="options-container">
+                            <!-- Options will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="navigation-controls">
+                <button id="prevBtn" class="nav-btn prev-btn" disabled>
+                    <i class="fas fa-chevron-left"></i>
+                    Previous
+                </button>
+                
+                <div class="question-indicators" id="questionIndicators">
+                    <!-- Question indicators will be populated by JavaScript -->
+                </div>
+                
+                <button id="nextBtn" class="nav-btn next-btn">
+                    Next
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                
+                <button id="submitBtn" class="nav-btn submit-btn" style="display: none;">
                     <i class="fas fa-check"></i>
                     Submit Quiz
                 </button>
@@ -114,10 +161,6 @@
         </div>
     </main>
 
-    <script src="/js/student-quiz.js"></script>
+    <script src="/js/cbt-quiz.js"></script>
 </body>
 </html>
-
-<script>
-    
-</script>

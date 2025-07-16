@@ -294,7 +294,7 @@ app.post('/api/submit/:shareId', async (req, res) => {
     // Calculate score
     let score = 0;
     quiz.questions.forEach((question, index) => {
-      if (answers[index] === question.correctAnswer) {
+      if (answers[index] !== -1 && answers[index] === question.correctAnswer) {
         score++;
       }
     });
