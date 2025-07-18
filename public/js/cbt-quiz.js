@@ -1,361 +1,474 @@
-class CBTQuiz {
-    constructor() {
-        this.currentQuestion = 0;
-        this.answers = {};
-        this.timeRemaining = 0;
-        this.timer = null;
-        this.quizData = null;
-        this.studentInfo = null;
-        this.init();
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    const shareId = window.location.pathname.split('/').pop();
+    let quizData = null;
+    let studentName = '';
+    let startTime = null;
+    let timerInterval = null;
+    let currentQuestionIndex = 0;
+    let studentAnswers = [];
+    let passages = {};
 
-    async init() {
-        try {
-            await this.loadQuizData();
-            await this.loadStudentInfo();
-            this.setupQuiz();
-            this.startTimer();
-            this.bindEvents();
-        } catch (error) {
-            console.error('Error initializing quiz:', error);
-            this.showError('Failed to load quiz. Please try again.');
-        }
-    }
+    // DOM Elements
+    const studentNameForm = document.getElementById('studentNameForm');
+    const loadingContainer = document.getElementById('loadingContainer');
+    const quizContainer = document.getElementById('quizContainer');
+    const resultsContainer = document.getElementById('resultsContainer');
+    const errorContainer = document.getElementById('errorContainer');
+    
+    // Quiz elements
+    const quizTitle = document.getElementById('quizTitle');
+    const quizSubject = document.getElementById('quizSubject');
+    const currentQuestionNum = document.getElementById('currentQuestionNum');
+    const totalQuestions = document.getElementById('totalQuestions');
+    const questionNumber = document.getElementById('questionNumber');
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const progressFill = document.getElementById('progressFill');
+    const progressText = document.getElementById('progressText');
+    const questionIndicators = document.getElementById('questionIndicators');
+    
+    // Navigation elements
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    
+    // Timer elements
+    const timerDisplay = document.getElementById('timerDisplay');
+    const timeRemaining = document.getElementById('timeRemaining');
 
-    async loadQuizData() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const quizId = urlParams.get('id');
+    // Event Listeners
+    document.getElementById('nameForm').addEventListener('submit', startQuiz);
+    prevBtn.addEventListener('click', previousQuestion);
+    nextBtn.addEventListener('click', nextQuestion);
+    submitBtn.addEventListener('click', submitQuiz);
+
+    async function startQuiz(e) {
+        e.preventDefault();
         
-        if (!quizId) {
-            throw new Error('No quiz ID provided');
-        }
-
-        const response = await fetch(`/api/quizzes/${quizId}`);
-        if (!response.ok) {
-            throw new Error('Failed to load quiz data');
-        }
+        const formData = new FormData(e.target);
+        studentName = formData.get('studentName');
         
-        this.quizData = await response.json();
-    }
-
-    async loadStudentInfo() {
-        const studentData = localStorage.getItem('currentStudent');
-        if (!studentData) {
-            window.location.href = 'student-details.html';
+        if (!studentName.trim()) {
+            alert('Please enter your name');
             return;
         }
-        
-        this.studentInfo = JSON.parse(studentData);
-    }
 
-    setupQuiz() {
-        // Set quiz title and info
-        document.getElementById('quiz-title').textContent = this.quizData.title;
-        document.getElementById('student-name').textContent = this.studentInfo.name;
-        document.getElementById('total-questions').textContent = this.quizData.questions.length;
-        
-        // Set timer
-        this.timeRemaining = this.quizData.duration * 60; // Convert minutes to seconds
-        
-        // Show passage if exists
-        if (this.quizData.passage) {
-            this.setupPassage();
-        }
-        
-        // Setup question navigation
-        this.setupQuestionNavigation();
-        
-        // Show first question
-        this.showQuestion(0);
-    }
+        // Hide name form and show loading
+        studentNameForm.classList.add('hidden');
+        loadingContainer.classList.remove('hidden');
 
-    setupPassage() {
-        const passageContainer = document.getElementById('passage-container');
-        const passage = this.quizData.passage;
-        
-        let passageHtml = `
-            <div class="passage-content">
-                <h3>${passage.title || 'Reading Passage'}</h3>
-                <div class="passage-text">${passage.text}</div>
-        `;
-        
-        if (passage.image) {
-            passageHtml += `
-                <div class="passage-image">
-                    <img src="${passage.image.url}" alt="Passage illustration" />
-                </div>
-            `;
-        }
-        
-        passageHtml += `</div>`;
-        passageContainer.innerHTML = passageHtml;
-        passageContainer.style.display = 'block';
-    }
-
-    setupQuestionNavigation() {
-        const navContainer = document.getElementById('question-nav');
-        const navHtml = this.quizData.questions.map((_, index) => 
-            `<button class="nav-btn" data-question="${index}">${index + 1}</button>`
-        ).join('');
-        
-        navContainer.innerHTML = navHtml;
-        
-        // Add click events to navigation buttons
-        navContainer.addEventListener('click', (e) => {
-            if (e.target.classList.contains('nav-btn')) {
-                const questionIndex = parseInt(e.target.dataset.question);
-                this.showQuestion(questionIndex);
-            }
-        });
-    }
-
-    showQuestion(index) {
-        if (index < 0 || index >= this.quizData.questions.length) return;
-        
-        this.currentQuestion = index;
-        const question = this.quizData.questions[index];
-        
-        // Update question counter
-        document.getElementById('current-question').textContent = index + 1;
-        
-        // Build question HTML
-        let questionHtml = `
-            <div class="question-content">
-                <h3>Question ${index + 1}</h3>
-                <div class="question-text">${question.text}</div>
-        `;
-        
-        // Add question image if exists
-        if (question.image) {
-            questionHtml += `
-                <div class="question-image">
-                    <img src="${question.image.url}" alt="Question illustration" />
-                </div>
-            `;
-        }
-        
-        // Add options
-        questionHtml += `<div class="options-container">`;
-        question.options.forEach((option, optionIndex) => {
-            const isChecked = this.answers[index] === optionIndex ? 'checked' : '';
-            questionHtml += `
-                <label class="option-label">
-                    <input type="radio" name="question-${index}" value="${optionIndex}" ${isChecked}>
-                    <span class="option-text">${option}</span>
-                </label>
-            `;
-        });
-        questionHtml += `</div></div>`;
-        
-        document.getElementById('question-container').innerHTML = questionHtml;
-        
-        // Add event listeners for answer selection
-        const radioButtons = document.querySelectorAll(`input[name="question-${index}"]`);
-        radioButtons.forEach(radio => {
-            radio.addEventListener('change', (e) => {
-                this.answers[index] = parseInt(e.target.value);
-                this.updateNavigationStatus();
-            });
-        });
-        
-        // Update navigation buttons
-        this.updateNavigationButtons();
-        this.updateNavigationStatus();
-    }
-
-    updateNavigationButtons() {
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        
-        prevBtn.disabled = this.currentQuestion === 0;
-        nextBtn.disabled = this.currentQuestion === this.quizData.questions.length - 1;
-        
-        // Update next button text for last question
-        if (this.currentQuestion === this.quizData.questions.length - 1) {
-            nextBtn.style.display = 'none';
-            document.getElementById('submit-btn').style.display = 'inline-block';
-        } else {
-            nextBtn.style.display = 'inline-block';
-            document.getElementById('submit-btn').style.display = 'none';
-        }
-    }
-
-    updateNavigationStatus() {
-        const navButtons = document.querySelectorAll('.nav-btn');
-        navButtons.forEach((btn, index) => {
-            btn.classList.remove('current', 'answered');
+        try {
+            const response = await fetch(`/api/quiz/${shareId}`);
             
-            if (index === this.currentQuestion) {
-                btn.classList.add('current');
+            if (!response.ok) {
+                throw new Error('Quiz not found');
+            }
+
+            quizData = await response.json();
+            startTime = Date.now();
+            
+            // Store passages for easy access
+            if (quizData.passages) {
+                quizData.passages.forEach(passage => {
+                    passages[passage.id] = passage;
+                });
             }
             
-            if (this.answers.hasOwnProperty(index)) {
-                btn.classList.add('answered');
+            // Initialize student answers array
+            studentAnswers = new Array(quizData.questions.length).fill(null);
+            
+            // Hide loading and show quiz
+            loadingContainer.classList.add('hidden');
+            initializeQuiz();
+            
+            // Start timer if time limit is set
+            if (quizData.timeLimit > 0) {
+                startTimer(quizData.timeLimit * 60); // Convert minutes to seconds
             }
-        });
+            
+        } catch (error) {
+            loadingContainer.classList.add('hidden');
+            errorContainer.classList.remove('hidden');
+        }
+    }
+
+    function initializeQuiz() {
+        quizContainer.classList.remove('hidden');
+        
+        // Set quiz information
+        quizTitle.textContent = quizData.title;
+        quizSubject.textContent = `Subject: ${quizData.subject}`;
+        totalQuestions.textContent = quizData.questions.length;
+        
+        // Add time limit info if applicable
+        if (quizData.timeLimit > 0) {
+            quizSubject.innerHTML += `<br><small>Time Limit: ${quizData.timeLimit} minutes</small>`;
+            timerDisplay.style.display = 'block';
+        }
+        
+        // Create question indicators
+        createQuestionIndicators();
+        
+        // Display first question
+        displayQuestion(0);
+        
+        // Update navigation
+        updateNavigation();
+    }
+
+    function createQuestionIndicators() {
+        questionIndicators.innerHTML = '';
+        
+        for (let i = 0; i < quizData.questions.length; i++) {
+            const indicator = document.createElement('div');
+            indicator.className = 'question-indicator';
+            indicator.textContent = i + 1;
+            indicator.addEventListener('click', () => goToQuestion(i));
+            questionIndicators.appendChild(indicator);
+        }
+    }
+
+    function displayQuestion(index) {
+        if (index < 0 || index >= quizData.questions.length) return;
+        
+        currentQuestionIndex = index;
+        const question = quizData.questions[index];
+        
+        // Update question info
+        currentQuestionNum.textContent = index + 1;
+        questionNumber.textContent = index + 1;
+        questionText.textContent = question.question;
         
         // Update progress
-        const answeredCount = Object.keys(this.answers).length;
-        const totalQuestions = this.quizData.questions.length;
-        const progressPercent = (answeredCount / totalQuestions) * 100;
+        const progress = ((index + 1) / quizData.questions.length) * 100;
+        progressFill.style.width = `${progress}%`;
+        progressText.textContent = `Question ${index + 1} of ${quizData.questions.length}`;
         
-        document.getElementById('progress-fill').style.width = `${progressPercent}%`;
-        document.getElementById('answered-count').textContent = answeredCount;
+        // Display reading passage if this question has one
+        displayReadingPassage(question);
+        
+        // Display options
+        displayOptions(question.options, index);
+        
+        // Update indicators
+        updateQuestionIndicators();
+        
+        // Update navigation
+        updateNavigation();
+        
+        // Add animation
+        document.querySelector('.question-content').style.animation = 'none';
+        setTimeout(() => {
+            document.querySelector('.question-content').style.animation = 'fadeIn 0.3s ease-in-out';
+        }, 10);
     }
 
-    startTimer() {
-        this.updateTimerDisplay();
+    function displayReadingPassage(question) {
+        // Remove existing passage
+        const existingPassage = document.querySelector('.reading-passage');
+        if (existingPassage) {
+            existingPassage.remove();
+        }
         
-        this.timer = setInterval(() => {
-            this.timeRemaining--;
-            this.updateTimerDisplay();
+        // Check if this question has a passage
+        if (question.passageId && passages[question.passageId]) {
+            const passage = passages[question.passageId];
             
-            if (this.timeRemaining <= 0) {
-                this.submitQuiz(true); // Auto-submit when time runs out
+            // Calculate passage progress
+            const passageQuestions = quizData.questions.filter(q => q.passageId === question.passageId);
+            const currentPassageIndex = passageQuestions.findIndex(q => q === question) + 1;
+            
+            const passageHTML = `
+                <div class="reading-passage">
+                    <div class="passage-info">
+                        <span>Reading Comprehension</span>
+                        <span class="passage-progress">Question ${currentPassageIndex} of ${passage.questionCount}</span>
+                    </div>
+                    <div class="passage-text">${passage.text}</div>
+                </div>
+            `;
+            
+            // Insert passage before question card
+            const questionContainer = document.getElementById('questionContainer');
+            questionContainer.insertAdjacentHTML('afterbegin', passageHTML);
+        }
+    }
+    function displayOptions(options, questionIndex) {
+        optionsContainer.innerHTML = '';
+        
+        options.forEach((option, optionIndex) => {
+            const optionElement = document.createElement('div');
+            optionElement.className = 'option-item';
+            
+            // Check if this option was previously selected
+            if (studentAnswers[questionIndex] === optionIndex) {
+                optionElement.classList.add('selected');
+            }
+            
+            optionElement.innerHTML = `
+                <div class="option-radio"></div>
+                <span class="option-letter">${String.fromCharCode(65 + optionIndex)}.</span>
+                <span class="option-text">${option}</span>
+            `;
+            
+            optionElement.addEventListener('click', () => selectOption(questionIndex, optionIndex));
+            optionsContainer.appendChild(optionElement);
+        });
+    }
+
+    function selectOption(questionIndex, optionIndex) {
+        // Update student answers
+        studentAnswers[questionIndex] = optionIndex;
+        
+        // Update UI
+        const optionItems = optionsContainer.querySelectorAll('.option-item');
+        optionItems.forEach((item, index) => {
+            if (index === optionIndex) {
+                item.classList.add('selected');
+            } else {
+                item.classList.remove('selected');
+            }
+        });
+        
+        // Update question indicators
+        updateQuestionIndicators();
+        
+        // Auto-advance to next question after a short delay (optional)
+        // setTimeout(() => {
+        //     if (currentQuestionIndex < quizData.questions.length - 1) {
+        //         nextQuestion();
+        //     }
+        // }, 500);
+    }
+
+    function updateQuestionIndicators() {
+        const indicators = questionIndicators.querySelectorAll('.question-indicator');
+        
+        indicators.forEach((indicator, index) => {
+            indicator.classList.remove('current', 'answered');
+            
+            if (index === currentQuestionIndex) {
+                indicator.classList.add('current');
+            }
+            
+            if (studentAnswers[index] !== null) {
+                indicator.classList.add('answered');
+            }
+        });
+    }
+
+    function updateNavigation() {
+        // Update Previous button
+        prevBtn.disabled = currentQuestionIndex === 0;
+        
+        // Update Next/Submit button
+        if (currentQuestionIndex === quizData.questions.length - 1) {
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'flex';
+        } else {
+            nextBtn.style.display = 'flex';
+            submitBtn.style.display = 'none';
+        }
+    }
+
+    function previousQuestion() {
+        if (currentQuestionIndex > 0) {
+            displayQuestion(currentQuestionIndex - 1);
+        }
+    }
+
+    function nextQuestion() {
+        if (currentQuestionIndex < quizData.questions.length - 1) {
+            displayQuestion(currentQuestionIndex + 1);
+        }
+    }
+
+    function goToQuestion(index) {
+        if (index >= 0 && index < quizData.questions.length) {
+            displayQuestion(index);
+        }
+    }
+
+    function startTimer(timeInSeconds) {
+        let remainingTime = timeInSeconds;
+        
+        function updateTimer() {
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            timeRemaining.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color when time is running low
+            if (remainingTime <= 60) { // Last minute
+                timeRemaining.classList.add('timer-danger');
+            } else if (remainingTime <= 300) { // Last 5 minutes
+                timeRemaining.classList.add('timer-warning');
+            }
+        }
+        
+        updateTimer();
+        
+        timerInterval = setInterval(() => {
+            remainingTime--;
+            updateTimer();
+            
+            if (remainingTime <= 0) {
+                clearInterval(timerInterval);
+                alert('Time is up! Submitting your quiz automatically.');
+                submitQuiz();
             }
         }, 1000);
     }
 
-    updateTimerDisplay() {
-        const minutes = Math.floor(this.timeRemaining / 60);
-        const seconds = this.timeRemaining % 60;
-        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-        
-        document.getElementById('time-remaining').textContent = timeString;
-        
-        // Change color when time is running low
-        const timerElement = document.getElementById('timer');
-        if (this.timeRemaining <= 300) { // 5 minutes
-            timerElement.classList.add('warning');
-        }
-        if (this.timeRemaining <= 60) { // 1 minute
-            timerElement.classList.add('critical');
-        }
-    }
+    async function submitQuiz() {
+        // Check if all questions are answered
+        const unansweredQuestions = [];
+        studentAnswers.forEach((answer, index) => {
+            if (answer === null) {
+                unansweredQuestions.push(index + 1);
+            }
+        });
 
-    bindEvents() {
-        // Navigation buttons
-        document.getElementById('prev-btn').addEventListener('click', () => {
-            if (this.currentQuestion > 0) {
-                this.showQuestion(this.currentQuestion - 1);
-            }
-        });
-        
-        document.getElementById('next-btn').addEventListener('click', () => {
-            if (this.currentQuestion < this.quizData.questions.length - 1) {
-                this.showQuestion(this.currentQuestion + 1);
-            }
-        });
-        
-        // Submit button
-        document.getElementById('submit-btn').addEventListener('click', () => {
-            this.confirmSubmit();
-        });
-        
-        // Prevent page refresh/close without warning
-        window.addEventListener('beforeunload', (e) => {
-            if (this.timer) {
-                e.preventDefault();
-                e.returnValue = 'Are you sure you want to leave? Your progress will be lost.';
-            }
-        });
-    }
-
-    confirmSubmit() {
-        const answeredCount = Object.keys(this.answers).length;
-        const totalQuestions = this.quizData.questions.length;
-        
-        if (answeredCount < totalQuestions) {
-            const unanswered = totalQuestions - answeredCount;
-            if (!confirm(`You have ${unanswered} unanswered question(s). Are you sure you want to submit?`)) {
+        if (unansweredQuestions.length > 0) {
+            const confirmSubmit = confirm(
+                `You have ${unansweredQuestions.length} unanswered question(s): ${unansweredQuestions.join(', ')}.\n\nDo you want to submit anyway?`
+            );
+            
+            if (!confirmSubmit) {
+                // Go to first unanswered question
+                const firstUnanswered = unansweredQuestions[0] - 1;
+                displayQuestion(firstUnanswered);
                 return;
             }
         }
-        
-        this.submitQuiz(false);
-    }
 
-    async submitQuiz(autoSubmit = false) {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
+        // Clear timer if running
+        if (timerInterval) {
+            clearInterval(timerInterval);
         }
-        
-        // Calculate score
-        let correctAnswers = 0;
-        const results = [];
-        
-        this.quizData.questions.forEach((question, index) => {
-            const userAnswer = this.answers[index];
-            const isCorrect = userAnswer === question.correctAnswer;
-            
-            if (isCorrect) correctAnswers++;
-            
-            results.push({
-                questionIndex: index,
-                question: question.text,
-                options: question.options,
-                userAnswer: userAnswer,
-                correctAnswer: question.correctAnswer,
-                isCorrect: isCorrect
-            });
-        });
-        
-        const score = Math.round((correctAnswers / this.quizData.questions.length) * 100);
-        
-        const submissionData = {
-            quizId: this.quizData._id,
-            studentInfo: this.studentInfo,
-            answers: this.answers,
-            score: score,
-            correctAnswers: correctAnswers,
-            totalQuestions: this.quizData.questions.length,
-            timeSpent: (this.quizData.duration * 60) - this.timeRemaining,
-            autoSubmit: autoSubmit,
-            submittedAt: new Date().toISOString(),
-            results: results
-        };
-        
+
+        // Calculate time spent
+        const timeSpent = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+
+        // Show loading state
+        submitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+        submitBtn.disabled = true;
+
         try {
-            const response = await fetch('/api/quiz-submissions', {
+            // Convert null answers to -1 for unanswered questions
+            const finalAnswers = studentAnswers.map(answer => answer !== null ? answer : -1);
+            
+            const response = await fetch(`/api/submit/${shareId}`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(submissionData)
+                body: JSON.stringify({
+                    studentName,
+                    answers: finalAnswers,
+                    timeSpent
+                })
             });
-            
+
+            const result = await response.json();
+
             if (response.ok) {
-                const result = await response.json();
-                // Store results for the results page
-                localStorage.setItem('quizResults', JSON.stringify(result));
-                localStorage.removeItem('currentStudent');
-                
-                // Redirect to results page
-                window.location.href = 'quiz-results-student.html';
+                showResults(result);
             } else {
-                throw new Error('Failed to submit quiz');
+                alert(result.error || 'Failed to submit quiz');
             }
         } catch (error) {
-            console.error('Error submitting quiz:', error);
-            this.showError('Failed to submit quiz. Please try again.');
+            alert('Network error. Please try again.');
+        } finally {
+            submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Quiz';
+            submitBtn.disabled = false;
         }
     }
 
-    showError(message) {
-        const errorDiv = document.createElement('div');
-        errorDiv.className = 'error-message';
-        errorDiv.textContent = message;
+    function showResults(result) {
+        // Hide quiz and show results
+        quizContainer.classList.add('hidden');
+        resultsContainer.classList.remove('hidden');
         
-        document.body.insertBefore(errorDiv, document.body.firstChild);
+        // Update results
+        document.getElementById('finalScore').textContent = result.score;
+        document.getElementById('finalTotal').textContent = result.totalQuestions;
+        document.getElementById('finalPercentage').textContent = result.percentage + '%';
         
-        setTimeout(() => {
-            errorDiv.remove();
-        }, 5000);
-    }
-}
+        // Add celebration effect for good scores
+        if (result.percentage >= 80) {
+            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+                <i class="fas fa-trophy" style="color: gold;"></i>
+                Excellent Work!
+            `;
+        } else if (result.percentage >= 60) {
+            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+                <i class="fas fa-medal" style="color: silver;"></i>
+                Good Job!
+            `;
+        } else {
+            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+                <i class="fas fa-book-open"></i>
+                Keep Learning!
+            `;
+        }
 
-// Initialize the quiz when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    new CBTQuiz();
+        // Add correction link
+        const correctionLink = `
+            <div class="hero-actions mt-4">
+                <a href="/correction/${result.correctionId}" class="btn btn-secondary btn-large">
+                    <i class="fas fa-eye"></i>
+                    View Corrections
+                </a>
+                <a href="/" class="btn btn-primary btn-large">
+                    <i class="fas fa-home"></i>
+                    Back to Home
+                </a>
+            </div>
+        `;
+        
+        resultsContainer.insertAdjacentHTML('beforeend', correctionLink);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(e) {
+        if (quizContainer.classList.contains('hidden')) return;
+        
+        switch(e.key) {
+            case 'ArrowLeft':
+                if (!prevBtn.disabled) {
+                    previousQuestion();
+                }
+                break;
+            case 'ArrowRight':
+                if (currentQuestionIndex < quizData.questions.length - 1) {
+                    nextQuestion();
+                }
+                break;
+            case 'Enter':
+                if (currentQuestionIndex === quizData.questions.length - 1) {
+                    submitQuiz();
+                } else {
+                    nextQuestion();
+                }
+                break;
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+                const optionIndex = parseInt(e.key) - 1;
+                const currentQuestion = quizData.questions[currentQuestionIndex];
+                if (optionIndex < currentQuestion.options.length) {
+                    selectOption(currentQuestionIndex, optionIndex);
+                }
+                break;
+        }
+    });
+
+    // Prevent accidental page refresh
+    window.addEventListener('beforeunload', function(e) {
+        if (!quizContainer.classList.contains('hidden') && !resultsContainer.classList.contains('hidden')) {
+            e.preventDefault();
+            e.returnValue = '';
+        }
+    });
 });
