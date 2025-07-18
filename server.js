@@ -7,6 +7,29 @@ const session = require('express-session');
 const MongoStore = require('connect-mongo');
 const { v4: uuidv4 } = require('uuid');
 const path = require('path');
+const cloudinary = require('cloudinary').v2;
+const multer = require('multer');
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: 'dbqcl3gyu',
+  api_key: '125497217998532',
+  api_secret: 'w5UR9A2UgzujVlcuzmnOFRr56Bg'
+});
+
+// Configure Multer for multiple file uploads
+const storage = multer.memoryStorage();
+const upload = multer({ 
+  storage,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit per image
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed'), false);
+    }
+  }
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -56,14 +79,16 @@ const quizSchema = new mongoose.Schema({
     question: { type: String, required: true },
     options: [{ type: String, required: true }],
     correctAnswer: { type: Number, required: true },
-    passageId: { type: String } // Optional: links question to a reading passage
+    passageId: { type: String },
+    imageUrls: [{ type: String }], // Array for multiple image URLs
+    imagePublicIds: [{ type: String }] // Array for multiple Cloudinary public IDs
   }],
   passages: [{
     id: { type: String, required: true },
     text: { type: String, required: true },
     questionCount: { type: Number, required: true }
   }],
-  timeLimit: { type: Number, default: 0 }, // Time limit in minutes (0 = no limit)
+  timeLimit: { type: Number, default: 0 },
   shareId: { type: String, unique: true, default: uuidv4 },
   createdAt: { type: Date, default: Date.now }
 });
@@ -75,7 +100,7 @@ const responseSchema = new mongoose.Schema({
   answers: [{ type: Number, required: true }],
   score: { type: Number, required: true },
   totalQuestions: { type: Number, required: true },
-  timeSpent: { type: Number, default: 0 }, // Time spent in seconds
+  timeSpent: { type: Number, default: 0 },
   correctionId: { type: String, unique: true, default: uuidv4 },
   submittedAt: { type: Date, default: Date.now }
 });
@@ -101,9 +126,47 @@ const authenticateTeacher = (req, res, next) => {
   }
 };
 
-// Routes
+// Image upload endpoint for multiple images
+app.post('/api/upload-image', authenticateTeacher, upload.array('images', 3), async (req, res) => {
+  try {
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({ error: 'No image files provided' });
+    }
 
-// Serve HTML pages
+    const uploadPromises = req.files.map(file => {
+      return new Promise((resolve, reject) => {
+        const stream = cloudinary.uploader.upload_stream(
+          { folder: 'smart_steps_quiz' },
+          (error, result) => {
+            if (error) reject(error);
+            else resolve({ imageUrl: result.secure_url, publicId: result.public_id });
+          }
+        );
+        stream.end(file.buffer);
+      });
+    });
+
+    const results = await Promise.all(uploadPromises);
+    res.json(results);
+  } catch (error) {
+    console.error('Image upload error:', error);
+    res.status(500).json({ error: 'Failed to upload images' });
+  }
+});
+
+// Image deletion endpoint
+app.delete('/api/delete-image/:publicId', authenticateTeacher, async (req, res) => {
+  try {
+    const { publicId } = req.params;
+    await cloudinary.uploader.destroy(publicId);
+    res.json({ message: 'Image deleted successfully' });
+  } catch (error) {
+    console.error('Image deletion error:', error);
+    res.status(500).json({ error: 'Failed to delete image' });
+  }
+});
+
+// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
@@ -145,17 +208,14 @@ app.post('/api/register', async (req, res) => {
   try {
     const { name, email, password, subject } = req.body;
 
-    // Check if teacher already exists
     const existingTeacher = await Teacher.findOne({ email });
     if (existingTeacher) {
       return res.status(400).json({ error: 'Teacher with this email already exists' });
     }
 
-    // Hash password
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    // Create new teacher
     const teacher = new Teacher({
       name,
       email,
@@ -165,7 +225,6 @@ app.post('/api/register', async (req, res) => {
 
     await teacher.save();
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: teacher._id, email: teacher.email, name: teacher.name, subject: teacher.subject },
       JWT_SECRET,
@@ -184,19 +243,16 @@ app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find teacher
     const teacher = await Teacher.findOne({ email });
     if (!teacher) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    // Check password
     const isValidPassword = await bcrypt.compare(password, teacher.password);
     if (!isValidPassword) {
       return res.status(400).json({ error: 'Invalid email or password' });
     }
 
-    // Generate JWT token
     const token = jwt.sign(
       { id: teacher._id, email: teacher.email, name: teacher.name, subject: teacher.subject },
       JWT_SECRET,
@@ -247,15 +303,24 @@ app.delete('/api/quiz/:quizId', authenticateTeacher, async (req, res) => {
       return res.status(404).json({ error: 'Quiz not found' });
     }
 
-    // Verify that the quiz belongs to the authenticated teacher
     if (quiz.teacherId.toString() !== req.teacher.id) {
       return res.status(403).json({ error: 'Access denied. You can only delete your own quizzes.' });
     }
 
-    // Delete all responses associated with this quiz
-    await Response.deleteMany({ quizId: req.params.quizId });
+    // Delete associated images from Cloudinary
+    for (const question of quiz.questions) {
+      if (question.imagePublicIds && question.imagePublicIds.length > 0) {
+        for (const publicId of question.imagePublicIds) {
+          try {
+            await cloudinary.uploader.destroy(publicId);
+          } catch (error) {
+            console.error('Error deleting image:', error);
+          }
+        }
+      }
+    }
 
-    // Delete the quiz
+    await Response.deleteMany({ quizId: req.params.quizId });
     await Quiz.findByIdAndDelete(req.params.quizId);
 
     res.json({ message: 'Quiz and all associated responses deleted successfully' });
@@ -283,13 +348,13 @@ app.get('/api/quiz/:shareId', async (req, res) => {
       return res.status(404).json({ error: 'Quiz not found' });
     }
     
-    // Remove correct answers for student view but keep passages
     const studentQuiz = {
       ...quiz.toObject(),
       questions: quiz.questions.map(q => ({
         question: q.question,
         options: q.options,
-        passageId: q.passageId
+        passageId: q.passageId,
+        imageUrls: q.imageUrls
       }))
     };
     
@@ -309,7 +374,6 @@ app.post('/api/submit/:shareId', async (req, res) => {
       return res.status(404).json({ error: 'Quiz not found' });
     }
 
-    // Calculate score
     let score = 0;
     quiz.questions.forEach((question, index) => {
       if (answers[index] !== -1 && answers[index] === question.correctAnswer) {
@@ -317,7 +381,6 @@ app.post('/api/submit/:shareId', async (req, res) => {
       }
     });
 
-    // Save response
     const response = new Response({
       studentName,
       quizId: quiz._id,
@@ -352,7 +415,6 @@ app.get('/api/correction/:correctionId', async (req, res) => {
       return res.status(404).json({ error: 'Correction not found' });
     }
 
-    // Include correct answers for correction view
     const correctionData = {
       studentName: response.studentName,
       quiz: response.quizId,
@@ -370,7 +432,7 @@ app.get('/api/correction/:correctionId', async (req, res) => {
   }
 });
 
-// Get quiz responses (for teachers) - separated by quiz
+// Get quiz responses (for teachers)
 app.get('/api/responses/:quizId', authenticateTeacher, async (req, res) => {
   try {
     const quiz = await Quiz.findById(req.params.quizId);
@@ -406,12 +468,10 @@ app.get('/api/student-details/:responseId', authenticateTeacher, async (req, res
       return res.status(404).json({ error: 'Response not found' });
     }
 
-    // Verify teacher owns this quiz
     if (response.quizId.teacherId.toString() !== req.teacher.id) {
       return res.status(403).json({ error: 'Access denied' });
     }
 
-    // Include detailed analysis
     const detailedResponse = {
       studentName: response.studentName,
       quiz: response.quizId,
@@ -426,7 +486,8 @@ app.get('/api/student-details/:responseId', authenticateTeacher, async (req, res
         options: question.options,
         correctAnswer: question.correctAnswer,
         studentAnswer: response.answers[index],
-        isCorrect: response.answers[index] === question.correctAnswer
+        isCorrect: response.answers[index] === question.correctAnswer,
+        imageUrls: question.imageUrls
       }))
     };
 
@@ -436,7 +497,7 @@ app.get('/api/student-details/:responseId', authenticateTeacher, async (req, res
   }
 });
 
-// Get all responses for teacher's quizzes (grouped by quiz)
+// Get all responses for teacher's quizzes
 app.get('/api/all-responses', authenticateTeacher, async (req, res) => {
   try {
     const quizzes = await Quiz.find({ teacherId: req.teacher.id });
@@ -446,7 +507,6 @@ app.get('/api/all-responses', authenticateTeacher, async (req, res) => {
       .populate('quizId', 'title subject timeLimit')
       .sort({ submittedAt: -1 });
     
-    // Group responses by quiz
     const groupedResponses = {};
     responses.forEach(response => {
       const quizId = response.quizId._id.toString();
