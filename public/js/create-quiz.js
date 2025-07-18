@@ -1,432 +1,368 @@
-class QuizCreator {
-    constructor() {
-        this.questions = [];
-        this.currentImageTarget = null;
-        this.passageImage = null;
-        this.init();
-    }
+document.addEventListener('DOMContentLoaded', function() {
+    checkAuthentication();
+    
+    let questionCount = 0;
+    
+    document.getElementById('addQuestionBtn').addEventListener('click', addQuestion);
+    document.getElementById('addPassageBtn').addEventListener('click', addReadingPassage);
+    document.getElementById('quizForm').addEventListener('submit', createQuiz);
+    document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    init() {
-        this.bindEvents();
-        this.addInitialQuestion();
-    }
+    // Add first question by default
+    addQuestion();
 
-    bindEvents() {
-        // Form submission
-        document.getElementById('quiz-form').addEventListener('submit', (e) => this.handleSubmit(e));
-        
-        // Add question button
-        document.getElementById('add-question').addEventListener('click', () => this.addQuestion());
-        
-        // Toggle passage section
-        document.getElementById('toggle-passage').addEventListener('click', () => this.togglePassage());
-        
-        // Add passage image
-        document.getElementById('add-passage-image').addEventListener('click', () => this.openImageModal('passage'));
-        
-        // Image modal events
-        this.bindImageModalEvents();
-        
-        // Preview quiz
-        document.getElementById('preview-quiz').addEventListener('click', () => this.previewQuiz());
-    }
-
-    bindImageModalEvents() {
-        const modal = document.getElementById('image-upload-modal');
-        const closeBtn = modal.querySelector('.close');
-        const cancelBtn = document.getElementById('cancel-upload');
-        const uploadBtn = document.getElementById('upload-image');
-        const imageInput = document.getElementById('image-input');
-        const uploadArea = document.getElementById('upload-area');
-
-        // Close modal events
-        closeBtn.addEventListener('click', () => this.closeImageModal());
-        cancelBtn.addEventListener('click', () => this.closeImageModal());
-        
-        // Click outside modal to close
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal) this.closeImageModal();
-        });
-
-        // Upload area click
-        uploadArea.addEventListener('click', () => imageInput.click());
-
-        // File input change
-        imageInput.addEventListener('change', (e) => this.handleImageSelect(e));
-
-        // Upload button
-        uploadBtn.addEventListener('click', () => this.uploadImage());
-
-        // Drag and drop
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                imageInput.files = files;
-                this.handleImageSelect({ target: { files } });
+    async function checkAuthentication() {
+        try {
+            const response = await fetch('/api/verify');
+            if (!response.ok) {
+                window.location.href = '/teacher-login';
             }
+        } catch (error) {
+            window.location.href = '/teacher-login';
+        }
+    }
+
+    function addReadingPassage() {
+        questionCount++;
+        const questionsContainer = document.getElementById('questionsContainer');
+        
+        const passageHTML = `
+            <div class="passage-item" id="question-${questionCount}">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-book-open"></i>
+                        Reading Passage ${questionCount}
+                    </label>
+                    <textarea name="passage-${questionCount}" class="form-input" required 
+                              placeholder="Enter the reading passage here..." 
+                              style="min-height: 200px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-list-ol"></i>
+                        Number of Questions for this Passage
+                    </label>
+                    <select name="passage-questions-${questionCount}" class="form-input" required>
+                        <option value="">Select number of questions</option>
+                        <option value="3">3 Questions</option>
+                        <option value="5">5 Questions</option>
+                        <option value="7">7 Questions</option>
+                        <option value="10">10 Questions</option>
+                        <option value="15">15 Questions</option>
+                    </select>
+                </div>
+
+                <div id="passage-questions-${questionCount}" class="passage-questions-container">
+                    <!-- Questions will be added here dynamically -->
+                </div>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-error" onclick="removeQuestion(${questionCount})">
+                        <i class="fas fa-trash"></i>
+                        Remove Passage
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        questionsContainer.insertAdjacentHTML('beforeend', passageHTML);
+        
+        // Add event listener for question count change
+        const questionCountSelect = document.querySelector(`select[name="passage-questions-${questionCount}"]`);
+        questionCountSelect.addEventListener('change', function() {
+            generatePassageQuestions(questionCount, parseInt(this.value));
         });
     }
 
-    addInitialQuestion() {
-        this.addQuestion();
-    }
-
-    addQuestion() {
-        const questionNumber = this.questions.length + 1;
-        const questionId = `question-${Date.now()}`;
+    function generatePassageQuestions(passageId, questionCount) {
+        const container = document.getElementById(`passage-questions-${passageId}`);
+        container.innerHTML = '';
         
-        const questionHtml = `
-            <div class="question-item" data-question-id="${questionId}">
-                <div class="question-header">
-                    <span class="question-number">Question ${questionNumber}</span>
-                    <button type="button" class="btn btn-danger btn-sm" onclick="quizCreator.removeQuestion('${questionId}')">Remove</button>
-                </div>
-                
-                <div class="form-group">
-                    <label>Question Text</label>
-                    <textarea class="question-text" name="questions[${questionId}][text]" rows="3" placeholder="Enter your question here..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <button type="button" class="btn btn-outline" onclick="quizCreator.openImageModal('question', '${questionId}')">Add Image to Question</button>
-                    <div class="image-container" id="question-image-${questionId}"></div>
-                </div>
-                
-                <div class="form-group">
-                    <label>Answer Options</label>
-                    <div class="options-container">
+        if (!questionCount) return;
+        
+        for (let i = 1; i <= questionCount; i++) {
+            const questionHTML = `
+                <div class="question-item" style="margin-top: 2rem; border-left: 4px solid #667eea; padding-left: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">
+                            <i class="fas fa-question-circle"></i>
+                            Question ${i}
+                        </label>
+                        <input type="text" name="passage-${passageId}-question-${i}" class="form-input" required 
+                               placeholder="Enter question ${i} for this passage">
+                    </div>
+                    
+                    <div class="option-group">
+                        <label class="form-label">
+                            <i class="fas fa-list"></i>
+                            Options (Select the correct answer)
+                        </label>
+                        
                         <div class="option-item">
-                            <input type="radio" name="questions[${questionId}][correct]" value="0" required>
-                            <input type="text" name="questions[${questionId}][options][0]" placeholder="Option A" required>
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="0" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-0" class="form-input" required placeholder="Option A">
                         </div>
+                        
                         <div class="option-item">
-                            <input type="radio" name="questions[${questionId}][correct]" value="1" required>
-                            <input type="text" name="questions[${questionId}][options][1]" placeholder="Option B" required>
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="1" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-1" class="form-input" required placeholder="Option B">
                         </div>
+                        
                         <div class="option-item">
-                            <input type="radio" name="questions[${questionId}][correct]" value="2" required>
-                            <input type="text" name="questions[${questionId}][options][2]" placeholder="Option C" required>
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="2" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-2" class="form-input" required placeholder="Option C">
                         </div>
+                        
                         <div class="option-item">
-                            <input type="radio" name="questions[${questionId}][correct]" value="3" required>
-                            <input type="text" name="questions[${questionId}][options][3]" placeholder="Option D" required>
+                            <input type="radio" name="passage-${passageId}-correct-${i}" value="3" required>
+                            <input type="text" name="passage-${passageId}-option-${i}-3" class="form-input" required placeholder="Option D">
                         </div>
                     </div>
                 </div>
-            </div>
-        `;
-        
-        document.getElementById('questions-container').insertAdjacentHTML('beforeend', questionHtml);
-        this.questions.push({ id: questionId, image: null });
-        this.updateQuestionNumbers();
-    }
-
-    removeQuestion(questionId) {
-        if (this.questions.length <= 1) {
-            alert('You must have at least one question.');
-            return;
-        }
-
-        if (confirm('Are you sure you want to remove this question?')) {
-            // Remove image from Cloudinary if exists
-            const question = this.questions.find(q => q.id === questionId);
-            if (question && question.image) {
-                this.deleteImageFromCloudinary(question.image.publicId);
-            }
-
-            document.querySelector(`[data-question-id="${questionId}"]`).remove();
-            this.questions = this.questions.filter(q => q.id !== questionId);
-            this.updateQuestionNumbers();
-        }
-    }
-
-    updateQuestionNumbers() {
-        const questionItems = document.querySelectorAll('.question-item');
-        questionItems.forEach((item, index) => {
-            const questionNumber = item.querySelector('.question-number');
-            questionNumber.textContent = `Question ${index + 1}`;
-        });
-    }
-
-    togglePassage() {
-        const passageSection = document.getElementById('passage-section');
-        const toggleBtn = document.getElementById('toggle-passage');
-        
-        if (passageSection.style.display === 'none') {
-            passageSection.style.display = 'block';
-            toggleBtn.textContent = 'Remove Reading Passage';
-            toggleBtn.classList.remove('btn-secondary');
-            toggleBtn.classList.add('btn-danger');
-        } else {
-            passageSection.style.display = 'none';
-            toggleBtn.textContent = 'Add Reading Passage';
-            toggleBtn.classList.remove('btn-danger');
-            toggleBtn.classList.add('btn-secondary');
+            `;
             
-            // Clear passage data
-            document.getElementById('passage-title').value = '';
-            document.getElementById('passage-text').value = '';
-            if (this.passageImage) {
-                this.deleteImageFromCloudinary(this.passageImage.publicId);
-                this.passageImage = null;
-                document.getElementById('passage-image-container').innerHTML = '';
-            }
+            container.insertAdjacentHTML('beforeend', questionHTML);
         }
     }
-
-    openImageModal(type, questionId = null) {
-        this.currentImageTarget = { type, questionId };
-        const modal = document.getElementById('image-upload-modal');
-        modal.style.display = 'block';
+    function addQuestion() {
+        questionCount++;
+        const questionsContainer = document.getElementById('questionsContainer');
         
-        // Reset modal state
-        document.getElementById('image-preview').style.display = 'none';
-        document.getElementById('upload-area').style.display = 'block';
-        document.getElementById('upload-image').disabled = true;
-        document.getElementById('image-input').value = '';
-    }
-
-    closeImageModal() {
-        const modal = document.getElementById('image-upload-modal');
-        modal.style.display = 'none';
-        this.currentImageTarget = null;
-        
-        // Reset modal state
-        document.getElementById('image-preview').style.display = 'none';
-        document.getElementById('upload-area').style.display = 'block';
-        document.getElementById('upload-progress').style.display = 'none';
-        document.getElementById('upload-image').disabled = true;
-        document.getElementById('image-input').value = '';
-    }
-
-    handleImageSelect(e) {
-        const file = e.target.files[0];
-        if (!file) return;
-
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-            alert('Please select an image file.');
-            return;
-        }
-
-        // Validate file size (5MB limit)
-        if (file.size > 5 * 1024 * 1024) {
-            alert('Image size must be less than 5MB.');
-            return;
-        }
-
-        // Show preview
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            document.getElementById('preview-img').src = e.target.result;
-            document.getElementById('upload-area').style.display = 'none';
-            document.getElementById('image-preview').style.display = 'block';
-            document.getElementById('upload-image').disabled = false;
-        };
-        reader.readAsDataURL(file);
-    }
-
-    async uploadImage() {
-        const fileInput = document.getElementById('image-input');
-        const file = fileInput.files[0];
-        if (!file) return;
-
-        const uploadBtn = document.getElementById('upload-image');
-        const progressContainer = document.getElementById('upload-progress');
-        const progressFill = document.getElementById('progress-fill');
-        const progressText = document.getElementById('progress-text');
-
-        uploadBtn.disabled = true;
-        uploadBtn.textContent = 'Uploading...';
-        progressContainer.style.display = 'block';
-
-        try {
-            const formData = new FormData();
-            formData.append('image', file);
-
-            const response = await fetch('/api/upload-image', {
-                method: 'POST',
-                body: formData
-            });
-
-            if (!response.ok) {
-                throw new Error('Upload failed');
-            }
-
-            const result = await response.json();
-            
-            // Update progress to 100%
-            progressFill.style.width = '100%';
-            progressText.textContent = '100%';
-
-            // Add image to the appropriate container
-            this.addImageToContainer(result);
-            
-            // Close modal
-            setTimeout(() => {
-                this.closeImageModal();
-            }, 500);
-
-        } catch (error) {
-            console.error('Upload error:', error);
-            alert('Failed to upload image. Please try again.');
-        } finally {
-            uploadBtn.disabled = false;
-            uploadBtn.textContent = 'Upload Image';
-        }
-    }
-
-    addImageToContainer(imageData) {
-        const { type, questionId } = this.currentImageTarget;
-        
-        const imageHtml = `
-            <div class="image-item">
-                <img src="${imageData.url}" alt="Uploaded image">
-                <div class="image-info">
-                    <h4>Image uploaded</h4>
-                    <p>Size: ${this.formatFileSize(imageData.bytes)}</p>
+        const questionHTML = `
+            <div class="question-item" id="question-${questionCount}">
+                <div class="form-group">
+                    <label class="form-label">
+                        <i class="fas fa-question-circle"></i>
+                        Question ${questionCount}
+                    </label>
+                    <input type="text" name="question-${questionCount}" class="form-input" required placeholder="Enter your question">
                 </div>
-                <button type="button" class="btn btn-danger btn-sm" onclick="quizCreator.removeImage('${type}', '${questionId}', '${imageData.publicId}')">Remove</button>
+                
+                <div class="option-group">
+                    <label class="form-label">
+                        <i class="fas fa-list"></i>
+                        Options (Select the correct answer)
+                    </label>
+                    
+                    <div class="option-item">
+                        <input type="radio" name="correct-${questionCount}" value="0" required>
+                        <input type="text" name="option-${questionCount}-0" class="form-input" required placeholder="Option A">
+                    </div>
+                    
+                    <div class="option-item">
+                        <input type="radio" name="correct-${questionCount}" value="1" required>
+                        <input type="text" name="option-${questionCount}-1" class="form-input" required placeholder="Option B">
+                    </div>
+                    
+                    <div class="option-item">
+                        <input type="radio" name="correct-${questionCount}" value="2" required>
+                        <input type="text" name="option-${questionCount}-2" class="form-input" required placeholder="Option C">
+                    </div>
+                    
+                    <div class="option-item">
+                        <input type="radio" name="correct-${questionCount}" value="3" required>
+                        <input type="text" name="option-${questionCount}-3" class="form-input" required placeholder="Option D">
+                    </div>
+                </div>
+
+                <div class="text-right">
+                    <button type="button" class="btn btn-error" onclick="removeQuestion(${questionCount})">
+                        <i class="fas fa-trash"></i>
+                        Remove Question
+                    </button>
+                </div>
             </div>
         `;
-
-        if (type === 'passage') {
-            document.getElementById('passage-image-container').innerHTML = imageHtml;
-            this.passageImage = imageData;
-        } else if (type === 'question') {
-            document.getElementById(`question-image-${questionId}`).innerHTML = imageHtml;
-            const question = this.questions.find(q => q.id === questionId);
-            if (question) {
-                question.image = imageData;
-            }
-        }
+        
+        questionsContainer.insertAdjacentHTML('beforeend', questionHTML);
     }
 
-    async removeImage(type, questionId, publicId) {
-        if (!confirm('Are you sure you want to remove this image?')) return;
+    window.removeQuestion = function(questionId) {
+        if (questionCount <= 1) {
+            showAlert('Quiz must have at least one question', 'warning');
+            return;
+        }
+        
+        const questionElement = document.getElementById(`question-${questionId}`);
+        questionElement.remove();
+        
+        // Renumber remaining questions
+        renumberQuestions();
+    };
 
-        try {
-            await this.deleteImageFromCloudinary(publicId);
+    function renumberQuestions() {
+        const questions = document.querySelectorAll('.question-item, .passage-item');
+        questions.forEach((question, index) => {
+            const newNumber = index + 1;
+            question.id = `question-${newNumber}`;
             
-            if (type === 'passage') {
-                document.getElementById('passage-image-container').innerHTML = '';
-                this.passageImage = null;
-            } else if (type === 'question') {
-                document.getElementById(`question-image-${questionId}`).innerHTML = '';
-                const question = this.questions.find(q => q.id === questionId);
-                if (question) {
-                    question.image = null;
-                }
+            if (question.classList.contains('passage-item')) {
+                // Update passage label
+                const label = question.querySelector('.form-label');
+                label.innerHTML = `<i class="fas fa-book-open"></i> Reading Passage ${newNumber}`;
+                
+                // Update passage input names
+                const passageTextarea = question.querySelector('textarea');
+                if (passageTextarea) passageTextarea.name = `passage-${newNumber}`;
+                
+                const questionCountSelect = question.querySelector('select');
+                if (questionCountSelect) questionCountSelect.name = `passage-questions-${newNumber}`;
+                
+                // Update passage questions container
+                const questionsContainer = question.querySelector('.passage-questions-container');
+                if (questionsContainer) questionsContainer.id = `passage-questions-${newNumber}`;
+            } else {
+                // Update regular question label
+                const label = question.querySelector('.form-label');
+                label.innerHTML = `<i class="fas fa-question-circle"></i> Question ${newNumber}`;
+                
+                // Update input names
+                const questionInput = question.querySelector('input[type="text"]');
+                if (questionInput) questionInput.name = `question-${newNumber}`;
+                
+                const radioInputs = question.querySelectorAll('input[type="radio"]');
+                radioInputs.forEach(radio => {
+                    radio.name = `correct-${newNumber}`;
+                });
+                
+                const optionInputs = question.querySelectorAll('input[type="text"]:not(:first-child)');
+                optionInputs.forEach((input, optionIndex) => {
+                    input.name = `option-${newNumber}-${optionIndex}`;
+                });
             }
-        } catch (error) {
-            console.error('Error removing image:', error);
-            alert('Failed to remove image. Please try again.');
-        }
-    }
-
-    async deleteImageFromCloudinary(publicId) {
-        const response = await fetch('/api/delete-image', {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ publicId })
+            
+            // Update remove button
+            const removeBtn = question.querySelector('.btn-error');
+            if (removeBtn) removeBtn.setAttribute('onclick', `removeQuestion(${newNumber})`);
         });
-
-        if (!response.ok) {
-            throw new Error('Failed to delete image');
-        }
+        
+        questionCount = questions.length;
     }
 
-    formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
-
-    async handleSubmit(e) {
+    async function createQuiz(e) {
         e.preventDefault();
         
         const formData = new FormData(e.target);
-        const quizData = {
-            title: formData.get('title'),
-            subject: formData.get('subject'),
-            duration: parseInt(formData.get('duration')),
-            instructions: formData.get('instructions'),
-            questions: [],
-            passage: null
-        };
-
-        // Add passage if exists
-        const passageTitle = formData.get('passageTitle');
-        const passageText = formData.get('passageText');
-        if (passageTitle || passageText) {
-            quizData.passage = {
-                title: passageTitle,
-                text: passageText,
-                image: this.passageImage
-            };
+        const title = formData.get('title');
+        const timeLimit = parseInt(formData.get('timeLimit')) || 0;
+        
+        // Parse questions
+        const questions = [];
+        const passages = [];
+        
+        for (let i = 1; i <= questionCount; i++) {
+            // Check if this is a passage
+            const passageText = formData.get(`passage-${i}`);
+            if (passageText) {
+                const passageQuestionCount = parseInt(formData.get(`passage-questions-${i}`));
+                const passageQuestions = [];
+                
+                for (let j = 1; j <= passageQuestionCount; j++) {
+                    const question = formData.get(`passage-${i}-question-${j}`);
+                    const options = [
+                        formData.get(`passage-${i}-option-${j}-0`),
+                        formData.get(`passage-${i}-option-${j}-1`),
+                        formData.get(`passage-${i}-option-${j}-2`),
+                        formData.get(`passage-${i}-option-${j}-3`)
+                    ];
+                    const correctAnswer = parseInt(formData.get(`passage-${i}-correct-${j}`));
+                    
+                    passageQuestions.push({
+                        question,
+                        options,
+                        correctAnswer,
+                        passageId: `passage-${i}`
+                    });
+                }
+                
+                passages.push({
+                    id: `passage-${i}`,
+                    text: passageText,
+                    questionCount: passageQuestionCount
+                });
+                
+                questions.push(...passageQuestions);
+            } else {
+                // Regular question
+                const question = formData.get(`question-${i}`);
+                if (question) {
+                    const options = [
+                        formData.get(`option-${i}-0`),
+                        formData.get(`option-${i}-1`),
+                        formData.get(`option-${i}-2`),
+                        formData.get(`option-${i}-3`)
+                    ];
+                    const correctAnswer = parseInt(formData.get(`correct-${i}`));
+                    
+                    questions.push({
+                        question,
+                        options,
+                        correctAnswer
+                    });
+                }
+            }
         }
 
-        // Process questions
-        this.questions.forEach((questionObj, index) => {
-            const questionId = questionObj.id;
-            const questionText = formData.get(`questions[${questionId}][text]`);
-            const correctAnswer = parseInt(formData.get(`questions[${questionId}][correct]`));
-            
-            const options = [];
-            for (let i = 0; i < 4; i++) {
-                options.push(formData.get(`questions[${questionId}][options][${i}]`));
-            }
+        if (questions.length === 0) {
+            showAlert('Please add at least one question', 'error');
+            return;
+        }
 
-            quizData.questions.push({
-                text: questionText,
-                options: options,
-                correctAnswer: correctAnswer,
-                image: questionObj.image
-            });
-        });
+        // Show loading state
+        const submitBtn = e.target.querySelector('button[type="submit"]');
+        const originalBtnContent = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<span class="loading"></span> Creating Quiz...';
+        submitBtn.disabled = true;
 
         try {
-            const response = await fetch('/api/quizzes', {
+            const response = await fetch('/api/quiz', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(quizData)
+                body: JSON.stringify({ title, questions, passages, timeLimit })
             });
 
+            const result = await response.json();
+
             if (response.ok) {
-                const result = await response.json();
-                alert('Quiz created successfully!');
-                window.location.href = 'teacher-dashboard.html';
+                showAlert('Quiz created successfully! Redirecting to dashboard...', 'success');
+                setTimeout(() => {
+                    window.location.href = '/teacher-dashboard';
+                }, 2000);
             } else {
-                throw new Error('Failed to create quiz');
+                showAlert(result.error || 'Failed to create quiz', 'error');
             }
         } catch (error) {
-            console.error('Error creating quiz:', error);
-            alert('Failed to create quiz. Please try again.');
+            showAlert('Network error. Please try again.', 'error');
+        } finally {
+            submitBtn.innerHTML = originalBtnContent;
+            submitBtn.disabled = false;
         }
     }
 
-    previewQuiz() {
-        // This would open a preview modal or new window
-        alert('Preview functionality would be implemented here');
+    function showAlert(message, type) {
+        const alertContainer = document.getElementById('alert-container');
+        alertContainer.innerHTML = `
+            <div class="alert alert-${type}">
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'}"></i>
+                ${message}
+            </div>
+        `;
+        
+        setTimeout(() => {
+            alertContainer.innerHTML = '';
+        }, 5000);
     }
-}
 
-// Initialize the quiz creator when the page loads
-const quizCreator = new QuizCreator();
+    async function logout() {
+        try {
+            await fetch('/api/logout', { method: 'POST' });
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Logout error:', error);
+            window.location.href = '/';
+        }
+    }
+});
