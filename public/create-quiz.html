@@ -3,135 +3,85 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Quiz - Smart Steps</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <title>Create Quiz - Smart Steps Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <h1 class="logo">Smart Steps</h1>
-                <nav class="nav">
-                    <a href="teacher-dashboard.html" class="nav-link">Dashboard</a>
-                    <a href="create-quiz.html" class="nav-link active">Create Quiz</a>
-                    <a href="quiz-results.html" class="nav-link">Results</a>
-                    <a href="index.html" class="nav-link">Logout</a>
-                </nav>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Smart Steps Tutorial</span>
             </div>
-        </header>
-
-        <main class="main-content">
-            <div class="quiz-creation-container">
-                <h2 class="page-title">Create New Quiz</h2>
-                
-                <form id="quiz-form" class="quiz-form">
-                    <div class="form-section">
-                        <h3>Quiz Information</h3>
-                        <div class="form-group">
-                            <label for="quiz-title">Quiz Title</label>
-                            <input type="text" id="quiz-title" name="title" required>
-                        </div>
-                        
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="quiz-subject">Subject</label>
-                                <select id="quiz-subject" name="subject" required>
-                                    <option value="">Select Subject</option>
-                                    <option value="Mathematics">Mathematics</option>
-                                    <option value="English">English</option>
-                                    <option value="Science">Science</option>
-                                    <option value="Social Studies">Social Studies</option>
-                                    <option value="Computer Science">Computer Science</option>
-                                </select>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="quiz-duration">Duration (minutes)</label>
-                                <input type="number" id="quiz-duration" name="duration" min="1" max="180" required>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="quiz-instructions">Instructions</label>
-                            <textarea id="quiz-instructions" name="instructions" rows="3" placeholder="Enter quiz instructions for students..."></textarea>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="section-header">
-                            <h3>Reading Passage (Optional)</h3>
-                            <button type="button" id="toggle-passage" class="btn btn-secondary">Add Reading Passage</button>
-                        </div>
-                        
-                        <div id="passage-section" class="passage-section" style="display: none;">
-                            <div class="form-group">
-                                <label for="passage-title">Passage Title</label>
-                                <input type="text" id="passage-title" name="passageTitle" placeholder="Enter passage title...">
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="passage-text">Passage Text</label>
-                                <textarea id="passage-text" name="passageText" rows="8" placeholder="Enter the reading passage here..."></textarea>
-                            </div>
-
-                            <div class="form-group">
-                                <button type="button" id="add-passage-image" class="btn btn-outline">Add Image to Passage</button>
-                                <div id="passage-image-container" class="image-container"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-section">
-                        <div class="section-header">
-                            <h3>Questions</h3>
-                            <button type="button" id="add-question" class="btn btn-primary">Add Question</button>
-                        </div>
-                        
-                        <div id="questions-container" class="questions-container">
-                            <!-- Questions will be added here dynamically -->
-                        </div>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" id="preview-quiz" class="btn btn-secondary">Preview Quiz</button>
-                        <button type="submit" class="btn btn-primary">Create Quiz</button>
-                    </div>
-                </form>
+            <div class="nav-links">
+                <a href="/teacher-dashboard" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
             </div>
-        </main>
-    </div>
+        </nav>
+    </header>
 
-    <!-- Image Upload Modal -->
-    <div id="image-upload-modal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Upload Image</h3>
-                <span class="close">&times;</span>
-            </div>
-            <div class="modal-body">
-                <div class="upload-area" id="upload-area">
-                    <div class="upload-icon">📁</div>
-                    <p>Click to select an image or drag and drop</p>
-                    <input type="file" id="image-input" accept="image/*" style="display: none;">
+    <main class="main">
+        <div class="quiz-container">
+            <h2 class="section-title">
+                <i class="fas fa-plus"></i>
+                Create New Quiz
+            </h2>
+            
+            <div id="alert-container"></div>
+            
+            <form id="quizForm">
+                <div class="form-group">
+                    <label for="quizTitle" class="form-label">
+                        <i class="fas fa-heading"></i>
+                        Quiz Title
+                    </label>
+                    <input type="text" id="quizTitle" name="title" class="form-input" required placeholder="Enter quiz title">
                 </div>
-                <div id="image-preview" class="image-preview" style="display: none;">
-                    <img id="preview-img" src="" alt="Preview">
-                    <div class="upload-progress" id="upload-progress" style="display: none;">
-                        <div class="progress-bar">
-                            <div class="progress-fill" id="progress-fill"></div>
-                        </div>
-                        <span id="progress-text">0%</span>
-                    </div>
+
+                <div class="form-group">
+                    <label for="timeLimit" class="form-label">
+                        <i class="fas fa-clock"></i>
+                        Time Limit (minutes)
+                    </label>
+                    <input type="number" id="timeLimit" name="timeLimit" class="form-input" min="0" placeholder="0 = No time limit">
+                    <small class="text-secondary">Leave blank or enter 0 for no time limit</small>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" id="cancel-upload" class="btn btn-secondary">Cancel</button>
-                <button type="button" id="upload-image" class="btn btn-primary" disabled>Upload Image</button>
-            </div>
+
+                <div id="questionsContainer">
+                    <h3 class="text-primary mb-3">
+                        <i class="fas fa-question-circle"></i>
+                        Questions
+                    </h3>
+                </div>
+
+                <div class="text-center mb-4">
+                    <button type="button" id="addQuestionBtn" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i>
+                        Add Question
+                    </button>
+                    <button type="button" id="addPassageBtn" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i>
+                        Add Reading Passage
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="fas fa-save"></i>
+                        Create Quiz
+                    </button>
+                </div>
+            </form>
         </div>
-    </div>
+    </main>
 
-    <script src="js/create-quiz.js"></script>
+    <script src="/js/create-quiz.js"></script>
 </body>
 </html>
