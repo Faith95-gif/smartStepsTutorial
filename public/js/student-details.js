@@ -40,18 +40,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayStudentDetails(data) {
         document.getElementById('detailsContainer').classList.remove('hidden');
         
-        // Update header information
         document.getElementById('studentHeader').innerHTML = `
             <strong>${data.studentName}</strong> - ${data.quiz.title} (${data.quiz.subject})<br>
             <small>Submitted on ${new Date(data.submittedAt).toLocaleString()}</small>
         `;
         
-        // Update statistics
         document.getElementById('studentScore').textContent = `${data.score}/${data.totalQuestions}`;
         document.getElementById('studentPercentage').textContent = `${data.percentage}%`;
         document.getElementById('timeSpent').textContent = formatTime(data.timeSpent || 0);
         
-        // Display question analysis
         displayQuestionAnalysis(data.questionAnalysis);
     }
 
@@ -75,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     
                     <p class="mb-3"><strong>${analysis.question}</strong></p>
+                    ${analysis.imageUrl ? `<img src="${analysis.imageUrl}" class="question-image" alt="Question image">` : ''}
                     
                     <div class="options-review">
                         ${analysis.options.map((option, optionIndex) => {

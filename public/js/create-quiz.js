@@ -68,7 +68,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         questionsContainer.insertAdjacentHTML('beforeend', passageHTML);
         
-        // Add event listener for question count change
         const questionCountSelect = document.querySelector(`select[name="passage-questions-${questionCount}"]`);
         questionCountSelect.addEventListener('change', function() {
             generatePassageQuestions(questionCount, parseInt(this.value));
@@ -91,6 +90,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         </label>
                         <input type="text" name="passage-${passageId}-question-${i}" class="form-input" required 
                                placeholder="Enter question ${i} for this passage">
+                    </div>
+                    
+                    <div class="form-group" data-question="passage-${passageId}-${i}">
+                        <label class="form-label">
+                            <i class="fas fa-image"></i>
+                            Question Images (Optional, up to 3)
+                        </label>
+                        <div class="image-upload-container">
+                            <div class="image-upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span>Drag and drop or click to upload images (max 3)</span>
+                                <input type="file" class="image-input" accept="image/*" multiple>
+                            </div>
+                            <div class="image-preview-container"></div>
+                            <input type="hidden" class="image-urls-input" name="passage-${passageId}-image-urls-${i}">
+                            <input type="hidden" class="image-public-ids-input" name="passage-${passageId}-image-public-ids-${i}">
+                        </div>
                     </div>
                     
                     <div class="option-group">
@@ -123,8 +139,10 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
             
             container.insertAdjacentHTML('beforeend', questionHTML);
+            initializeImageUpload(`passage-${passageId}-${i}`);
         }
     }
+
     function addQuestion() {
         questionCount++;
         const questionsContainer = document.getElementById('questionsContainer');
@@ -137,6 +155,23 @@ document.addEventListener('DOMContentLoaded', function() {
                         Question ${questionCount}
                     </label>
                     <input type="text" name="question-${questionCount}" class="form-input" required placeholder="Enter your question">
+                </div>
+                
+                <div class="form-group" data-question="${questionCount}">
+                    <label class="form-label">
+                        <i class="fas fa-image"></i>
+                        Question Images (Optional, up to 3)
+                    </label>
+                    <div class="image-upload-container">
+                        <div class="image-upload-area">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Drag and drop or click to upload images (max 3)</span>
+                            <input type="file" class="image-input" accept="image/*" multiple>
+                        </div>
+                        <div class="image-preview-container"></div>
+                        <input type="hidden" class="image-urls-input" name="image-urls-${questionCount}">
+                        <input type="hidden" class="image-public-ids-input" name="image-public-ids-${questionCount}">
+                    </div>
                 </div>
                 
                 <div class="option-group">
@@ -176,18 +211,32 @@ document.addEventListener('DOMContentLoaded', function() {
         `;
         
         questionsContainer.insertAdjacentHTML('beforeend', questionHTML);
+        initializeImageUpload(questionCount);
     }
 
-    window.removeQuestion = function(questionId) {
+    window.removeQuestion = async function(questionId) {
         if (questionCount <= 1) {
             showAlert('Quiz must have at least one question', 'warning');
             return;
         }
         
         const questionElement = document.getElementById(`question-${questionId}`);
-        questionElement.remove();
+        const publicIdsInput = questionElement.querySelector(`input[name="image-public-ids-${questionId}"], input[name*="image-public-ids-"]`);
         
-        // Renumber remaining questions
+        if (publicIdsInput && publicIdsInput.value) {
+            const publicIds = publicIdsInput.value.split(',');
+            for (const publicId of publicIds) {
+                if (publicId) {
+                    try {
+                        await fetch(`/api/delete-image/${publicId}`, { method: 'DELETE' });
+                    } catch (error) {
+                        console.error('Error deleting image:', error);
+                    }
+                }
+            }
+        }
+        
+        questionElement.remove();
         renumberQuestions();
     };
 
@@ -198,26 +247,21 @@ document.addEventListener('DOMContentLoaded', function() {
             question.id = `question-${newNumber}`;
             
             if (question.classList.contains('passage-item')) {
-                // Update passage label
                 const label = question.querySelector('.form-label');
                 label.innerHTML = `<i class="fas fa-book-open"></i> Reading Passage ${newNumber}`;
                 
-                // Update passage input names
                 const passageTextarea = question.querySelector('textarea');
                 if (passageTextarea) passageTextarea.name = `passage-${newNumber}`;
                 
                 const questionCountSelect = question.querySelector('select');
                 if (questionCountSelect) questionCountSelect.name = `passage-questions-${newNumber}`;
                 
-                // Update passage questions container
                 const questionsContainer = question.querySelector('.passage-questions-container');
                 if (questionsContainer) questionsContainer.id = `passage-questions-${newNumber}`;
             } else {
-                // Update regular question label
                 const label = question.querySelector('.form-label');
                 label.innerHTML = `<i class="fas fa-question-circle"></i> Question ${newNumber}`;
                 
-                // Update input names
                 const questionInput = question.querySelector('input[type="text"]');
                 if (questionInput) questionInput.name = `question-${newNumber}`;
                 
@@ -230,14 +274,156 @@ document.addEventListener('DOMContentLoaded', function() {
                 optionInputs.forEach((input, optionIndex) => {
                     input.name = `option-${newNumber}-${optionIndex}`;
                 });
+                
+                const imageContainer = question.querySelector('[data-question]');
+                if (imageContainer) imageContainer.dataset.question = newNumber;
+                
+                const imageUrlsInput = question.querySelector('.image-urls-input');
+                if (imageUrlsInput) imageUrlsInput.name = `image-urls-${newNumber}`;
+                
+                const imagePublicIdsInput = question.querySelector('.image-public-ids-input');
+                if (imagePublicIdsInput) imagePublicIdsInput.name = `image-public-ids-${newNumber}`;
+                
+                const removeBtn = question.querySelector('.btn-error');
+                if (removeBtn) removeBtn.setAttribute('onclick', `removeQuestion(${newNumber})`);
             }
-            
-            // Update remove button
-            const removeBtn = question.querySelector('.btn-error');
-            if (removeBtn) removeBtn.setAttribute('onclick', `removeQuestion(${newNumber})`);
         });
         
         questionCount = questions.length;
+    }
+
+    function initializeImageUpload(questionId) {
+        const container = document.querySelector(`[data-question="${questionId}"]`);
+        const fileInput = container.querySelector('.image-input');
+        const uploadArea = container.querySelector('.image-upload-area');
+        const previewContainer = container.querySelector('.image-preview-container');
+        const urlsInput = container.querySelector('.image-urls-input');
+        const publicIdsInput = container.querySelector('.image-public-ids-input');
+
+        let currentImages = [];
+
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleImageUpload(files);
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleImageUpload(files);
+        });
+
+        function updatePreview() {
+            previewContainer.innerHTML = '';
+            currentImages.forEach((image, index) => {
+                const preview = document.createElement('div');
+                preview.className = 'image-preview';
+                preview.innerHTML = `
+                    <img src="${image.url}" alt="Question image preview ${index + 1}">
+                    <button type="button" class="image-remove-btn btn btn-error btn-small" data-index="${index}">
+                        <i class="fas fa-trash"></i> Remove Image
+                    </button>
+                `;
+                previewContainer.appendChild(preview);
+            });
+
+            const removeButtons = previewContainer.querySelectorAll('.image-remove-btn');
+            removeButtons.forEach(button => {
+                button.addEventListener('click', async () => {
+                    const index = parseInt(button.dataset.index);
+                    const publicId = currentImages[index].publicId;
+                    if (publicId) {
+                        try {
+                            await fetch(`/api/delete-image/${publicId}`, { method: 'DELETE' });
+                        } catch (error) {
+                            console.error('Error deleting image:', error);
+                        }
+                    }
+                    currentImages.splice(index, 1);
+                    updateInputs();
+                    updatePreview();
+                });
+            });
+
+            uploadArea.style.display = currentImages.length >= 3 ? 'none' : 'block';
+        }
+
+        function updateInputs() {
+            urlsInput.value = currentImages.map(img => img.url).join(',');
+            publicIdsInput.value = currentImages.map(img => img.publicId).join(',');
+        }
+
+        async function handleImageUpload(files) {
+            const newFiles = files.filter(file => file.type.startsWith('image/'));
+            if (newFiles.length === 0) {
+                showAlert('Please select image files', 'error');
+                return;
+            }
+
+            if (currentImages.length + newFiles.length > 3) {
+                showAlert('Maximum of 3 images per question allowed', 'error');
+                return;
+            }
+
+            for (const file of newFiles) {
+                if (file.size > 5 * 1024 * 1024) {
+                    showAlert('Each image must be less than 5MB', 'error');
+                    return;
+                }
+            }
+
+            uploadArea.style.display = 'none';
+            const progress = document.createElement('div');
+            progress.className = 'upload-progress';
+            progress.innerHTML = `
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%;"></div>
+                </div>
+                <span class="progress-text">Uploading...</span>
+            `;
+            container.appendChild(progress);
+
+            try {
+                const formData = new FormData();
+                newFiles.forEach(file => formData.append('images', file));
+
+                const response = await fetch('/api/upload-image', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const results = await response.json();
+
+                if (response.ok) {
+                    results.forEach(result => {
+                        currentImages.push({ url: result.imageUrl, publicId: result.publicId });
+                    });
+                    updateInputs();
+                    updatePreview();
+                    showAlert('Images uploaded successfully!', 'success');
+                } else {
+                    throw new Error(results.error || 'Upload failed');
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                showAlert('Error uploading images: ' + error.message, 'error');
+            } finally {
+                progress.remove();
+                uploadArea.style.display = currentImages.length >= 3 ? 'none' : 'block';
+            }
+        }
     }
 
     async function createQuiz(e) {
@@ -247,12 +433,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const title = formData.get('title');
         const timeLimit = parseInt(formData.get('timeLimit')) || 0;
         
-        // Parse questions
         const questions = [];
         const passages = [];
         
         for (let i = 1; i <= questionCount; i++) {
-            // Check if this is a passage
             const passageText = formData.get(`passage-${i}`);
             if (passageText) {
                 const passageQuestionCount = parseInt(formData.get(`passage-questions-${i}`));
@@ -267,12 +451,16 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.get(`passage-${i}-option-${j}-3`)
                     ];
                     const correctAnswer = parseInt(formData.get(`passage-${i}-correct-${j}`));
+                    const imageUrls = formData.get(`passage-${i}-image-urls-${j}`)?.split(',').filter(url => url) || [];
+                    const imagePublicIds = formData.get(`passage-${i}-image-public-ids-${j}`)?.split(',').filter(id => id) || [];
                     
                     passageQuestions.push({
                         question,
                         options,
                         correctAnswer,
-                        passageId: `passage-${i}`
+                        passageId: `passage-${i}`,
+                        imageUrls,
+                        imagePublicIds
                     });
                 }
                 
@@ -284,7 +472,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 questions.push(...passageQuestions);
             } else {
-                // Regular question
                 const question = formData.get(`question-${i}`);
                 if (question) {
                     const options = [
@@ -294,11 +481,15 @@ document.addEventListener('DOMContentLoaded', function() {
                         formData.get(`option-${i}-3`)
                     ];
                     const correctAnswer = parseInt(formData.get(`correct-${i}`));
+                    const imageUrls = formData.get(`image-urls-${i}`)?.split(',').filter(url => url) || [];
+                    const imagePublicIds = formData.get(`image-public-ids-${i}`)?.split(',').filter(id => id) || [];
                     
                     questions.push({
                         question,
                         options,
-                        correctAnswer
+                        correctAnswer,
+                        imageUrls,
+                        imagePublicIds
                     });
                 }
             }
@@ -309,7 +500,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Show loading state
         const submitBtn = e.target.querySelector('button[type="submit"]');
         const originalBtnContent = submitBtn.innerHTML;
         submitBtn.innerHTML = '<span class="loading"></span> Creating Quiz...';

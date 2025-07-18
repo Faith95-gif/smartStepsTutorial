@@ -25,18 +25,15 @@ document.addEventListener('DOMContentLoaded', function() {
     function displayCorrection(data) {
         document.getElementById('correctionContainer').classList.remove('hidden');
         
-        // Update header information
         document.getElementById('correctionHeader').innerHTML = `
             <strong>${data.studentName}</strong> - ${data.quiz.title} (${data.quiz.subject})<br>
             <small>Submitted on ${new Date(data.submittedAt).toLocaleString()}</small>
         `;
         
-        // Update statistics
         document.getElementById('finalScore').textContent = `${data.score}/${data.totalQuestions}`;
         document.getElementById('finalPercentage').textContent = `${data.percentage}%`;
         document.getElementById('correctAnswers').textContent = data.score;
         
-        // Display questions with corrections
         const questionsContainer = document.getElementById('questionsReview');
         questionsContainer.innerHTML = '';
         
@@ -58,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     </div>
                     
                     <p class="mb-3"><strong>${question.question}</strong></p>
+                    ${question.imageUrl ? `<img src="${question.imageUrl}" class="question-image" alt="Question image">` : ''}
                     
                     <div class="options-review">
                         ${question.options.map((option, optionIndex) => {

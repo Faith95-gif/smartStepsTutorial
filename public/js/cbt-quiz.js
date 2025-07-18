@@ -137,7 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update question info
         currentQuestionNum.textContent = index + 1;
         questionNumber.textContent = index + 1;
-        questionText.textContent = question.question;
+        questionText.innerHTML = question.question;
+        
+        // Display question images if available
+        if (question.imageUrls && question.imageUrls.length > 0) {
+            const imagesHTML = question.imageUrls.map((url, idx) => 
+                `<img src="${url}" class="question-image" alt="Question image ${idx + 1}">`
+            ).join('');
+            questionText.innerHTML += `<br>${imagesHTML}`;
+        }
         
         // Update progress
         const progress = ((index + 1) / quizData.questions.length) * 100;
@@ -193,6 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
             questionContainer.insertAdjacentHTML('afterbegin', passageHTML);
         }
     }
+
     function displayOptions(options, questionIndex) {
         optionsContainer.innerHTML = '';
         
@@ -232,13 +241,6 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Update question indicators
         updateQuestionIndicators();
-        
-        // Auto-advance to next question after a short delay (optional)
-        // setTimeout(() => {
-        //     if (currentQuestionIndex < quizData.questions.length - 1) {
-        //         nextQuestion();
-        //     }
-        // }, 500);
     }
 
     function updateQuestionIndicators() {

@@ -83,6 +83,87 @@
     color: var(--text-secondary);
 }
 
+/* Image Upload Styles */
+.image-upload-area {
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius);
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: var(--transition);
+    background: var(--bg-secondary);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.image-upload-area:hover, .image-upload-area.dragover {
+    border-color: var(--primary-color);
+    background: rgba(37, 99, 235, 0.05);
+}
+
+.image-upload-area i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.image-upload-area span {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.image-input {
+    display: none;
+}
+
+.image-preview {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: var(--border-radius);
+    margin-bottom: 0.5rem;
+}
+
+.image-remove-btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+}
+
+.upload-progress {
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.upload-progress .progress-bar {
+    height: 6px;
+}
+
+.upload-progress .progress-fill {
+    background: var(--success-color);
+}
+
+.progress-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    text-align: center;
+}
+
+/* Question Image Styles */
+.question-image {
+    max-width: 100%;
+    max-height: 300px;
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    display: block;
+    border: 1px solid var(--border-color);
+}
+
 /* Question Container */
 .question-container {
     margin-bottom: 2rem;
@@ -515,6 +596,14 @@
     .option-text {
         font-size: 0.95rem;
     }
+    
+    .question-image {
+        max-height: 200px;
+    }
+    
+    .image-preview img {
+        max-height: 150px;
+    }
 }
 
 @media (max-width: 480px) {
@@ -535,6 +624,10 @@
     .question-text {
         font-size: 1rem;
     }
+    
+    .question-image {
+        max-height: 150px;
+    }
 }
 
 /* Print Styles */
@@ -547,5 +640,9 @@
     
     .question-container {
         min-height: auto;
+    }
+    
+    .question-image {
+        max-height: 200px;
     }
 }
