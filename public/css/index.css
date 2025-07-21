@@ -439,16 +439,17 @@
 
         /* Responsive Design */
         @media (max-width: 768px) {
+
             .hamburger {
                 display: flex;
             }
 
             .nav-links {
                 position: fixed;
-                top: 72px;
+                top: 0px;
                 right: -100%;
                 width: 63%;
-                height: calc(100vh - 80px);
+                height: 800px;
                 background: rgba(255, 255, 255, 0.98);
                 backdrop-filter: blur(10px);
                 flex-direction: column;
