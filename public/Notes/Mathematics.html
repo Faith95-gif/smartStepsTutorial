@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Steps Tutorial - JAMB Mathematics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+</head>
+<body>
+    <button class="back-button" onclick="goBack()">
+        <i class="fas fa-arrow-left"></i>
+        Back
+    </button>
+
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-graduation-cap"></i> Smart Steps Tutorial</h1>
+            <p>JAMB Mathematics - Select a topic to master</p>
+        </div>
+
+        <div class="topics-container">
+            <ul class="topics-list">
+                <li class="topic-item" onclick="redirectTo('Mathematics/Arcs and Sectors.html')">
+                    <div class="topic-content">
+                        <i class="fas fa-circle-notch topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Arcs and Sectors</div>
+                            <div class="topic-description">Learn about circular measurements and areas</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/Change of Subject of Formulas')">
+                    <div class="topic-content">
+                        <i class="fas fa-exchange-alt topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Change of Subject of Formulas</div>
+                            <div class="topic-description">Master algebraic manipulation techniques</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/indices')">
+                    <div class="topic-content">
+                        <i class="fas fa-superscript topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Indices</div>
+                            <div class="topic-description">Explore powers and exponential operations</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/logarithms')">
+                    <div class="topic-content">
+                        <i class="fas fa-chart-line topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Logarithms</div>
+                            <div class="topic-description">Understand inverse exponential functions</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/Probability.html')">
+                    <div class="topic-content">
+                        <i class="fas fa-dice topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Probability</div>
+                            <div class="topic-description">Calculate chances and statistical outcomes</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/simple-compound-interest')">
+                    <div class="topic-content">
+                        <i class="fas fa-coins topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Simple & Compound Interest</div>
+                            <div class="topic-description">Financial mathematics and investment calculations</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/Surds')">
+                    <div class="topic-content">
+                        <i class="fas fa-square-root-alt topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Surds</div>
+                            <div class="topic-description">Work with irrational square roots</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+
+                <li class="topic-item" onclick="redirectTo('Mathematics/variation.html')">
+                    <div class="topic-content">
+                        <i class="fas fa-arrows-alt-h topic-icon"></i>
+                        <div class="topic-text">
+                            <div class="topic-title">Variation</div>
+                            <div class="topic-description">Explore direct and inverse relationships</div>
+                        </div>
+                        <i class="fas fa-chevron-right arrow-icon"></i>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function redirectTo(topic) {
+            // Add a smooth transition effect
+            const clickedItem = event.currentTarget;
+            clickedItem.style.transform = 'scale(0.95)';
+            
+            setTimeout(() => {
+                
+                window.location.href = `${topic}.html`;
+                
+                clickedItem.style.transform = 'translateY(-5px)';
+            }, 150);
+        }
+
+        function goBack() {
+            // In a real application, you might want to go to a specific page
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                // Fallback if no history
+                alert('Going back to previous page...');
+                // window.location.href = 'index.html'; // Uncomment for actual navigation
+            }
+        }
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                goBack();
+            }
+        });
+
+        // Add loading animation on page load
+        window.addEventListener('load', function() {
+            const topics = document.querySelectorAll('.topic-item');
+            topics.forEach((topic, index) => {
+                topic.style.opacity = '0';
+                topic.style.transform = 'translateY(20px)';
+                
+                setTimeout(() => {
+                    topic.style.transition = 'all 0.5s ease';
+                    topic.style.opacity = '1';
+                    topic.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>
+<style>
+    /* Educational JAMB Mathematics Tutorial CSS */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Roboto', 'Oxygen', 'Ubuntu', Cantarell, sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    min-height: 100vh;
+    color: #2c3e50;
+    line-height: 1.6;
+}
+
+/* Back Button */
+.back-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #3498db;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.back-button:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+}
+
+.back-button i {
+    margin-right: 8px;
+}
+
+/* Container */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 100vh;
+}
+
+/* Header */
+.header {
+    text-align: center;
+    margin-bottom: 50px;
+    background: white;
+    padding: 40px 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+}
+
+.header h1 {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header h1 i {
+    color: #3498db;
+    margin-right: 15px;
+    font-size: 2.2rem;
+}
+
+.header p {
+    font-size: 1.2rem;
+    color: #7f8c8d;
+    font-weight: 400;
+    margin-top: 10px;
+}
+
+/* Topics Container */
+.topics-container {
+    background: white;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+}
+
+.topics-list {
+    list-style: none;
+}
+
+/* Topic Items */
+.topic-item {
+    background: #f8f9fa;
+    margin-bottom: 15px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+    position: relative;
+    overflow: hidden;
+}
+
+.topic-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(52, 152, 219, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.topic-item:hover::before {
+    left: 100%;
+}
+
+.topic-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 30px rgba(52, 152, 219, 0.2);
+    border-color: #3498db;
+    background: white;
+}
+
+.topic-content {
+    display: flex;
+    align-items: center;
+    padding: 25px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Topic Icon */
+.topic-icon {
+    font-size: 1.8rem;
+    color: #3498db;
+    margin-right: 20px;
+    width: 50px;
+    text-align: center;
+    background: rgba(52, 152, 219, 0.1);
+    height: 50px;
+    line-height: 50px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.topic-item:hover .topic-icon {
+    background: #3498db;
+    color: white;
+    transform: rotate(5deg) scale(1.1);
+}
+
+/* Topic Text */
+.topic-text {
+    flex: 1;
+    margin-left: 10px;
+}
+
+.topic-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+.topic-item:hover .topic-title {
+    color: #3498db;
+}
+
+.topic-description {
+    font-size: 0.95rem;
+    color: #7f8c8d;
+    font-weight: 400;
+}
+
+/* Arrow Icon */
+.arrow-icon {
+    font-size: 1.2rem;
+    color: #bdc3c7;
+    transition: all 0.3s ease;
+    margin-left: 15px;
+}
+
+.topic-item:hover .arrow-icon {
+    color: #3498db;
+    transform: translateX(8px);
+}
+
+/* Active/Focus States */
+.topic-item:active {
+    transform: translateY(-2px) scale(0.98);
+}
+
+.topic-item:focus {
+    outline: 3px solid rgba(52, 152, 219, 0.3);
+    outline-offset: 2px;
+}
+
+/* Educational Enhancements */
+.header::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    border-radius: 2px;
+}
+
+/* Subject-specific color coding */
+.topic-item:nth-child(1) .topic-icon { background-color: rgba(231, 76, 60, 0.1); }
+.topic-item:nth-child(1):hover .topic-icon { background-color: #e74c3c; }
+
+.topic-item:nth-child(2) .topic-icon { background-color: rgba(155, 89, 182, 0.1); }
+.topic-item:nth-child(2):hover .topic-icon { background-color: #9b59b6; }
+
+.topic-item:nth-child(3) .topic-icon { background-color: rgba(230, 126, 34, 0.1); }
+.topic-item:nth-child(3):hover .topic-icon { background-color: #e67e22; }
+
+.topic-item:nth-child(4) .topic-icon { background-color: rgba(46, 204, 113, 0.1); }
+.topic-item:nth-child(4):hover .topic-icon { background-color: #2ecc71; }
+
+.topic-item:nth-child(5) .topic-icon { background-color: rgba(241, 196, 15, 0.1); }
+.topic-item:nth-child(5):hover .topic-icon { background-color: #f1c40f; }
+
+.topic-item:nth-child(6) .topic-icon { background-color: rgba(52, 152, 219, 0.1); }
+.topic-item:nth-child(6):hover .topic-icon { background-color: #3498db; }
+
+.topic-item:nth-child(7) .topic-icon { background-color: rgba(142, 68, 173, 0.1); }
+.topic-item:nth-child(7):hover .topic-icon { background-color: #8e44ad; }
+
+.topic-item:nth-child(8) .topic-icon { background-color: rgba(26, 188, 156, 0.1); }
+.topic-item:nth-child(8):hover .topic-icon { background-color: #1abc9c; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px 15px;
+    }
+    
+    .back-button {
+        top: 15px;
+        left: 15px;
+        padding: 10px 16px;
+        font-size: 13px;
+    }
+    
+    .header {
+        padding: 25px 20px;
+        margin-bottom: 30px;
+    }
+    
+    .header h1 {
+        font-size: 2rem;
+    }
+    
+    .header h1 i {
+        font-size: 1.8rem;
+        margin-right: 10px;
+    }
+    
+    .header p {
+        font-size: 1rem;
+    }
+    
+    .topics-container {
+        padding: 20px;
+    }
+    
+    .topic-content {
+        padding: 20px;
+    }
+    
+    .topic-icon {
+        font-size: 1.5rem;
+        width: 45px;
+        height: 45px;
+        line-height: 45px;
+        margin-right: 15px;
+    }
+    
+    .topic-title {
+        font-size: 1.1rem;
+    }
+    
+    .topic-description {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header h1 {
+        font-size: 1.7rem;
+    }
+    
+    .topic-content {
+        padding: 15px;
+    }
+    
+    .topic-icon {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        font-size: 1.3rem;
+        margin-right: 12px;
+    }
+    
+    .topic-title {
+        font-size: 1rem;
+    }
+    
+    .topic-description {
+        font-size: 0.85rem;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .back-button {
+        display: none;
+    }
+    
+    body {
+        background: white;
+        color: black;
+    }
+    
+    .container {
+        box-shadow: none;
+        max-width: 100%;
+    }
+    
+    .topic-item {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #ccc;
+    }
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .topic-item {
+        border: 2px solid #000;
+    }
+    
+    .topic-title {
+        color: #000;
+        font-weight: 700;
+    }
+    
+    .topic-description {
+        color: #333;
+    }
+}
+</style>

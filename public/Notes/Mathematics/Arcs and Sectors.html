@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB 2026 Mathematics Guide - Arcs and Sectors</title>
+       <link rel="stylesheet" href="header-style.css">
+    <script src="header-script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin: -20px -20px 30px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196f3;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left: 5px solid #4caf50;
+        }
+
+        .types {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 5px solid #ff9800;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+            border-left: 5px solid #9c27b0;
+            margin: 25px 0;
+        }
+
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .math-expression {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            line-height: 2;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 3px;
+        }
+
+        .numerator {
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            display: block;
+        }
+
+        .denominator {
+            padding-top: 2px;
+            display: block;
+        }
+
+        .calculation-step {
+            margin: 12px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            font-size: 1.05rem;
+        }
+
+        .math-work {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .memory-tip {
+            background: linear-gradient(135deg, #fff9c4, #ffecb3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            position: relative;
+        }
+
+        .memory-tip::before {
+            content: "💡";
+            position: absolute;
+            left: -15px;
+            top: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .memory-tip h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .step-solution {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step-solution h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .practice-section {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-left: 5px solid #66bb6a;
+        }
+
+        .practice-questions {
+            counter-reset: question-counter;
+        }
+
+        .practice-questions li {
+            counter-increment: question-counter;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .practice-questions li::before {
+            content: counter(question-counter);
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            background: #66bb6a;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+       <header class="main-header">
+    <nav class="nav-container">
+        <a href="#" class="logo">
+            <a href="#" class="logo"><img src="steps_smart.png" alt=""> Smart Steps</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active">Mathematics</a></li>
+            <li class="nav-item"><a href="#">Physics</a></li>
+            <li class="nav-item"><a href="#">Chemistry</a></li>
+            <li class="nav-item"><a href="#">English</a></li>
+            <li class="nav-item"><a href="#">Biology</a></li>
+          
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <div class="header">
+            <h1>SMART STEPS TUTORIALS</h1>
+            <h2>JAMB 2026 Mathematics Guide</h2>
+            <div class="subtitle">ARCS AND SECTORS</div>
+        </div>
+
+        <div class="section intro">
+            <h3>🎯 Introduction</h3>
+            <p>Imagine you open a delicious meat pie and see that the filling inside is part of a full round pie. Or think of slicing a large birthday cake into different portions. Each slice you take is a <span class="highlight">sector of a circle</span>.</p>
+            <p>Understanding arcs and sectors is very important in JAMB Mathematics because they appear in geometry, mensuration, and even real-life measurement problems.</p>
+        </div>
+
+        <div class="section definition">
+            <h3>📐 What is a Sector?</h3>
+            <p>A <strong>sector</strong> is a region inside a circle bounded by two radii and an arc.</p>
+            <ul>
+                <li><strong>Arc</strong> = curved edge of the sector</li>
+                <li><strong>Two radii</strong> = straight lines from the center of the circle to the circumference</li>
+            </ul>
+            <p>The angle between the two radii is called the <span class="highlight">angle subtended at the center</span>, denoted by <strong>θ (theta)</strong>.</p>
+        </div>
+
+        <div class="section types">
+            <h3>🔄 Types of Sectors</h3>
+            
+            <h4>1. Minor Sector</h4>
+            <ul>
+                <li>Subtends an angle <strong>less than 180°</strong> at the center</li>
+                <li>Looks like a small slice of pizza or cake</li>
+            </ul>
+
+            <h4>2. Major Sector</h4>
+            <ul>
+                <li>Subtends an angle <strong>greater than 180°</strong> at the center</li>
+                <li>Occupies most of the circle, leaving the smaller part as the minor sector</li>
+            </ul>
+
+            <div class="memory-tip">
+                <h4>Memory Tip:</h4>
+                <p>Minor = smaller slice 🍕<br>
+                Major = larger slice 🍕</p>
+            </div>
+        </div>
+
+        <div class="section definition">
+            <h3>🌊 What is an Arc?</h3>
+            <p>An <strong>arc</strong> is a portion of the circumference of a circle.</p>
+            <ul>
+                <li><strong>Minor Arc</strong> → The smaller curved part of the circle</li>
+                <li><strong>Major Arc</strong> → The larger curved part of the circle</li>
+            </ul>
+        </div>
+
+        <div class="section">
+            <h3>📝 Worked Examples (Smart Steps Style)</h3>
+
+            <div class="example">
+                <h4>Example 1 — Finding Arc Length</h4>
+                <p><strong>Problem:</strong> A fan blade has a radius of 7 cm and forms an angle of 90° at the center. Find the length of the arc. Take π = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span>.</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <div class="formula">
+                        Arc Length = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × 2πr
+                    </div>
+                    <p><strong>Given:</strong> r = 7 cm, θ = 90°, π = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span></p>
+                    
+                    <div class="math-work">
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">90°</span><span class="denominator">360°</span></span> × 2 × <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span> × 7
+                        </div>
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">1</span><span class="denominator">4</span></span> × 2 × 22
+                        </div>
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">44</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>L = 11 cm</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Example 2 — Finding Perimeter of a Sector</h4>
+                <p><strong>Problem:</strong> A circular garden with a radius of 5 m has a sector forming a 120° angle. Find the perimeter of the sector.</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <div class="formula">
+                        Perimeter of Sector = Arc Length + 2r
+                    </div>
+                    <p><strong>Given:</strong> r = 5 m, θ = 120°</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find arc length</p>
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × 2πr
+                        </div>
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">120°</span><span class="denominator">360°</span></span> × 2π × 5
+                        </div>
+                        <div class="calculation-step">
+                            L = <span class="fraction"><span class="numerator">1</span><span class="denominator">3</span></span> × 10π = <span class="fraction"><span class="numerator">10π</span><span class="denominator">3</span></span> m
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find perimeter</p>
+                        <div class="calculation-step">
+                            Perimeter = <span class="fraction"><span class="numerator">10π</span><span class="denominator">3</span></span> + 2(5)
+                        </div>
+                        <div class="calculation-step">
+                            <strong>Perimeter = <span class="fraction"><span class="numerator">10π</span><span class="denominator">3</span></span> + 10 m</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Example 3 — Area of a Sector</h4>
+                <p><strong>Problem:</strong> A car's speedometer dial has a radius of 14 cm and the pointer covers 150°. Find the area of the sector. Take π = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span>.</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <div class="formula">
+                        A = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × πr²
+                    </div>
+                    <p><strong>Given:</strong> r = 14 cm, θ = 150°, π = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span></p>
+                    
+                    <div class="math-work">
+                        <div class="calculation-step">
+                            A = <span class="fraction"><span class="numerator">150°</span><span class="denominator">360°</span></span> × <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span> × 14²
+                        </div>
+                        <div class="calculation-step">
+                            A = <span class="fraction"><span class="numerator">5</span><span class="denominator">12</span></span> × <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span> × 196
+                        </div>
+                        <div class="calculation-step">
+                            A = <span class="fraction"><span class="numerator">5</span><span class="denominator">12</span></span> × 616
+                        </div>
+                        <div class="calculation-step">
+                            <strong>A = 256.67 cm²</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Example 4 — Finding the Angle of a Sector</h4>
+                <p><strong>Problem:</strong> The area of a sector is 78.54 cm² and the radius is 7 cm. Find the angle at the center. Take π = 3.142.</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>From the formula:</strong></p>
+                    <div class="formula">
+                        A = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × πr²
+                    </div>
+                    <p><strong>Given:</strong> A = 78.54 cm², r = 7 cm, π = 3.142</p>
+                    
+                    <div class="math-work">
+                        <div class="calculation-step">
+                            78.54 = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × 3.142 × 49
+                        </div>
+                        <div class="calculation-step">
+                            78.54 = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × 153.958
+                        </div>
+                        
+                        <p><strong>Multiply both sides by 360°:</strong></p>
+                        <div class="calculation-step">
+                            28274.4 = θ × 153.958
+                        </div>
+                        <div class="calculation-step">
+                            θ = <span class="fraction"><span class="numerator">28274.4</span><span class="denominator">153.958</span></span> ≈ 183.6°
+                        </div>
+                        <div class="calculation-step">
+                            <strong>θ ≈ 183.6°</strong>
+                        </div>
+                    </div>
+                    <p><strong>Note:</strong> Since θ > 180°, it's a major sector.</p>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Example 5 — Finding the Radius</h4>
+                <p><strong>Problem:</strong> A sector subtends an angle of 120° and has an arc length of 18.84 cm. Find the radius (π = 3.142).</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <div class="formula">
+                        L = <span class="fraction"><span class="numerator">θ</span><span class="denominator">360°</span></span> × 2πr
+                    </div>
+                    <p><strong>Given:</strong> L = 18.84 cm, θ = 120°, π = 3.142</p>
+                    
+                    <div class="math-work">
+                        <div class="calculation-step">
+                            18.84 = <span class="fraction"><span class="numerator">120°</span><span class="denominator">360°</span></span> × 2 × 3.142 × r
+                        </div>
+                        <div class="calculation-step">
+                            18.84 = <span class="fraction"><span class="numerator">1</span><span class="denominator">3</span></span> × 6.284 × r
+                        </div>
+                        <div class="calculation-step">
+                            18.84 = 2.0947r
+                        </div>
+                        <div class="calculation-step">
+                            r = <span class="fraction"><span class="numerator">18.84</span><span class="denominator">2.0947</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>r ≈ 9 cm</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section practice-section">
+            <h3>🎯 Extra Practice Questions (For JAMB 2026 Preparation)</h3>
+            <ol class="practice-questions">
+                <li>A circular track has a radius of 20 m. A runner covers a distance along the track that subtends an angle of 45° at the center. Find the distance run.</li>
+                <li>A water sprinkler sprays water in a sector shape with radius 15 m and angle 60°. Find the area covered by the water.</li>
+                <li>The arc length of a circular pond is 31.4 m and the radius is 10 m. Find the angle subtended by the arc.</li>
+                <li>A sector has an area of 200 cm² and an angle of 120°. Find the radius of the circle.</li>
+                <li>A circular plate of radius 14 cm is cut into a sector of angle 240°. Find the perimeter of the sector.</li>
+            </ol>
+        </div>
+
+        <div class="copyright">
+            © 2025 Smart Steps Tutorials | One Smart Step Closer to Success
+        </div>
+    </div>
+</body>
+</html>

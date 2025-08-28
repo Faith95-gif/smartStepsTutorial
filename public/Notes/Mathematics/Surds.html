@@ -1,0 +1,952 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB 2026 Mathematics Guide - Surds</title>
+     <link rel="stylesheet" href="header-style.css">
+    <script src="header-script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin: -20px -20px 30px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196f3;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left: 5px solid #4caf50;
+        }
+
+        .types {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 5px solid #ff9800;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+            border-left: 5px solid #9c27b0;
+            margin: 25px 0;
+        }
+
+        .jamb-example {
+            background: linear-gradient(135deg, #fff8e1, #f3e5ab);
+            border-left: 5px solid #ff8f00;
+            margin: 25px 0;
+        }
+
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .math-expression {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            line-height: 2;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 3px;
+        }
+
+        .numerator {
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            display: block;
+        }
+
+        .denominator {
+            padding-top: 2px;
+            display: block;
+        }
+
+        .calculation-step {
+            margin: 12px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            font-size: 1.05rem;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .math-work {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .memory-tip {
+            background: linear-gradient(135deg, #fff9c4, #ffecb3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            position: relative;
+        }
+
+        .memory-tip::before {
+            content: "💡";
+            position: absolute;
+            left: -15px;
+            top: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .memory-tip h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+
+        .rule-box {
+            background: linear-gradient(135deg, #ffe0e6, #fff0f5);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #e91e63;
+        }
+
+        .rule-box h4 {
+            color: #c2185b;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .step-solution {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step-solution h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .jamb-tag {
+            background: #ff8f00;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .practice-section {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-left: 5px solid #66bb6a;
+        }
+
+        .practice-questions {
+            counter-reset: question-counter;
+        }
+
+        .practice-questions li {
+            counter-increment: question-counter;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .practice-questions li::before {
+            content: counter(question-counter);
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            background: #66bb6a;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .operation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .operation-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .operation-card h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .radical {
+            position: relative;
+            display: inline-block;
+            margin-right: 3px;
+        }
+
+        .radical::before {
+            content: "√";
+            font-size: 1.2em;
+            position: relative;
+        }
+
+        .superscript {
+            vertical-align: super;
+            font-size: 0.8em;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .operation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+       <header class="main-header">
+    <nav class="nav-container">
+        <a href="#" class="logo">
+            <a href="#" class="logo"><img src="steps_smart.png" alt=""> Smart Steps</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active">Mathematics</a></li>
+            <li class="nav-item"><a href="#">Physics</a></li>
+            <li class="nav-item"><a href="#">Chemistry</a></li>
+            <li class="nav-item"><a href="#">English</a></li>
+            <li class="nav-item"><a href="#">Biology</a></li>
+          
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <div class="header">
+            <h1>SMART STEPS TUTORIALS</h1>
+            <h2>JAMB 2026 Mathematics Guide</h2>
+            <div class="subtitle">SURDS</div>
+        </div>
+
+        <div class="section intro">
+            <h3>🎯 Introduction</h3>
+            <p>Imagine you're trying to measure the exact length of the diagonal of a square with sides of 1 unit. Using Pythagoras' theorem, you get √2. But what exactly is √2 as a decimal? It goes on forever without repeating: 1.414213562373... This is where <span class="highlight">surds</span> come in!</p>
+            <p>A <strong>surd</strong> is like an "exact answer" that we can't write as a simple fraction or terminating decimal. Instead of writing messy approximations, we keep them in their radical form (with the √ symbol).</p>
+            <p>Surds are essential for JAMB Mathematics because they appear in algebra, trigonometry, coordinate geometry, and many calculation problems where exact answers are required.</p>
+        </div>
+
+        <div class="section definition">
+            <h3>📖 What is a Surd?</h3>
+            <p><strong>A surd</strong> is a root of a positive rational number that cannot be expressed exactly as a rational number. In simple terms, it's a square root (or higher root) that doesn't come out to a "nice" number.</p>
+            
+            <div class="memory-tip">
+                <h4>Key Points:</h4>
+                <ul>
+                    <li>√4 = 2 is NOT a surd (because 2 is rational)</li>
+                    <li>√5 IS a surd (because √5 ≈ 2.236... is irrational)</li>
+                    <li>√9 = 3 is NOT a surd</li>
+                    <li>√7 IS a surd</li>
+                </ul>
+            </div>
+
+            <div class="formula">Examples of Surds: √2, √3, √5, √7, √11, √13, 2√3, 5√2</div>
+            <div class="formula">NOT Surds: √1, √4, √9, √16, √25 (these are perfect squares)</div>
+        </div>
+
+        <div class="section types">
+            <h3>🔧 Types of Surds</h3>
+            
+            <div class="operation-grid">
+                <div class="operation-card">
+                    <h5>Simple Surds</h5>
+                    <p>√2, √3, √5, √7<br><em>Just the square root of a number</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Mixed Surds</h5>
+                    <p>2√3, 5√2, 3√7<br><em>A rational number multiplied by a surd</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Compound Surds</h5>
+                    <p>√2 + √3, 2√5 - √7<br><em>Addition or subtraction of surds</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Higher Order Surds</h5>
+                    <p>∛2, ∜5, ∛8<br><em>Cube roots, fourth roots, etc.</em></p>
+                </div>
+            </div>
+
+            <div class="rule-box">
+                <h4>Important Rules for Surds:</h4>
+                <ul>
+                    <li>√a × √b = √(ab)</li>
+                    <li>√a ÷ √b = √(a/b)</li>
+                    <li>√a + √b ≠ √(a + b) [Common mistake!]</li>
+                    <li>(√a)² = a</li>
+                    <li>a√b + c√b = (a + c)√b</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔍 Worked Examples (Smart Steps Style)</h3>
+
+            <div class="example">
+                <h4>Example 1 – Simplifying Surds</h4>
+                <p><strong>Problem:</strong> Simplify √72</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Express √72 in its simplest form</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the prime factorization of 72</p>
+                        <div class="calculation-step">
+                            72 = 8 × 9 = 2³ × 3²
+                        </div>
+                        <div class="calculation-step">
+                            72 = 36 × 2 (looking for perfect square factors)
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Separate the perfect square</p>
+                        <div class="calculation-step">
+                            √72 = √(36 × 2)
+                        </div>
+                        <div class="calculation-step">
+                            √72 = √36 × √2
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Simplify the perfect square</p>
+                        <div class="calculation-step">
+                            √72 = 6 × √2
+                        </div>
+                        <div class="calculation-step">
+                            <strong>√72 = 6√2</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 1</h4>
+                <p><strong>Problem:</strong> Simplify √50 + √18 - √32</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Add and subtract surds by simplifying each term first</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Simplify each surd separately</p>
+                        <div class="calculation-step">
+                            √50 = √(25 × 2) = √25 × √2 = 5√2
+                        </div>
+                        <div class="calculation-step">
+                            √18 = √(9 × 2) = √9 × √2 = 3√2
+                        </div>
+                        <div class="calculation-step">
+                            √32 = √(16 × 2) = √16 × √2 = 4√2
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Substitute back into the expression</p>
+                        <div class="calculation-step">
+                            √50 + √18 - √32 = 5√2 + 3√2 - 4√2
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Combine like terms</p>
+                        <div class="calculation-step">
+                            = (5 + 3 - 4)√2
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= 4√2</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 2</h4>
+                <p><strong>Problem:</strong> Rationalize the denominator: <span class="fraction"><span class="numerator">6</span><span class="denominator">√3</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Remove the surd from the denominator</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Multiply both numerator and denominator by √3</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">6</span><span class="denominator">√3</span></span> × <span class="fraction"><span class="numerator">√3</span><span class="denominator">√3</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Multiply the numerators and denominators</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">6√3</span><span class="denominator">√3 × √3</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">6√3</span><span class="denominator">3</span></span>
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Simplify</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">6√3</span><span class="denominator">3</span></span> = 2√3
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= 2√3</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 3</h4>
+                <p><strong>Problem:</strong> Rationalize: <span class="fraction"><span class="numerator">4</span><span class="denominator">2 + √5</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Rationalize denominator with two terms</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Multiply by the conjugate (2 - √5)</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">4</span><span class="denominator">2 + √5</span></span> × <span class="fraction"><span class="numerator">2 - √5</span><span class="denominator">2 - √5</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Multiply the numerators</p>
+                        <div class="calculation-step">
+                            Numerator: 4(2 - √5) = 8 - 4√5
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Multiply the denominators (difference of squares)</p>
+                        <div class="calculation-step">
+                            Denominator: (2 + √5)(2 - √5) = 4 - 5 = -1
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Combine and simplify</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">8 - 4√5</span><span class="denominator">-1</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= -8 + 4√5 or 4√5 - 8</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 4</h4>
+                <p><strong>Problem:</strong> Evaluate: (√7 + √3)(√7 - √3)</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Multiply surds using difference of squares pattern</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Recognize the difference of squares pattern</p>
+                        <div class="calculation-step">
+                            (a + b)(a - b) = a² - b²
+                        </div>
+                        <div class="calculation-step">
+                            Where a = √7 and b = √3
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Apply the formula</p>
+                        <div class="calculation-step">
+                            (√7 + √3)(√7 - √3) = (√7)² - (√3)²
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Simplify</p>
+                        <div class="calculation-step">
+                            = 7 - 3
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= 4</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 5</h4>
+                <p><strong>Problem:</strong> If √x = 2√3 + √2, find x</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Square both sides to find x</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Square both sides</p>
+                        <div class="calculation-step">
+                            (√x)² = (2√3 + √2)²
+                        </div>
+                        <div class="calculation-step">
+                            x = (2√3 + √2)²
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Expand using (a + b)² = a² + 2ab + b²</p>
+                        <div class="calculation-step">
+                            x = (2√3)² + 2(2√3)(√2) + (√2)²
+                        </div>
+                        <div class="calculation-step">
+                            x = 4(3) + 4√6 + 2
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Simplify</p>
+                        <div class="calculation-step">
+                            x = 12 + 4√6 + 2
+                        </div>
+                        <div class="calculation-step">
+                            <strong>x = 14 + 4√6</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>JAMB Question 6</h4>
+                <p><strong>Problem:</strong> Express in the form a + b√5: <span class="fraction"><span class="numerator">3 + √5</span><span class="denominator">3 - √5</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Rationalize and express in required form</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Multiply by conjugate of denominator</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">3 + √5</span><span class="denominator">3 - √5</span></span> × <span class="fraction"><span class="numerator">3 + √5</span><span class="denominator">3 + √5</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Expand numerator</p>
+                        <div class="calculation-step">
+                            Numerator: (3 + √5)² = 9 + 6√5 + 5 = 14 + 6√5
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Expand denominator</p>
+                        <div class="calculation-step">
+                            Denominator: (3 - √5)(3 + √5) = 9 - 5 = 4
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Combine and separate</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">14 + 6√5</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">14</span><span class="denominator">4</span></span> + <span class="fraction"><span class="numerator">6√5</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= <span class="fraction"><span class="numerator">7</span><span class="denominator">2</span></span> + <span class="fraction"><span class="numerator">3</span><span class="denominator">2</span></span>√5</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>⚡ Quick Method Guide</h3>
+            
+            <div class="rule-box">
+                <h4>Steps for Simplifying Surds:</h4>
+                <ol>
+                    <li><strong>Find</strong> the largest perfect square factor</li>
+                    <li><strong>Separate</strong> the perfect square from the remaining factor</li>
+                    <li><strong>Take</strong> the square root of the perfect square</li>
+                    <li><strong>Write</strong> in simplified form</li>
+                </ol>
+            </div>
+
+            <div class="rule-box">
+                <h4>Steps for Rationalizing Denominators:</h4>
+                <ol>
+                    <li><strong>Single term:</strong> Multiply by √a/√a</li>
+                    <li><strong>Two terms:</strong> Multiply by the conjugate</li>
+                    <li><strong>Conjugate of (a + b√c)</strong> is (a - b√c)</li>
+                    <li><strong>Simplify</strong> using difference of squares when possible</li>
+                </ol>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Memory Tips:</h4>
+                <ul>
+                    <li><strong>Perfect squares to memorize:</strong> 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144...</li>
+                    <li><strong>Common mistake:</strong> √a + √b ≠ √(a + b)</li>
+                    <li><strong>But remember:</strong> √a × √b = √(ab)</li>
+                    <li><strong>Like terms:</strong> Only surds with the same radicand can be added/subtracted</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section practice-section">
+            <h3>🎯 Practice Questions (For JAMB 2026 Preparation)</h3>
+            
+            <p><strong>Basic Level:</strong></p>
+            <ol class="practice-questions">
+                <li>Simplify √48</li>
+                <li>Simplify √75</li>
+                <li>Evaluate √12 + √27</li>
+                <li>Rationalize <span class="fraction"><span class="numerator">5</span><span class="denominator">√2</span></span></li>
+                <li>Find the value of (√5)²</li>
+            </ol>
+
+            <p><strong>Intermediate Level:</strong></p>
+            <ol class="practice-questions" start="6">
+                <li>Simplify √200 - √8 + √50</li>
+                <li>Rationalize <span class="fraction"><span class="numerator">7</span><span class="denominator">3 + √2</span></span></li>
+                <li>Evaluate (√3 + √2)(√3 - √2)</li>
+                <li>Express √98 in the form a√b where b has no perfect square factors</li>
+                <li>Find the value of <span class="fraction"><span class="numerator">√18 + √8</span><span class="denominator">√2</span></span></li>
+            </ol>
+
+            <p><strong>Advanced Level (JAMB Style):</strong></p>
+            <ol class="practice-questions" start="11">
+                <li>If √x + 1/√x = 3, find x + 1/x</li>
+                <li>Rationalize <span class="fraction"><span class="numerator">2√3 - √2</span><span class="denominator">√3 + 2√2</span></span></li>
+                <li>Simplify (2√5 + √3)²</li>
+                <li>Express <span class="fraction"><span class="numerator">4 - √7</span><span class="denominator">4 + √7</span></span> in the form a + b√7</li>
+                <li>If √a + √b = √50 and √a - √b = √18, find a and b</li>
+            </ol>
+
+            <p><strong>JAMB Past Questions Style:</strong></p>
+            <ol class="practice-questions" start="16">
+                <li>Evaluate: <span class="fraction"><span class="numerator">√27 + √12</span><span class="denominator">√3</span></span></li>
+                <li>Express in surd form: <span class="fraction"><span class="numerator">1</span><span class="denominator">√2 - 1</span></span></li>
+                <li>If 2√x = √32, find x</li>
+                <li>Simplify: √45 - √20 + √5</li>
+                <li>Find the value of k if √k = √18 + √8 - √2</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h3>🚨 Common Mistakes to Avoid</h3>
+            
+            <div class="rule-box">
+                <h4>⚠️ Watch Out For:</h4>
+                <ul>
+                    <li><strong>Addition error:</strong> √9 + √16 ≠ √25 (It's 3 + 4 = 7, not 5)</li>
+                    <li><strong>Multiplication confusion:</strong> √a × √b = √(ab), but √a + √b ≠ √(a + b)</li>
+                    <li><strong>Incomplete simplification:</strong> √12 should be 2√3, not left as √12</li>
+                    <li><strong>Rationalization mistakes:</strong> Forgetting to multiply both numerator and denominator</li>
+                    <li><strong>Perfect square oversight:</strong> Not recognizing largest perfect square factors</li>
+                    <li><strong>Sign errors:</strong> When rationalizing with conjugates, watch the signs!</li>
+                    <li><strong>Like terms confusion:</strong> Only surds with same radicand can be combined</li>
+                </ul>
+            </div>
+
+            <div class="memory-tip">
+                <h4>JAMB Exam Tips:</h4>
+                <ul>
+                    <li><strong>Always simplify completely</strong> - JAMB answers are in simplest radical form</li>
+                    <li><strong>Check if your answer can be rationalized</strong> further</li>
+                    <li><strong>Memorize perfect squares</strong> up to at least 144</li>
+                    <li><strong>Look for patterns</strong> like difference of squares in multiplication</li>
+                    <li><strong>Practice mental calculation</strong> of common surd operations</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🔍 Additional Worked Examples</h3>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>Complex Rationalization Example</h4>
+                <p><strong>Problem:</strong> Rationalize: <span class="fraction"><span class="numerator">√5 - √3</span><span class="denominator">√5 + √3</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Rationalize complex surd fraction</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Multiply by conjugate of denominator</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">√5 - √3</span><span class="denominator">√5 + √3</span></span> × <span class="fraction"><span class="numerator">√5 - √3</span><span class="denominator">√5 - √3</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Expand numerator (√5 - √3)²</p>
+                        <div class="calculation-step">
+                            Numerator: (√5)² - 2(√5)(√3) + (√3)²
+                        </div>
+                        <div class="calculation-step">
+                            = 5 - 2√15 + 3 = 8 - 2√15
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Expand denominator using difference of squares</p>
+                        <div class="calculation-step">
+                            Denominator: (√5 + √3)(√5 - √3) = (√5)² - (√3)²
+                        </div>
+                        <div class="calculation-step">
+                            = 5 - 3 = 2
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Combine and simplify</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">8 - 2√15</span><span class="denominator">2</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>= 4 - √15</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Style Question</div>
+                <h4>Mixed Operations Example</h4>
+                <p><strong>Problem:</strong> Evaluate: <span class="fraction"><span class="numerator">√72 - √8</span><span class="denominator">√2</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Goal:</strong> Simplify before dividing</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Simplify the surds in numerator</p>
+                        <div class="calculation-step">
+                            √72 = √(36 × 2) = 6√2
+                        </div>
+                        <div class="calculation-step">
+                            √8 = √(4 × 2) = 2√2
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Substitute back</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">√72 - √8</span><span class="denominator">√2</span></span> = <span class="fraction"><span class="numerator">6√2 - 2√2</span><span class="denominator">√2</span></span>
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Combine like terms in numerator</p>
+                        <div class="calculation-step">
+                            = <span class="fraction"><span class="numerator">4√2</span><span class="denominator">√2</span></span>
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Simplify</p>
+                        <div class="calculation-step">
+                            <strong>= 4</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📚 Surd Laws Quick Reference</h3>
+            
+            <div class="operation-grid">
+                <div class="operation-card">
+                    <h5>Multiplication</h5>
+                    <p>√a × √b = √(ab)<br>
+                    Example: √2 × √8 = √16 = 4</p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Division</h5>
+                    <p>√a ÷ √b = √(a/b)<br>
+                    Example: √8 ÷ √2 = √4 = 2</p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Addition</h5>
+                    <p>a√c + b√c = (a+b)√c<br>
+                    Example: 3√5 + 2√5 = 5√5</p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Squaring</h5>
+                    <p>(√a)² = a<br>
+                    Example: (√7)² = 7</p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Power Rules</h5>
+                    <p>(a√b)² = a²b<br>
+                    Example: (3√2)² = 9 × 2 = 18</p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Rationalization</h5>
+                    <p>Conjugate of a + √b is a - √b<br>
+                    (a + √b)(a - √b) = a² - b</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>🎓 Final Tips for JAMB Success</h3>
+            
+            <div class="memory-tip">
+                <h4>Essential Strategies:</h4>
+                <ul>
+                    <li><strong>Master the basics:</strong> Perfect squares, multiplication and division of surds</li>
+                    <li><strong>Practice rationalization:</strong> This appears frequently in JAMB</li>
+                    <li><strong>Recognize patterns:</strong> Look for opportunities to use difference of squares</li>
+                    <li><strong>Simplify step by step:</strong> Don't try to do everything at once</li>
+                    <li><strong>Check your work:</strong> Multiply back to verify rationalization</li>
+                    <li><strong>Know when to stop:</strong> JAMB wants the simplest radical form</li>
+                </ul>
+            </div>
+
+            <div class="rule-box">
+                <h4>Common JAMB Surd Topics:</h4>
+                <ul>
+                    <li>Simplification of surds</li>
+                    <li>Addition and subtraction of surds</li>
+                    <li>Multiplication of surds</li>
+                    <li>Rationalization of denominators</li>
+                    <li>Expressing in the form a + b√c</li>
+                    <li>Solving equations involving surds</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 Smart Steps Tutorials | One Smart Step Closer to Success<br>
+            <em>Enhanced with JAMB-Style Questions for 2026 Preparation</em>
+        </div>
+    </div>
+</body>
+</html>

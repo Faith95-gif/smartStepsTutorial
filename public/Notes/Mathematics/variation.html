@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB 2026 Mathematics Guide - Variation</title>
+     <link rel="stylesheet" href="header-style.css">
+    <script src="header-script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin: -20px -20px 30px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196f3;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left: 5px solid #4caf50;
+        }
+
+        .types {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 5px solid #ff9800;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+            border-left: 5px solid #9c27b0;
+            margin: 25px 0;
+        }
+
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .math-expression {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            line-height: 2;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 3px;
+        }
+
+        .numerator {
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            display: block;
+        }
+
+        .denominator {
+            padding-top: 2px;
+            display: block;
+        }
+
+        .calculation-step {
+            margin: 12px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            font-size: 1.05rem;
+        }
+
+        .math-work {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .memory-tip {
+            background: linear-gradient(135deg, #fff9c4, #ffecb3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            position: relative;
+        }
+
+        .memory-tip::before {
+            content: "💡";
+            position: absolute;
+            left: -15px;
+            top: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .memory-tip h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .step-solution {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step-solution h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .practice-section {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-left: 5px solid #66bb6a;
+        }
+
+        .practice-questions {
+            counter-reset: question-counter;
+        }
+
+        .practice-questions li {
+            counter-increment: question-counter;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .practice-questions li::before {
+            content: counter(question-counter);
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            background: #66bb6a;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .jamb-year {
+            background: #ff6b35;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .proportional {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+       <header class="main-header">
+    <nav class="nav-container">
+        <a href="#" class="logo">
+            <a href="#" class="logo"><img src="steps_smart.png" alt=""> Smart Steps</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active">Mathematics</a></li>
+            <li class="nav-item"><a href="#">Physics</a></li>
+            <li class="nav-item"><a href="#">Chemistry</a></li>
+            <li class="nav-item"><a href="#">English</a></li>
+            <li class="nav-item"><a href="#">Biology</a></li>
+          
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <div class="header">
+            <h1>SMART STEPS TUTORIALS</h1>
+            <h2>JAMB 2026 Mathematics Guide</h2>
+            <div class="subtitle">VARIATION</div>
+        </div>
+
+        <div class="section intro">
+            <h3>🎯 Introduction</h3>
+            <p>Variation describes how one quantity changes in relation to another. In everyday life, we see variation everywhere - as the speed of a car increases, the time to reach a destination decreases. As the number of workers on a project increases, the time to complete it decreases. Understanding variation is crucial for solving real-world problems in JAMB mathematics.</p>
+        </div>
+
+        <div class="section definition">
+            <h3>📐 Types of Variation</h3>
+            
+            <h4>1. Direct Variation (Direct Proportion)</h4>
+            <p>When one quantity increases, the other increases proportionally.</p>
+            <div class="formula">
+                y <span class="proportional">∝</span> x  or  y = kx
+            </div>
+            <p><strong>Example:</strong> Distance traveled is directly proportional to time (at constant speed).</p>
+
+            <h4>2. Inverse Variation (Inverse Proportion)</h4>
+            <p>When one quantity increases, the other decreases proportionally.</p>
+            <div class="formula">
+                y <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">x</span></span>  or  y = <span class="fraction"><span class="numerator">k</span><span class="denominator">x</span></span>
+            </div>
+            <p><strong>Example:</strong> Time to complete a task is inversely proportional to number of workers.</p>
+
+            <h4>3. Joint Variation</h4>
+            <p>When one quantity varies directly with the product of two or more quantities.</p>
+            <div class="formula">
+                z <span class="proportional">∝</span> xy  or  z = kxy
+            </div>
+
+            <h4>4. Partial Variation</h4>
+            <p>When one quantity is partly constant and partly varies with another.</p>
+            <div class="formula">
+                y = a + bx
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📝 JAMB Past Questions with Solutions</h3>
+
+            <div class="example">
+                <h4>Question 1 <span class="jamb-year">JAMB 2023</span></h4>
+                <p><strong>If y varies directly as x and y = 12 when x = 4, find y when x = 7.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> y <span class="proportional">∝</span> x, so y = kx</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When y = 12, x = 4: 12 = k × 4
+                        </div>
+                        <div class="calculation-step">
+                            k = <span class="fraction"><span class="numerator">12</span><span class="denominator">4</span></span> = 3
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find y when x = 7</p>
+                        <div class="calculation-step">
+                            y = kx = 3 × 7
+                        </div>
+                        <div class="calculation-step">
+                            <strong>y = 21</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 2 <span class="jamb-year">JAMB 2022</span></h4>
+                <p><strong>If t varies inversely as the square of s, and t = 4 when s = 3, find t when s = 2.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> t <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">s²</span></span>, so t = <span class="fraction"><span class="numerator">k</span><span class="denominator">s²</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When t = 4, s = 3: 4 = <span class="fraction"><span class="numerator">k</span><span class="denominator">3²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            4 = <span class="fraction"><span class="numerator">k</span><span class="denominator">9</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            k = 4 × 9 = 36
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find t when s = 2</p>
+                        <div class="calculation-step">
+                            t = <span class="fraction"><span class="numerator">k</span><span class="denominator">s²</span></span> = <span class="fraction"><span class="numerator">36</span><span class="denominator">2²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            t = <span class="fraction"><span class="numerator">36</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>t = 9</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 3 <span class="jamb-year">JAMB 2021</span></h4>
+                <p><strong>The cost of petrol varies directly with the quantity bought. If 10 liters cost ₦1,500, how much will 15 liters cost?</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Let C = cost, Q = quantity. Given:</strong> C <span class="proportional">∝</span> Q, so C = kQ</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When C = ₦1,500, Q = 10 liters: 1,500 = k × 10
+                        </div>
+                        <div class="calculation-step">
+                            k = <span class="fraction"><span class="numerator">1,500</span><span class="denominator">10</span></span> = ₦150 per liter
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find cost for 15 liters</p>
+                        <div class="calculation-step">
+                            C = kQ = 150 × 15
+                        </div>
+                        <div class="calculation-step">
+                            <strong>C = ₦2,250</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 4 <span class="jamb-year">JAMB 2020</span></h4>
+                <p><strong>If 8 men can do a piece of work in 6 days, in how many days can 12 men do the same work?</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>This is inverse variation:</strong> Number of days <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">Number of men</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Let D = days, M = men. So D = <span class="fraction"><span class="numerator">k</span><span class="denominator">M</span></span></strong></p>
+                        
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When D = 6, M = 8: 6 = <span class="fraction"><span class="numerator">k</span><span class="denominator">8</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            k = 6 × 8 = 48
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find D when M = 12</p>
+                        <div class="calculation-step">
+                            D = <span class="fraction"><span class="numerator">k</span><span class="denominator">M</span></span> = <span class="fraction"><span class="numerator">48</span><span class="denominator">12</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>D = 4 days</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 5 <span class="jamb-year">JAMB 2019</span></h4>
+                <p><strong>If z varies jointly as x and y, and z = 24 when x = 3 and y = 4, find z when x = 5 and y = 6.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> z <span class="proportional">∝</span> xy, so z = kxy</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When z = 24, x = 3, y = 4: 24 = k × 3 × 4
+                        </div>
+                        <div class="calculation-step">
+                            24 = 12k
+                        </div>
+                        <div class="calculation-step">
+                            k = <span class="fraction"><span class="numerator">24</span><span class="denominator">12</span></span> = 2
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find z when x = 5, y = 6</p>
+                        <div class="calculation-step">
+                            z = kxy = 2 × 5 × 6
+                        </div>
+                        <div class="calculation-step">
+                            <strong>z = 60</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 6 <span class="jamb-year">JAMB 2018</span></h4>
+                <p><strong>The square of a number varies directly as the cube of another. If the first number is 6 when the second is 2, find the first when the second is 3.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Let the numbers be a and b. Given:</strong> a² <span class="proportional">∝</span> b³, so a² = kb³</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When a = 6, b = 2: 6² = k × 2³
+                        </div>
+                        <div class="calculation-step">
+                            36 = k × 8
+                        </div>
+                        <div class="calculation-step">
+                            k = <span class="fraction"><span class="numerator">36</span><span class="denominator">8</span></span> = <span class="fraction"><span class="numerator">9</span><span class="denominator">2</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find a when b = 3</p>
+                        <div class="calculation-step">
+                            a² = kb³ = <span class="fraction"><span class="numerator">9</span><span class="denominator">2</span></span> × 3³
+                        </div>
+                        <div class="calculation-step">
+                            a² = <span class="fraction"><span class="numerator">9</span><span class="denominator">2</span></span> × 27 = <span class="fraction"><span class="numerator">243</span><span class="denominator">2</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            a = √(<span class="fraction"><span class="numerator">243</span><span class="denominator">2</span></span>) = <span class="fraction"><span class="numerator">9√3</span><span class="denominator">√2</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>a = <span class="fraction"><span class="numerator">9√6</span><span class="denominator">2</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 7 <span class="jamb-year">JAMB 2017</span></h4>
+                <p><strong>The time taken to travel a distance is inversely proportional to the speed. If it takes 4 hours at 60 km/h, how long will it take at 80 km/h?</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Let T = time, S = speed. Given:</strong> T <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">S</span></span>, so T = <span class="fraction"><span class="numerator">k</span><span class="denominator">S</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When T = 4 hours, S = 60 km/h: 4 = <span class="fraction"><span class="numerator">k</span><span class="denominator">60</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            k = 4 × 60 = 240
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find T when S = 80 km/h</p>
+                        <div class="calculation-step">
+                            T = <span class="fraction"><span class="numerator">k</span><span class="denominator">S</span></span> = <span class="fraction"><span class="numerator">240</span><span class="denominator">80</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>T = 3 hours</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 8 <span class="jamb-year">JAMB 2016</span></h4>
+                <p><strong>If p varies as q and q varies as r², and p = 12 when r = 2, find p when r = 3.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> p <span class="proportional">∝</span> q and q <span class="proportional">∝</span> r²</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Combine the variations</p>
+                        <div class="calculation-step">
+                            Since p <span class="proportional">∝</span> q and q <span class="proportional">∝</span> r², then p <span class="proportional">∝</span> r²
+                        </div>
+                        <div class="calculation-step">
+                            Therefore: p = kr²
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When p = 12, r = 2: 12 = k × 2²
+                        </div>
+                        <div class="calculation-step">
+                            12 = 4k, so k = 3
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Find p when r = 3</p>
+                        <div class="calculation-step">
+                            p = kr² = 3 × 3²
+                        </div>
+                        <div class="calculation-step">
+                            <strong>p = 27</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 9 <span class="jamb-year">JAMB 2015</span></h4>
+                <p><strong>The volume of a gas varies directly as the temperature and inversely as the pressure. If V = 20 when T = 300 and P = 15, find V when T = 360 and P = 18.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> V <span class="proportional">∝</span> <span class="fraction"><span class="numerator">T</span><span class="denominator">P</span></span>, so V = <span class="fraction"><span class="numerator">kT</span><span class="denominator">P</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When V = 20, T = 300, P = 15: 20 = <span class="fraction"><span class="numerator">k × 300</span><span class="denominator">15</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            20 = 20k, so k = 1
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find V when T = 360, P = 18</p>
+                        <div class="calculation-step">
+                            V = <span class="fraction"><span class="numerator">kT</span><span class="denominator">P</span></span> = <span class="fraction"><span class="numerator">1 × 360</span><span class="denominator">18</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>V = 20</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 10 <span class="jamb-year">JAMB 2014</span></h4>
+                <p><strong>If y varies partly as x and partly as the square of x, and y = 10 when x = 1, y = 22 when x = 2, find y when x = 3.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> y = ax + bx² (partial variation)</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Set up equations</p>
+                        <div class="calculation-step">
+                            When x = 1, y = 10: 10 = a(1) + b(1)² = a + b ... (1)
+                        </div>
+                        <div class="calculation-step">
+                            When x = 2, y = 22: 22 = a(2) + b(2)² = 2a + 4b ... (2)
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Solve for a and b</p>
+                        <div class="calculation-step">
+                            From (1): a = 10 - b
+                        </div>
+                        <div class="calculation-step">
+                            Substitute in (2): 22 = 2(10 - b) + 4b = 20 - 2b + 4b = 20 + 2b
+                        </div>
+                        <div class="calculation-step">
+                            2b = 2, so b = 1 and a = 9
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Find y when x = 3</p>
+                        <div class="calculation-step">
+                            y = ax + bx² = 9(3) + 1(3)²
+                        </div>
+                        <div class="calculation-step">
+                            y = 27 + 9
+                        </div>
+                        <div class="calculation-step">
+                            <strong>y = 36</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 11 <span class="jamb-year">JAMB 2013</span></h4>
+                <p><strong>The force on a body varies as the product of its mass and acceleration. If F = 36 N when m = 4 kg and a = 9 m/s², find F when m = 6 kg and a = 12 m/s².</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> F <span class="proportional">∝</span> ma, so F = kma</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When F = 36, m = 4, a = 9: 36 = k × 4 × 9
+                        </div>
+                        <div class="calculation-step">
+                            36 = 36k, so k = 1
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find F when m = 6, a = 12</p>
+                        <div class="calculation-step">
+                            F = kma = 1 × 6 × 12
+                        </div>
+                        <div class="calculation-step">
+                            <strong>F = 72 N</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 12 <span class="jamb-year">JAMB 2012</span></h4>
+                <p><strong>If a varies inversely as the square root of b, and a = 4 when b = 9, find a when b = 16.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> a <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">√b</span></span>, so a = <span class="fraction"><span class="numerator">k</span><span class="denominator">√b</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When a = 4, b = 9: 4 = <span class="fraction"><span class="numerator">k</span><span class="denominator">√9</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            4 = <span class="fraction"><span class="numerator">k</span><span class="denominator">3</span></span>, so k = 12
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find a when b = 16</p>
+                        <div class="calculation-step">
+                            a = <span class="fraction"><span class="numerator">k</span><span class="denominator">√b</span></span> = <span class="fraction"><span class="numerator">12</span><span class="denominator">√16</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            a = <span class="fraction"><span class="numerator">12</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>a = 3</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 13 <span class="jamb-year">JAMB 2011</span></h4>
+                <p><strong>The number of telephone calls varies jointly as the population of a city and inversely as the square of the distance. If 1000 calls are made when population is 50,000 and distance is 5 km, how many calls when population is 80,000 and distance is 4 km?</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Let C = calls, P = population, D = distance. Given:</strong> C <span class="proportional">∝</span> <span class="fraction"><span class="numerator">P</span><span class="denominator">D²</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>So C = <span class="fraction"><span class="numerator">kP</span><span class="denominator">D²</span></span></strong></p>
+                        
+                        <p><strong>Step 1:</strong> Find k</p>
+                        <div class="calculation-step">
+                            When C = 1000, P = 50,000, D = 5:
+                        </div>
+                        <div class="calculation-step">
+                            1000 = <span class="fraction"><span class="numerator">k × 50,000</span><span class="denominator">5²</span></span> = <span class="fraction"><span class="numerator">50,000k</span><span class="denominator">25</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            1000 = 2000k, so k = <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find C when P = 80,000, D = 4</p>
+                        <div class="calculation-step">
+                            C = <span class="fraction"><span class="numerator">kP</span><span class="denominator">D²</span></span> = <span class="fraction"><span class="numerator">(1/2) × 80,000</span><span class="denominator">4²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            C = <span class="fraction"><span class="numerator">40,000</span><span class="denominator">16</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>C = 2,500 calls</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 14 <span class="jamb-year">JAMB 2010</span></h4>
+                <p><strong>If x varies directly as y and inversely as z, and x = 6 when y = 8 and z = 4, find x when y = 12 and z = 9.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> x <span class="proportional">∝</span> <span class="fraction"><span class="numerator">y</span><span class="denominator">z</span></span>, so x = <span class="fraction"><span class="numerator">ky</span><span class="denominator">z</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When x = 6, y = 8, z = 4: 6 = <span class="fraction"><span class="numerator">k × 8</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            6 = 2k, so k = 3
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find x when y = 12, z = 9</p>
+                        <div class="calculation-step">
+                            x = <span class="fraction"><span class="numerator">ky</span><span class="denominator">z</span></span> = <span class="fraction"><span class="numerator">3 × 12</span><span class="denominator">9</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            x = <span class="fraction"><span class="numerator">36</span><span class="denominator">9</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>x = 4</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 15 <span class="jamb-year">JAMB 2009</span></h4>
+                <p><strong>The resistance of a wire varies directly as its length and inversely as the square of its diameter. If a wire 100m long with diameter 2mm has resistance 5Ω, find the resistance of a wire 150m long with diameter 3mm.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Let R = resistance, L = length, d = diameter. Given:</strong> R <span class="proportional">∝</span> <span class="fraction"><span class="numerator">L</span><span class="denominator">d²</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>So R = <span class="fraction"><span class="numerator">kL</span><span class="denominator">d²</span></span></strong></p>
+                        
+                        <p><strong>Step 1:</strong> Find k</p>
+                        <div class="calculation-step">
+                            When R = 5, L = 100, d = 2:
+                        </div>
+                        <div class="calculation-step">
+                            5 = <span class="fraction"><span class="numerator">k × 100</span><span class="denominator">2²</span></span> = <span class="fraction"><span class="numerator">100k</span><span class="denominator">4</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            5 = 25k, so k = <span class="fraction"><span class="numerator">1</span><span class="denominator">5</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find R when L = 150, d = 3</p>
+                        <div class="calculation-step">
+                            R = <span class="fraction"><span class="numerator">kL</span><span class="denominator">d²</span></span> = <span class="fraction"><span class="numerator">(1/5) × 150</span><span class="denominator">3²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            R = <span class="fraction"><span class="numerator">30</span><span class="denominator">9</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>R = <span class="fraction"><span class="numerator">10</span><span class="denominator">3</span></span>Ω or 3.33Ω</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 16 <span class="jamb-year">JAMB 2008</span></h4>
+                <p><strong>If the area of a circle varies directly as the square of its radius, and the area is 154 cm² when the radius is 7 cm, find the area when the radius is 14 cm.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> A <span class="proportional">∝</span> r², so A = kr²</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Find the constant k</p>
+                        <div class="calculation-step">
+                            When A = 154, r = 7: 154 = k × 7²
+                        </div>
+                        <div class="calculation-step">
+                            154 = 49k, so k = <span class="fraction"><span class="numerator">154</span><span class="denominator">49</span></span> = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Find A when r = 14</p>
+                        <div class="calculation-step">
+                            A = kr² = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span> × 14²
+                        </div>
+                        <div class="calculation-step">
+                            A = <span class="fraction"><span class="numerator">22</span><span class="denominator">7</span></span> × 196 = 22 × 28
+                        </div>
+                        <div class="calculation-step">
+                            <strong>A = 616 cm²</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 17 <span class="jamb-year">JAMB 2024</span></h4>
+                <p><strong>If m varies inversely as n and the sum of two values of m is 15 when the corresponding values of n are 2 and 3, find each value of m.</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given:</strong> m <span class="proportional">∝</span> <span class="fraction"><span class="numerator">1</span><span class="denominator">n</span></span>, so m = <span class="fraction"><span class="numerator">k</span><span class="denominator">n</span></span></p>
+                    
+                    <div class="math-work">
+                        <p><strong>When n = 2:</strong> m₁ = <span class="fraction"><span class="numerator">k</span><span class="denominator">2</span></span></p>
+                        <p><strong>When n = 3:</strong> m₂ = <span class="fraction"><span class="numerator">k</span><span class="denominator">3</span></span></p>
+                        
+                        <p><strong>Given that m₁ + m₂ = 15:</strong></p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">k</span><span class="denominator">2</span></span> + <span class="fraction"><span class="numerator">k</span><span class="denominator">3</span></span> = 15
+                        </div>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">3k + 2k</span><span class="denominator">6</span></span> = 15
+                        </div>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">5k</span><span class="denominator">6</span></span> = 15
+                        </div>
+                        <div class="calculation-step">
+                            k = 18
+                        </div>
+                        
+                        <p><strong>Therefore:</strong></p>
+                        <div class="calculation-step">
+                            m₁ = <span class="fraction"><span class="numerator">18</span><span class="denominator">2</span></span> = 9
+                        </div>
+                        <div class="calculation-step">
+                            m₂ = <span class="fraction"><span class="numerator">18</span><span class="denominator">3</span></span> = 6
+                        </div>
+                        <div class="calculation-step">
+                            <strong>The values of m are 9 and 6</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>💡 Memory Tips for JAMB Success</h3>
+            
+            <div class="memory-tip">
+                <h4>Direct vs Inverse Variation</h4>
+                <p><strong>Direct:</strong> Both quantities move in the same direction (↑↑ or ↓↓)<br>
+                <strong>Inverse:</strong> Quantities move in opposite directions (↑↓ or ↓↑)</p>
+            </div>
+
+            <div class="memory-tip">
+                <h4>The Constant Product Rule</h4>
+                <p>In inverse variation, the product of the variables is always constant: xy = k</p>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Joint Variation Pattern</h4>
+                <p>Joint variation: z = k × (product of all direct variables) ÷ (product of all inverse variables)</p>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 Smart Steps Tutorials | One Smart Step Closer to Success
+        </div>
+    </div>
+</body>
+</html>
