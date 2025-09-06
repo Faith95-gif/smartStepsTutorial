@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     let currentQuestionIndex = 0;
     let studentAnswers = [];
     let passages = {};
+    let quizEnded = false; // Flag to prevent actions after time up
 
     // DOM Elements
     const studentNameForm = document.getElementById('studentNameForm');
@@ -38,9 +39,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event Listeners
     document.getElementById('nameForm').addEventListener('submit', startQuiz);
-    prevBtn.addEventListener('click', previousQuestion);
-    nextBtn.addEventListener('click', nextQuestion);
-    submitBtn.addEventListener('click', submitQuiz);
+    prevBtn.addEventListener('click', () => { if (!quizEnded) previousQuestion(); });
+    nextBtn.addEventListener('click', () => { if (!quizEnded) nextQuestion(); });
+    submitBtn.addEventListener('click', () => { if (!quizEnded) submitQuiz(); });
 
     async function startQuiz(e) {
         e.preventDefault();
@@ -123,13 +124,13 @@ document.addEventListener('DOMContentLoaded', function() {
             const indicator = document.createElement('div');
             indicator.className = 'question-indicator';
             indicator.textContent = i + 1;
-            indicator.addEventListener('click', () => goToQuestion(i));
+            indicator.addEventListener('click', () => { if (!quizEnded) goToQuestion(i); });
             questionIndicators.appendChild(indicator);
         }
     }
 
     function displayQuestion(index) {
-        if (index < 0 || index >= quizData.questions.length) return;
+        if (index < 0 || index >= quizData.questions.length || quizEnded) return;
         
         currentQuestionIndex = index;
         const question = quizData.questions[index];
@@ -167,7 +168,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add animation
         document.querySelector('.question-content').style.animation = 'none';
         setTimeout(() => {
-            document.querySelector('.question-content').style.animation = 'fadeIn 0.3s ease-in-out';
+            if (!quizEnded) {
+                document.querySelector('.question-content').style.animation = 'fadeIn 0.3s ease-in-out';
+            }
         }, 10);
     }
 
@@ -220,12 +223,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span class="option-text">${option}</span>
             `;
             
-            optionElement.addEventListener('click', () => selectOption(questionIndex, optionIndex));
+            optionElement.addEventListener('click', () => { 
+                if (!quizEnded) selectOption(questionIndex, optionIndex); 
+            });
             optionsContainer.appendChild(optionElement);
         });
     }
 
     function selectOption(questionIndex, optionIndex) {
+        if (quizEnded) return;
+        
         // Update student answers
         studentAnswers[questionIndex] = optionIndex;
         
@@ -261,32 +268,34 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateNavigation() {
         // Update Previous button
-        prevBtn.disabled = currentQuestionIndex === 0;
+        prevBtn.disabled = currentQuestionIndex === 0 || quizEnded;
         
         // Update Next/Submit button
         if (currentQuestionIndex === quizData.questions.length - 1) {
             nextBtn.style.display = 'none';
             submitBtn.style.display = 'flex';
+            submitBtn.disabled = quizEnded;
         } else {
             nextBtn.style.display = 'flex';
+            nextBtn.disabled = quizEnded;
             submitBtn.style.display = 'none';
         }
     }
 
     function previousQuestion() {
-        if (currentQuestionIndex > 0) {
+        if (currentQuestionIndex > 0 && !quizEnded) {
             displayQuestion(currentQuestionIndex - 1);
         }
     }
 
     function nextQuestion() {
-        if (currentQuestionIndex < quizData.questions.length - 1) {
+        if (currentQuestionIndex < quizData.questions.length - 1 && !quizEnded) {
             displayQuestion(currentQuestionIndex + 1);
         }
     }
 
     function goToQuestion(index) {
-        if (index >= 0 && index < quizData.questions.length) {
+        if (index >= 0 && index < quizData.questions.length && !quizEnded) {
             displayQuestion(index);
         }
     }
@@ -315,13 +324,115 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (remainingTime <= 0) {
                 clearInterval(timerInterval);
-                alert('Time is up! Submitting your quiz automatically.');
-                submitQuiz();
+                // IMMEDIATE SUBMISSION - NO MERCY, NO ALERTS
+                forceSubmitQuiz();
             }
         }, 1000);
     }
 
+    // Force submit function for when timer expires
+    async function forceSubmitQuiz() {
+        quizEnded = true; // Lock all interactions
+        
+        // Disable all interactive elements immediately
+        disableAllInteractions();
+        
+        // Calculate time spent
+        const timeSpent = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+
+        try {
+            // Convert null answers to -1 for unanswered questions
+            const finalAnswers = studentAnswers.map(answer => answer !== null ? answer : -1);
+            
+            const response = await fetch(`/api/submit/${shareId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentName,
+                    answers: finalAnswers,
+                    timeSpent,
+                    forceSubmit: true // Flag to indicate automatic submission
+                })
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                showResults(result, true); // Pass true to indicate time expired
+            } else {
+                // Even on error, show a basic result to prevent user from continuing
+                showTimeExpiredError();
+            }
+        } catch (error) {
+            // Network error - still show time expired message
+            showTimeExpiredError();
+        }
+    }
+
+    function disableAllInteractions() {
+        // Disable all navigation buttons
+        prevBtn.disabled = true;
+        nextBtn.disabled = true;
+        submitBtn.disabled = true;
+        
+        // Disable all option clicks
+        const allOptions = document.querySelectorAll('.option-item');
+        allOptions.forEach(option => {
+            option.style.pointerEvents = 'none';
+            option.style.opacity = '0.6';
+        });
+        
+        // Disable question indicators
+        const indicators = document.querySelectorAll('.question-indicator');
+        indicators.forEach(indicator => {
+            indicator.style.pointerEvents = 'none';
+            indicator.style.opacity = '0.6';
+        });
+        
+        // Add visual overlay to indicate quiz is locked
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 0, 0, 0.1);
+            z-index: 999;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: red;
+            font-weight: bold;
+        `;
+        overlay.innerHTML = 'TIME EXPIRED - SUBMITTING...';
+        document.body.appendChild(overlay);
+    }
+
+    function showTimeExpiredError() {
+        quizContainer.innerHTML = `
+            <div class="alert alert-error" style="text-align: center; padding: 2rem;">
+                <i class="fas fa-clock" style="font-size: 3rem; color: red; margin-bottom: 1rem;"></i>
+                <h2>Time Expired</h2>
+                <p>Your quiz time has ended. The system attempted to submit your answers automatically.</p>
+                <p>Please contact your instructor if you need assistance.</p>
+                <div style="margin-top: 2rem;">
+                    <a href="/" class="btn btn-primary">
+                        <i class="fas fa-home"></i>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        `;
+    }
+
     async function submitQuiz() {
+        if (quizEnded) return; // Prevent manual submission after time expires
+        
         // Check if all questions are answered
         const unansweredQuestions = [];
         studentAnswers.forEach((answer, index) => {
@@ -343,6 +454,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
 
+        quizEnded = true; // Prevent further interactions
+        
         // Clear timer if running
         if (timerInterval) {
             clearInterval(timerInterval);
@@ -377,16 +490,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 showResults(result);
             } else {
                 alert(result.error || 'Failed to submit quiz');
+                quizEnded = false; // Allow retry
             }
         } catch (error) {
             alert('Network error. Please try again.');
+            quizEnded = false; // Allow retry
         } finally {
-            submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Quiz';
-            submitBtn.disabled = false;
+            if (!quizEnded) {
+                submitBtn.innerHTML = '<i class="fas fa-check"></i> Submit Quiz';
+                submitBtn.disabled = false;
+            }
         }
     }
 
-    function showResults(result) {
+    function showResults(result, timeExpired = false) {
         // Hide quiz and show results
         quizContainer.classList.add('hidden');
         resultsContainer.classList.remove('hidden');
@@ -396,23 +513,31 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('finalTotal').textContent = result.totalQuestions;
         document.getElementById('finalPercentage').textContent = result.percentage + '%';
         
-        // Add celebration effect for good scores
-        if (result.percentage >= 80) {
-            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+        // Add different messaging based on how quiz ended
+        let titleHTML;
+        if (timeExpired) {
+            titleHTML = `
+                <i class="fas fa-clock" style="color: red;"></i>
+                Time Expired - Results
+            `;
+        } else if (result.percentage >= 80) {
+            titleHTML = `
                 <i class="fas fa-trophy" style="color: gold;"></i>
                 Excellent Work!
             `;
         } else if (result.percentage >= 60) {
-            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+            titleHTML = `
                 <i class="fas fa-medal" style="color: silver;"></i>
                 Good Job!
             `;
         } else {
-            document.querySelector('#resultsContainer .dashboard-title').innerHTML = `
+            titleHTML = `
                 <i class="fas fa-book-open"></i>
                 Keep Learning!
             `;
         }
+        
+        document.querySelector('#resultsContainer .dashboard-title').innerHTML = titleHTML;
 
         // Add correction link
         const correctionLink = `
@@ -431,9 +556,9 @@ document.addEventListener('DOMContentLoaded', function() {
         resultsContainer.insertAdjacentHTML('beforeend', correctionLink);
     }
 
-    // Keyboard navigation
+    // Keyboard navigation - disabled when quiz ends
     document.addEventListener('keydown', function(e) {
-        if (quizContainer.classList.contains('hidden')) return;
+        if (quizContainer.classList.contains('hidden') || quizEnded) return;
         
         switch(e.key) {
             case 'ArrowLeft':
@@ -466,9 +591,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Prevent accidental page refresh
+    // Prevent accidental page refresh - but allow it if quiz has ended
     window.addEventListener('beforeunload', function(e) {
-        if (!quizContainer.classList.contains('hidden') && !resultsContainer.classList.contains('hidden')) {
+        if (!quizContainer.classList.contains('hidden') && !resultsContainer.classList.contains('hidden') && !quizEnded) {
             e.preventDefault();
             e.returnValue = '';
         }
