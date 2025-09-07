@@ -950,7 +950,10 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add correction link
         const correctionLink = `
             <div class="hero-actions mt-4">
-                <a href="/correction/${result.correctionId}" class="btn btn-secondary btn-large">
+                <a style="
+    position: relative;
+    bottom: 100px;
+" href="/correction/${result.correctionId}" class="btn btn-secondary btn-large">
                     <i class="fas fa-eye"></i>
                     View Corrections
                 </a>
