@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let studentAnswers = [];
     let passages = {};
     let quizEnded = false; // Flag to prevent actions after time up
+    
+    // Anti-cheating variables
+    let visibilityViolations = 0;
+    let maxViolations = 3;
+    let isWarningShown = false;
+    let examTerminated = false;
+    let lastViolationTime = 0;
+    let violationCooldown = 1000; // 1 second cooldown to prevent double counting
+    let violationReasons = []; // Track all violation reasons
 
     // DOM Elements
     const studentNameForm = document.getElementById('studentNameForm');
@@ -42,6 +51,391 @@ document.addEventListener('DOMContentLoaded', function() {
     prevBtn.addEventListener('click', () => { if (!quizEnded) previousQuestion(); });
     nextBtn.addEventListener('click', () => { if (!quizEnded) nextQuestion(); });
     submitBtn.addEventListener('click', () => { if (!quizEnded) submitQuiz(); });
+
+    // Initialize anti-cheating monitoring
+    initializeAntiCheating();
+
+    function initializeAntiCheating() {
+        // Create violation counter display
+        const violationCounter = document.createElement('div');
+        violationCounter.id = 'violationCounter';
+        violationCounter.className = 'violation-counter';
+        violationCounter.innerHTML = `
+            <i class="fas fa-shield-alt"></i>
+            <span>Violations: <span id="violationCount">0</span>/${maxViolations}</span>
+        `;
+        document.body.appendChild(violationCounter);
+
+        // Page visibility change detection
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden && !quizEnded && !examTerminated && canRecordViolation()) {
+                recordViolation('Tab switched or window minimized');
+            }
+        });
+
+        // Window focus/blur detection
+        window.addEventListener('blur', function() {
+            if (!quizEnded && !examTerminated && canRecordViolation()) {
+                recordViolation('Window lost focus');
+            }
+        });
+
+        // Prevent right-click context menu
+        document.addEventListener('contextmenu', function(e) {
+            if (!quizEnded && !examTerminated) {
+                e.preventDefault();
+                recordViolation('Right-click attempted');
+            }
+        });
+
+        // Prevent common keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (quizEnded || examTerminated) return;
+
+            // Prevent F12, Ctrl+Shift+I, Ctrl+U, etc.
+            if (e.key === 'F12' || 
+                (e.ctrlKey && e.shiftKey && e.key === 'I') ||
+                (e.ctrlKey && e.shiftKey && e.key === 'C') ||
+                (e.ctrlKey && e.key === 'u') ||
+                (e.ctrlKey && e.key === 's') ||
+                (e.ctrlKey && e.key === 'a') ||
+                (e.ctrlKey && e.key === 'p')) {
+                e.preventDefault();
+                recordViolation('Attempted to use developer tools or shortcuts');
+            }
+
+            // Prevent Alt+Tab
+            if (e.altKey && e.key === 'Tab') {
+                e.preventDefault();
+                recordViolation('Attempted to switch applications');
+            }
+        });
+
+        // Detect copy/paste attempts
+        document.addEventListener('copy', function(e) {
+            if (!quizEnded && !examTerminated) {
+                e.preventDefault();
+                recordViolation('Copy attempt detected');
+            }
+        });
+
+        document.addEventListener('paste', function(e) {
+            if (!quizEnded && !examTerminated) {
+                e.preventDefault();
+                recordViolation('Paste attempt detected');
+            }
+        });
+
+        // Detect text selection (potential copying)
+        document.addEventListener('selectstart', function(e) {
+            if (!quizEnded && !examTerminated) {
+                // Allow selection in input fields
+                if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA') {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Fullscreen monitoring
+        document.addEventListener('fullscreenchange', function() {
+            if (!document.fullscreenElement && !quizEnded && !examTerminated) {
+                recordViolation('Exited fullscreen mode');
+            }
+        });
+
+        // Request fullscreen when quiz starts
+        function requestFullscreen() {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen().catch(() => {
+                    console.log('Fullscreen request failed');
+                });
+            }
+        }
+
+        // Auto-request fullscreen when quiz container becomes visible
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.target === quizContainer && !quizContainer.classList.contains('hidden')) {
+                    setTimeout(requestFullscreen, 500);
+                }
+            });
+        });
+
+        observer.observe(quizContainer, { attributes: true, attributeFilter: ['class'] });
+    }
+
+    function canRecordViolation() {
+        const now = Date.now();
+        if (now - lastViolationTime < violationCooldown) {
+            return false; // Too soon, likely duplicate event
+        }
+        return true;
+    }
+
+    function recordViolation(reason) {
+        if (examTerminated) return;
+        
+        // Prevent duplicate violations within cooldown period
+        const now = Date.now();
+        if (now - lastViolationTime < violationCooldown) {
+            return;
+        }
+        
+        lastViolationTime = now;
+        visibilityViolations++;
+        
+        // Store violation with timestamp
+        violationReasons.push({
+            reason: reason,
+            timestamp: new Date().toLocaleTimeString(),
+            violationNumber: visibilityViolations
+        });
+        
+        console.log(`Violation ${visibilityViolations}: ${reason}`);
+        
+        // Update violation counter display
+        updateViolationCounter();
+        
+        if (visibilityViolations === 1) {
+            showFirstWarning(reason);
+        } else if (visibilityViolations === 2) {
+            showSecondWarning(reason);
+        } else if (visibilityViolations >= maxViolations) {
+            terminateExam();
+        }
+    }
+
+    function updateViolationCounter() {
+        const violationCount = document.getElementById('violationCount');
+        if (violationCount) {
+            violationCount.textContent = visibilityViolations;
+            
+            // Change color based on violation level
+            const counter = document.getElementById('violationCounter');
+            if (visibilityViolations >= maxViolations - 1) {
+                counter.classList.add('danger');
+                counter.classList.remove('warning');
+            } else if (visibilityViolations > 0) {
+                counter.classList.add('warning');
+            }
+        }
+    }
+
+    function showFirstWarning(reason) {
+        const warningModal = document.createElement('div');
+        warningModal.className = 'violation-modal';
+        warningModal.innerHTML = `
+            <div class="violation-modal-content">
+                <div class="violation-icon warning">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2>⚠️ FIRST WARNING</h2>
+                <p><strong>Violation Detected:</strong> ${reason}</p>
+                <p>You have used <strong>1</strong> out of <strong>${maxViolations}</strong> allowed violations.</p>
+                <p><strong>⚠️ You have ${maxViolations - 1} more chances before your exam is terminated!</strong></p>
+                <div class="warning-rules">
+                    <h3>📋 Exam Rules Reminder</h3>
+                    <ul>
+                        <li>Do not switch tabs or applications</li>
+                        <li>Do not minimize the browser window</li>
+                        <li>Do not navigate away from this page</li>
+                        <li>Do not use browser shortcuts or developer tools</li>
+                        <li>Stay completely focused on the exam</li>
+                    </ul>
+                </div>
+                <button id="acknowledgeFirstWarning" class="btn btn-warning">
+                    <i class="fas fa-check"></i>
+                    I Understand - Continue Exam
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(warningModal);
+        
+        // Add click outside to close (disabled for security)
+        // warningModal.addEventListener('click', function(e) {
+        //     if (e.target === warningModal) {
+        //         warningModal.remove();
+        //     }
+        // });
+        
+        document.getElementById('acknowledgeFirstWarning').addEventListener('click', function() {
+            warningModal.remove();
+        });
+
+        // Auto-remove after 10 seconds if not acknowledged
+        setTimeout(() => {
+            if (document.body.contains(warningModal)) {
+                warningModal.remove();
+            }
+        }, 10000);
+    }
+
+    function showSecondWarning(reason) {
+        const warningModal = document.createElement('div');
+        warningModal.className = 'violation-modal';
+        warningModal.innerHTML = `
+            <div class="violation-modal-content">
+                <div class="violation-icon danger">
+                    <i class="fas fa-skull-crossbones"></i>
+                </div>
+                <h2>🚨 FINAL WARNING - LAST CHANCE!</h2>
+                <p><strong>Violation Detected:</strong> ${reason}</p>
+                <p>You have used <strong>2</strong> out of <strong>${maxViolations}</strong> allowed violations.</p>
+                <p class="final-warning-text">
+                    🚨 ONE MORE VIOLATION WILL IMMEDIATELY TERMINATE YOUR EXAM! 🚨
+                </p>
+                <div class="warning-rules">
+                    <h3>🔴 CRITICAL REMINDER</h3>
+                    <ul>
+                        <li><strong>This is your absolute final warning!</strong></li>
+                        <li><strong>Any further violation will end your exam permanently</strong></li>
+                        <li>Do not switch tabs, minimize window, or leave this page</li>
+                        <li>Do not use any keyboard shortcuts</li>
+                        <li>Stay completely focused - your exam depends on it!</li>
+                    </ul>
+                </div>
+                <button id="acknowledgeSecondWarning" class="btn btn-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    I Understand - This Is My Last Chance
+                </button>
+            </div>
+        `;
+        
+        document.body.appendChild(warningModal);
+        
+        document.getElementById('acknowledgeSecondWarning').addEventListener('click', function() {
+            warningModal.remove();
+        });
+
+        // Auto-remove after 15 seconds if not acknowledged
+        setTimeout(() => {
+            if (document.body.contains(warningModal)) {
+                warningModal.remove();
+            }
+        }, 15000);
+    }
+
+    function terminateExam() {
+        examTerminated = true;
+        quizEnded = true;
+        
+        // Clear any running timer
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+        
+        // Hide all containers
+        studentNameForm.classList.add('hidden');
+        loadingContainer.classList.add('hidden');
+        quizContainer.classList.add('hidden');
+        resultsContainer.classList.add('hidden');
+        errorContainer.classList.add('hidden');
+        
+        // Remove any existing modals
+        const existingModals = document.querySelectorAll('.violation-modal');
+        existingModals.forEach(modal => modal.remove());
+        
+        // Show comprehensive termination message
+        showTerminationScreen();
+        
+        // Try to submit partial answers
+        submitPartialAnswers();
+    }
+
+    function showTerminationScreen() {
+        const terminationContainer = document.createElement('div');
+        terminationContainer.className = 'termination-container';
+        
+        // Create violation list HTML
+        const violationListHTML = violationReasons.map(violation => `
+            <div class="violation-item">
+                <span>Violation #${violation.violationNumber}: ${violation.reason}</span>
+                <span class="violation-time">${violation.timestamp}</span>
+            </div>
+        `).join('');
+        
+        terminationContainer.innerHTML = `
+            <div class="termination-content">
+                <div class="termination-icon">
+                    <i class="fas fa-ban"></i>
+                </div>
+                <h1 class="termination-title">EXAM TERMINATED</h1>
+                <p style="font-size: 1.2rem; margin-bottom: 1.5rem; color: var(--danger-color); font-weight: 600;">
+                    Your examination has been automatically terminated due to multiple violations of exam security rules.
+                </p>
+                
+                <div class="violation-summary">
+                    <h3>📊 Violation Summary</h3>
+                    <p style="text-align: center; margin-bottom: 1rem;">
+                        <strong>Total Violations: ${visibilityViolations} out of ${maxViolations} allowed</strong>
+                    </p>
+                    <div class="violation-list">
+                        ${violationListHTML}
+                    </div>
+                </div>
+                
+                <div style="background: var(--surface-secondary); padding: 1.5rem; border-radius: var(--border-radius-lg); margin: 2rem 0;">
+                    <h3 style="color: var(--danger-color); margin-bottom: 1rem;">🔍 What Happened?</h3>
+                    <p style="margin-bottom: 1rem;">The proctoring system detected ${visibilityViolations} security violations:</p>
+                    <ul style="text-align: left; margin-left: 2rem;">
+                        <li><strong>Switching tabs or applications</strong></li>
+                        <li><strong>Minimizing the browser window</strong></li>
+                        <li><strong>Navigating away from the exam page</strong></li>
+                        <li><strong>Using prohibited keyboard shortcuts</strong></li>
+                        <li><strong>Attempting to copy/paste content</strong></li>
+                    </ul>
+                </div>
+                
+                <div style="background: rgba(220, 38, 38, 0.1); padding: 1.5rem; border-radius: var(--border-radius-lg); border: 2px solid var(--danger-color); margin: 2rem 0;">
+                    <h3 style="color: var(--danger-color); margin-bottom: 1rem;">📞 Next Steps</h3>
+                    <p style="margin-bottom: 0.5rem;"><strong>Your partial answers have been automatically submitted.</strong></p>
+                    <p style="margin-bottom: 0.5rem;">Please contact your instructor immediately to discuss this incident.</p>
+                    <p style="color: var(--text-secondary);">Student: <strong>${studentName}</strong></p>
+                    <p style="color: var(--text-secondary);">Time: <strong>${new Date().toLocaleString()}</strong></p>
+                </div>
+                
+                <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+                    <a href="/" class="btn btn-primary btn-large">
+                        <i class="fas fa-home"></i>
+                        Return to Home
+                    </a>
+                    <button onclick="window.print()" class="btn btn-secondary btn-large">
+                        <i class="fas fa-print"></i>
+                        Print Report
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(terminationContainer);
+    }
+
+    async function submitPartialAnswers() {
+        if (!quizData || !studentName) return;
+        
+        try {
+            const timeSpent = startTime ? Math.floor((Date.now() - startTime) / 1000) : 0;
+            const finalAnswers = studentAnswers.map(answer => answer !== null ? answer : -1);
+            
+            await fetch(`/api/submit/${shareId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    studentName,
+                    answers: finalAnswers,
+                    timeSpent,
+                    terminated: true,
+                    violations: visibilityViolations,
+                    violationReasons: violationReasons
+                })
+            });
+        } catch (error) {
+            console.error('Failed to submit partial answers:', error);
+        }
+    }
 
     async function startQuiz(e) {
         e.preventDefault();
@@ -480,7 +874,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 body: JSON.stringify({
                     studentName,
                     answers: finalAnswers,
-                    timeSpent
+                    timeSpent,
+                    violations: visibilityViolations,
+                    violationReasons: violationReasons
                 })
             });
 
@@ -538,6 +934,18 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         document.querySelector('#resultsContainer .dashboard-title').innerHTML = titleHTML;
+
+        // Add violation warning if any violations occurred
+        if (visibilityViolations > 0) {
+            const violationWarning = document.createElement('div');
+            violationWarning.className = 'alert alert-error';
+            violationWarning.style.margin = '1rem 2rem';
+            violationWarning.innerHTML = `
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Warning: ${visibilityViolations} exam violations were recorded and reported to your instructor.</span>
+            `;
+            resultsContainer.querySelector('.dashboard-header').appendChild(violationWarning);
+        }
 
         // Add correction link
         const correctionLink = `
