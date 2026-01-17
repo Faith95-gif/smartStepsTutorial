@@ -8,6 +8,11 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    allowedHosts: [
+      'www.smartsteps.name.ng',
+      'smartsteps.name.ng',
+      'localhost'
+    ],
     proxy: {
       // Proxy API requests to your backend
       '/api': {
