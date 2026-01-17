@@ -11,6 +11,7 @@ export default defineConfig(({ mode }) => ({
     allowedHosts: [
       'www.smartsteps.name.ng',
       'smartsteps.name.ng',
+      'smartstepstutorial.onrender.com',
       'localhost'
     ],
     proxy: {
