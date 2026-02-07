@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>System Test - Smart Steps</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -11,88 +14,228 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --color-bg: #fafafa;
+            --color-bg-elevated: #ffffff;
+            --color-border: rgba(0, 0, 0, 0.06);
+            --color-border-hover: rgba(0, 0, 0, 0.12);
+            --color-text-primary: #0a0a0a;
+            --color-text-secondary: #666666;
+            --color-text-tertiary: #999999;
+            --color-accent: #0066ff;
+            --color-accent-hover: #0052cc;
+            --color-accent-light: rgba(0, 102, 255, 0.08);
+            --color-success: #0ea05a;
+            --color-success-light: rgba(14, 160, 90, 0.08);
+            --color-warning: #f59e0b;
+            --color-warning-light: rgba(245, 158, 11, 0.08);
+            --color-danger: #ef4444;
+            --color-danger-light: rgba(239, 68, 68, 0.08);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+            --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 32px 0 rgba(0, 0, 0, 0.06);
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Instrument Serif', serif;
+            --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f7fa;
-            padding: 20px;
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text-primary);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            min-height: 100vh;
+            padding: 48px 24px;
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
-            color: #333;
-            margin-bottom: 20px;
+            font-family: var(--font-display);
+            font-size: 48px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            margin-bottom: 48px;
+            text-align: center;
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .test-section {
-            margin-bottom: 30px;
-            padding: 20px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            background: var(--color-bg-elevated);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-md);
+            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            animation-fill-mode: both;
         }
 
+        .test-section:nth-child(2) { animation-delay: 0.1s; }
+        .test-section:nth-child(3) { animation-delay: 0.2s; }
+        .test-section:nth-child(4) { animation-delay: 0.3s; }
+        .test-section:nth-child(5) { animation-delay: 0.4s; }
+        .test-section:nth-child(6) { animation-delay: 0.5s; }
+
         .test-section h2 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 20px;
+            font-family: var(--font-display);
+            font-size: 24px;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            color: var(--color-text-primary);
+            margin-bottom: 20px;
         }
 
         .status {
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-        }
-
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
+            font-size: 15px;
+            font-weight: 600;
+            padding: 12px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 16px;
+            letter-spacing: -0.01em;
         }
 
         .status.pending {
-            background: #fff3cd;
-            color: #856404;
+            background: var(--color-warning-light);
+            color: var(--color-warning);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+        }
+
+        .status.success {
+            background: var(--color-success-light);
+            color: var(--color-success);
+            border: 1px solid rgba(14, 160, 90, 0.2);
+        }
+
+        .status.error {
+            background: var(--color-danger-light);
+            color: var(--color-danger);
+            border: 1px solid rgba(239, 68, 68, 0.2);
         }
 
         button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
+            font-family: var(--font-body);
+            font-size: 14px;
             font-weight: 600;
-            margin: 5px;
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--color-border);
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+            letter-spacing: -0.01em;
+            margin-right: 8px;
+            margin-bottom: 8px;
         }
 
         button:hover {
-            opacity: 0.8;
+            border-color: var(--color-accent);
+            background: var(--color-accent-light);
+            color: var(--color-accent);
+            transform: translateY(-1px);
         }
 
-        pre {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            overflow-x: auto;
-            font-size: 12px;
+        button:active {
+            transform: translateY(0);
         }
 
         .info {
-            background: #e6f3ff;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 10px 0;
+            background: var(--color-accent-light);
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-top: 16px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .info strong {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--color-accent);
+        }
+
+        pre {
+            background: var(--color-bg);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 16px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.5;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+        }
+
+        #testMockLink {
+            background: var(--color-success-light);
+            border: 1px solid rgba(14, 160, 90, 0.2);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        #testMockLink strong {
+            display: block;
+            margin-bottom: 12px;
+            color: var(--color-success);
+            font-weight: 700;
+        }
+
+        #mockLinkInput {
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', monospace;
+            font-size: 13px;
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-md);
+            background: var(--color-bg-elevated);
+            color: var(--color-text-primary);
+            margin-top: 8px;
+            margin-bottom: 12px;
+        }
+
+        a {
+            text-decoration: none;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            .test-section {
+                padding: 24px;
+            }
+
+            .test-section h2 {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -111,7 +254,7 @@
             <div id="adminStatus" class="status pending">Not tested</div>
             <button onclick="testAdmin()">Test Admin Login</button>
             <div class="info">
-                <strong>Default Credentials:</strong><br>
+                <strong>Default Credentials:</strong>
                 Email: admin@smartsteps.com<br>
                 Password: admin123
             </div>
@@ -128,9 +271,9 @@
             <h2>4. Create Test Mock</h2>
             <div id="createStatus" class="status pending">Not created</div>
             <button onclick="createTestMock()">Create Test Mock</button>
-            <div id="testMockLink" style="display:none; margin-top:15px;">
-                <strong>Test Mock Link:</strong><br>
-                <input type="text" id="mockLinkInput" readonly style="width:100%; padding:10px; margin-top:5px; border:2px solid #667eea; border-radius:5px;">
+            <div id="testMockLink" style="display:none;">
+                <strong>Test Mock Link:</strong>
+                <input type="text" id="mockLinkInput" readonly>
                 <button onclick="copyTestLink()">Copy Link</button>
                 <button onclick="openTestMock()">Open in New Tab</button>
             </div>
