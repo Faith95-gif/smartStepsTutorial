@@ -18,6 +18,9 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy to get real IP address (important for deployments behind reverse proxies)
+app.set('trust proxy', true);
+
 // MongoDB connection
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://faithabayomi18:f1vouroluw11972@dominionspecialist.cdp3oi9.mongodb.net/smartsteps?retryWrites=true&w=majority&appName=dominionspecialist';
 
@@ -134,12 +137,26 @@ const mockExamSchema = new mongoose.Schema({
     adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true }
 });
 
+// Device Attempt Tracking Schema (IP-based)
+const deviceAttemptSchema = new mongoose.Schema({
+    mockId: { type: mongoose.Schema.Types.ObjectId, ref: 'MockExam', required: true },
+    ipAddress: { type: String, required: true },
+    phoneNumber: { type: String, required: true },
+    attemptedAt: { type: Date, default: Date.now },
+    userAgent: { type: String }
+});
+
+// Create compound index to ensure one attempt per IP per mock
+deviceAttemptSchema.index({ mockId: 1, ipAddress: 1 }, { unique: true });
+
 // Mock Result Schema
 const mockResultSchema = new mongoose.Schema({
     mockId: { type: mongoose.Schema.Types.ObjectId, ref: 'MockExam', required: true },
     studentName: { type: String, required: true },
     phoneNumber: { type: String, required: true },
     selectedSubject: { type: String, required: true, enum: ['maths', 'biology'] },
+    ipAddress: { type: String, required: true },
+    userAgent: { type: String },
     answers: [{
         subject: String,
         questionIndex: Number,
@@ -206,6 +223,7 @@ mockResultSchema.pre('save', function(next) {
 // Models
 const Admin = mongoose.model('Admin', adminSchema);
 const MockExam = mongoose.model('MockExam', mockExamSchema);
+const DeviceAttempt = mongoose.model('DeviceAttempt', deviceAttemptSchema);
 const MockResult = mongoose.model('MockResult', mockResultSchema);
 
 // JWT Secret
@@ -706,6 +724,118 @@ app.post('/api/mocks/:shareId/check-attempt', async (req, res) => {
     }
 });
 
+// Check if IP address can attempt the mock
+app.post('/api/mocks/:shareId/check-device', async (req, res) => {
+    try {
+        // Get IP address from request
+        const ipAddress = req.ip || 
+                         req.headers['x-forwarded-for']?.split(',')[0] || 
+                         req.headers['x-real-ip'] || 
+                         req.connection.remoteAddress ||
+                         req.socket.remoteAddress;
+        
+        console.log('Checking IP address:', ipAddress);
+
+        const mock = await MockExam.findOne({ shareId: req.params.shareId });
+        if (!mock) {
+            return res.status(404).json({ error: 'Mock exam not found' });
+        }
+
+        // Check if this IP has already attempted this mock
+        const existingAttempt = await DeviceAttempt.findOne({
+            mockId: mock._id,
+            ipAddress: ipAddress
+        });
+
+        if (existingAttempt) {
+            // Also check if they have a result
+            const existingResult = await MockResult.findOne({
+                mockId: mock._id,
+                ipAddress: ipAddress
+            });
+
+            return res.json({
+                canAttempt: false,
+                message: 'This device has already attempted this mock exam',
+                attemptedAt: existingAttempt.attemptedAt,
+                hasResult: !!existingResult,
+                correctionId: existingResult?.correctionId
+            });
+        }
+
+        res.json({
+            canAttempt: true,
+            message: 'Device can attempt this mock exam',
+            ipAddress: ipAddress
+        });
+    } catch (error) {
+        console.error('Check device error:', error);
+        res.status(500).json({ error: 'Failed to check device status' });
+    }
+});
+
+// Register device attempt (when student starts the exam)
+app.post('/api/mocks/:shareId/register-device', async (req, res) => {
+    try {
+        const { phoneNumber } = req.body;
+        
+        if (!phoneNumber) {
+            return res.status(400).json({ error: 'Phone number is required' });
+        }
+
+        // Get IP address from request
+        const ipAddress = req.ip || 
+                         req.headers['x-forwarded-for']?.split(',')[0] || 
+                         req.headers['x-real-ip'] || 
+                         req.connection.remoteAddress ||
+                         req.socket.remoteAddress;
+
+        console.log('Registering IP address:', ipAddress);
+
+        const mock = await MockExam.findOne({ shareId: req.params.shareId });
+        if (!mock) {
+            return res.status(404).json({ error: 'Mock exam not found' });
+        }
+
+        // Check if already attempted
+        const existingAttempt = await DeviceAttempt.findOne({
+            mockId: mock._id,
+            ipAddress: ipAddress
+        });
+
+        if (existingAttempt) {
+            return res.status(403).json({ 
+                error: 'This device has already attempted this mock exam',
+                attemptedAt: existingAttempt.attemptedAt
+            });
+        }
+
+        // Register the attempt
+        const attempt = new DeviceAttempt({
+            mockId: mock._id,
+            ipAddress: ipAddress,
+            phoneNumber: phoneNumber,
+            userAgent: req.headers['user-agent']
+        });
+
+        await attempt.save();
+
+        res.json({
+            success: true,
+            message: 'Device registered successfully',
+            ipAddress: ipAddress
+        });
+    } catch (error) {
+        console.error('Register device error:', error);
+        if (error.code === 11000) { // Duplicate key error
+            return res.status(403).json({ 
+                error: 'This device has already attempted this mock exam'
+            });
+        }
+        res.status(500).json({ error: 'Failed to register device' });
+    }
+});
+
 // Get Mock Exam for Student (Public)
 app.get('/api/mocks/:shareId', async (req, res) => {
     try {
@@ -757,12 +887,44 @@ app.post('/api/mocks/:shareId/submit', async (req, res) => {
             return res.status(400).json({ error: 'Invalid subject selection' });
         }
 
+        // Get IP address from request
+        const ipAddress = req.ip || 
+                         req.headers['x-forwarded-for']?.split(',')[0] || 
+                         req.headers['x-real-ip'] || 
+                         req.connection.remoteAddress ||
+                         req.socket.remoteAddress;
+
+        console.log('Submitting from IP address:', ipAddress);
+
         const mock = await MockExam.findOne({ shareId: req.params.shareId });
         if (!mock) {
             return res.status(404).json({ error: 'Mock exam not found' });
         }
 
-        // Check if this phone number has already attempted this mock
+        // Verify IP has registered for this mock
+        const deviceAttempt = await DeviceAttempt.findOne({
+            mockId: mock._id,
+            ipAddress: ipAddress
+        });
+
+        if (!deviceAttempt) {
+            return res.status(403).json({ 
+                error: 'Device not registered for this mock exam. Please reload and try again.' 
+            });
+        }
+
+        // Check if this IP has already submitted a result
+        const existingResult = await MockResult.findOne({
+            mockId: mock._id,
+            ipAddress: ipAddress
+        });
+
+        if (existingResult) {
+            return res.status(403).json({ 
+                error: 'This device has already submitted results for this mock exam',
+                correctionId: existingResult.correctionId
+            });
+        }
         const existingAttempt = await MockResult.findOne({
             mockId: mock._id,
             phoneNumber: phoneNumber
@@ -880,6 +1042,8 @@ app.post('/api/mocks/:shareId/submit', async (req, res) => {
             studentName,
             phoneNumber,
             selectedSubject,
+            ipAddress,
+            userAgent: req.headers['user-agent'],
             answers,
             scores,
             totalScore,
