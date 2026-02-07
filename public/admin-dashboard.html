@@ -708,7 +708,7 @@
 
         async function loadMocks() {
             try {
-                const response = await fetch('https://smartstepstutorial.onrender.com/api/admin/mocks', {
+                const response = await fetch('/api/admin/mocks', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -821,7 +821,7 @@
             const duration = document.getElementById('mockDuration').value;
 
             try {
-                const response = await fetch('https://smartstepstutorial.onrender.com/api/admin/mocks', {
+                const response = await fetch('/api/admin/mocks', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -875,7 +875,7 @@
             }
 
             try {
-                const response = await fetch(`https://smartstepstutorial.onrender.com/api/admin/mocks/${id}`, {
+                const response = await fetch(`/api/admin/mocks/${id}`, {
                     method: 'DELETE',
                     headers: {
                         'Authorization': `Bearer ${token}`
