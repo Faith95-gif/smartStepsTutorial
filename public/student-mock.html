@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Exam - Smart Steps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .welcome-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .welcome-container h1 {
+            color: #333;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .welcome-container p {
+            color: #666;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .rules-box {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .rules-box h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .rules-box ul {
+            color: #856404;
+            padding-left: 20px;
+        }
+
+        .rules-box li {
+            margin: 8px 0;
+        }
+
+        .start-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Exam Screen */
+        .exam-screen {
+            display: none;
+        }
+
+        .exam-header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .exam-title {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .timer {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .timer.warning {
+            color: #f56565;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .exam-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .subject-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .subject-tab {
+            padding: 12px 24px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .subject-tab.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .subject-tab:hover {
+            border-color: #667eea;
+        }
+
+        .question-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-number {
+            font-size: 18px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: #333;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .question-images {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .question-image {
+            max-width: 300px;
+            max-height: 300px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option {
+            padding: 15px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            background: #f8f9fa;
+        }
+
+        .option.selected {
+            border-color: #667eea;
+            background: #e6f3ff;
+        }
+
+        .option-label {
+            font-weight: bold;
+            color: #667eea;
+            min-width: 30px;
+        }
+
+        .option-text {
+            flex: 1;
+        }
+
+        .navigation {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-prev {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-next {
+            background: #667eea;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-submit {
+            background: #48bb78;
+            color: white;
+            width: 100%;
+        }
+
+        .question-grid {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .question-grid h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .grid-numbers {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
+            gap: 8px;
+        }
+
+        .grid-number {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .grid-number:hover {
+            border-color: #667eea;
+        }
+
+        .grid-number.answered {
+            background: #48bb78;
+            color: white;
+            border-color: #48bb78;
+        }
+
+        .grid-number.current {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        /* Warning Modal */
+        .warning-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+        }
+
+        .warning-modal.active {
+            display: flex;
+        }
+
+        .warning-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .warning-content h2 {
+            color: #f56565;
+            margin-bottom: 20px;
+            font-size: 28px;
+        }
+
+        .warning-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .chances-left {
+            font-size: 48px;
+            font-weight: bold;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .continue-btn {
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .exam-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .subject-tabs {
+                justify-content: center;
+            }
+
+            .subject-tab {
+                padding: 8px 16px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Welcome Screen -->
+    <div id="welcomeScreen" class="welcome-screen">
+        <div class="welcome-container">
+            <h1 id="mockName">Loading...</h1>
+            <p id="mockDuration">Duration: Loading...</p>
+
+            <form id="studentForm">
+                <div class="form-group">
+                    <label for="studentName">Full Name *</label>
+                    <input type="text" id="studentName" required placeholder="Enter your full name">
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number *</label>
+                    <input type="tel" id="phoneNumber" required placeholder="Enter your phone number">
+                </div>
+
+                <div class="form-group">
+                    <label for="subjectChoice">Choose Your 4th Subject *</label>
+                    <select id="subjectChoice" required>
+                        <option value="">Select a subject</option>
+                        <option value="maths">Mathematics</option>
+                        <option value="biology">Biology</option>
+                    </select>
+                </div>
+
+                <div class="rules-box">
+                    <h3>⚠️ Important Rules</h3>
+                    <ul>
+                        <li><strong style="color: #c33;">You can only attempt this mock ONCE on this device</strong></li>
+                        <li>You have <strong>3 chances</strong> only</li>
+                        <li>Leaving this page will use 1 chance</li>
+                        <li>Exiting fullscreen will use 1 chance</li>
+                        <li>After 3 chances, the exam ends automatically</li>
+                        <li>The exam must be completed in <span id="durationDisplay">--</span> minutes</li>
+                    </ul>
+                </div>
+
+                <button type="submit" class="start-btn" disabled style="opacity: 0.7;">Loading Mock Exam...</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Exam Screen -->
+    <div id="examScreen" class="exam-screen">
+        <div class="exam-header">
+            <div class="exam-title" id="examTitle">Mock Exam</div>
+            <div class="timer" id="timer">00:00:00</div>
+        </div>
+
+        <div class="exam-content">
+            <div class="subject-tabs" id="subjectTabs"></div>
+            
+            <div class="question-grid" id="questionGrid"></div>
+
+            <div id="questionContainer">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div id="warningModal" class="warning-modal">
+        <div class="warning-content">
+            <h2>⚠️ Warning!</h2>
+            <p id="warningMessage">You have left the exam area!</p>
+            <div class="chances-left" id="chancesDisplay">2</div>
+            <p>Chances remaining</p>
+            <button class="continue-btn" onclick="continueExam()">Continue Exam</button>
+        </div>
+    </div>
+
+    <script>
+        const shareId = window.location.pathname.split('/').pop();
+        console.log('Loading mock with shareId:', shareId);
+        
+        // Check if this mock has already been attempted on this device
+        const attemptKey = `mock_attempted_${shareId}`;
+        const hasAttempted = localStorage.getItem(attemptKey);
+        
+        if (hasAttempted) {
+            // Show already attempted message
+            document.getElementById('welcomeScreen').innerHTML = `
+                <div class="welcome-container" style="text-align: center;">
+                    <h1 style="color: #f56565; font-size: 48px;">⚠️</h1>
+                    <h1 style="color: #333; margin: 20px 0;">Mock Already Attempted</h1>
+                    <p style="color: #666; font-size: 18px; line-height: 1.6;">
+                        You have already attempted this mock exam on this device.<br>
+                        <strong>Each student is allowed only ONE attempt per mock.</strong>
+                    </p>
+                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 30px 0; border: 2px solid #ffc107;">
+                        <p style="color: #856404; margin: 0;">
+                            <strong>Attempted on:</strong> ${hasAttempted}
+                        </p>
+                    </div>
+                    <p style="color: #999; font-size: 14px;">
+                        If you believe this is an error, please contact the administrator.
+                    </p>
+                </div>
+            `;
+            throw new Error('Mock already attempted on this device');
+        }
+        
+        let mockData = null;
+        let studentName = '';
+        let phoneNumber = '';
+        let selectedSubject = '';
+        let currentSubject = 'english';
+        let currentQuestionIndex = 0;
+        let answers = {};
+        let timeRemaining = 0;
+        let timerInterval = null;
+        let chancesLeft = 3;
+        let examStartTime = null;
+        let isFullscreen = false;
+
+        // Load mock data
+        async function loadMockData() {
+            try {
+                const response = await fetch(`/api/mocks/${shareId}`);
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || 'Mock not found');
+                }
+
+                mockData = await response.json();
+                document.getElementById('mockName').textContent = mockData.name;
+                document.getElementById('mockDuration').textContent = `Duration: ${mockData.duration} minutes`;
+                document.getElementById('durationDisplay').textContent = mockData.duration;
+                timeRemaining = mockData.duration * 60;
+
+                // Enable the start button
+                const startBtn = document.querySelector('.start-btn');
+                startBtn.disabled = false;
+                startBtn.textContent = 'Start Mock Exam';
+                startBtn.style.opacity = '1';
+            } catch (error) {
+                console.error('Load mock error:', error);
+                document.getElementById('mockName').textContent = 'Error Loading Mock';
+                document.getElementById('mockDuration').textContent = error.message;
+                document.querySelector('.start-btn').disabled = true;
+                document.querySelector('.start-btn').textContent = 'Mock Not Available';
+                document.querySelector('.start-btn').style.opacity = '0.5';
+                alert('Failed to load mock exam: ' + error.message);
+            }
+        }
+
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!mockData) {
+                alert('Mock exam data is still loading. Please wait...');
+                return;
+            }
+
+            studentName = document.getElementById('studentName').value;
+            phoneNumber = document.getElementById('phoneNumber').value;
+            selectedSubject = document.getElementById('subjectChoice').value;
+
+            // Check if this phone number has already attempted this mock
+            try {
+                const checkResponse = await fetch(`/api/mocks/${shareId}/check-attempt`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phoneNumber })
+                });
+
+                const checkData = await checkResponse.json();
+
+                if (checkData.attempted) {
+                    alert(`This phone number has already been used to attempt this mock exam.\n\nPrevious attempt by: ${checkData.studentName}\nDate: ${new Date(checkData.attemptDate).toLocaleString()}\n\nEach student is allowed only ONE attempt per mock.`);
+                    return;
+                }
+            } catch (error) {
+                console.error('Error checking attempt:', error);
+                // Continue anyway if check fails (network error, etc.)
+            }
+
+            startExam();
+        });
+
+        function startExam() {
+            // Mark this mock as attempted on this device
+            const attemptKey = `mock_attempted_${shareId}`;
+            const attemptDate = new Date().toLocaleString();
+            localStorage.setItem(attemptKey, attemptDate);
+            
+            // Request fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+
+            examStartTime = Date.now();
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('examScreen').style.display = 'block';
+
+            setupExam();
+            startTimer();
+            setupListeners();
+        }
+
+        function setupExam() {
+            document.getElementById('examTitle').textContent = mockData.name;
+
+            // Create subject tabs
+            const subjects = ['english', 'physics', 'chemistry', selectedSubject];
+            const subjectNames = {
+                'english': 'English',
+                'physics': 'Physics',
+                'chemistry': 'Chemistry',
+                'maths': 'Mathematics',
+                'biology': 'Biology'
+            };
+
+            const tabsHTML = subjects.map(subject => `
+                <button class="subject-tab ${subject === 'english' ? 'active' : ''}" 
+                        data-subject="${subject}">
+                    ${subjectNames[subject]}
+                </button>
+            `).join('');
+
+            document.getElementById('subjectTabs').innerHTML = tabsHTML;
+
+            // Add click handlers to tabs
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    currentSubject = tab.dataset.subject;
+                    currentQuestionIndex = 0;
+                    updateSubjectTab();
+                    displayQuestion();
+                    updateQuestionGrid();
+                });
+            });
+
+            displayQuestion();
+            updateQuestionGrid();
+        }
+
+        function updateSubjectTab() {
+            document.querySelectorAll('.subject-tab').forEach(tab => {
+                tab.classList.toggle('active', tab.dataset.subject === currentSubject);
+            });
+        }
+
+        function displayQuestion() {
+            const questions = mockData.subjects[currentSubject];
+            if (!questions || questions.length === 0) {
+                document.getElementById('questionContainer').innerHTML = 
+                    '<div class="loading">No questions available</div>';
+                return;
+            }
+
+            const question = questions[currentQuestionIndex];
+            const questionKey = `${currentSubject}-${currentQuestionIndex}`;
+
+            const imagesHTML = question.imageUrls && question.imageUrls.length > 0 ? `
+                <div class="question-images">
+                    ${question.imageUrls.map(url => `
+                        <img src="${url}" alt="Question image" class="question-image">
+                    `).join('')}
+                </div>
+            ` : '';
+
+            const optionsHTML = question.options.map((option, index) => `
+                <div class="option ${answers[questionKey] === index ? 'selected' : ''}" 
+                     onclick="selectOption(${index})">
+                    <span class="option-label">${String.fromCharCode(65 + index)}</span>
+                    <span class="option-text">${option}</span>
+                </div>
+            `).join('');
+
+            const navigationHTML = `
+                <div class="navigation">
+                    ${currentQuestionIndex > 0 ? 
+                        '<button class="nav-btn btn-prev" onclick="previousQuestion()">← Previous</button>' : 
+                        '<div></div>'}
+                    ${currentQuestionIndex < questions.length - 1 ? 
+                        '<button class="nav-btn btn-next" onclick="nextQuestion()">Next →</button>' : 
+                        '<button class="nav-btn btn-submit" onclick="submitExam()">Submit Exam</button>'}
+                </div>
+            `;
+
+            document.getElementById('questionContainer').innerHTML = `
+                <div class="question-card">
+                    <div class="question-number">Question ${currentQuestionIndex + 1} of ${questions.length}</div>
+                    <div class="question-text">${question.question}</div>
+                    ${imagesHTML}
+                    <div class="options">${optionsHTML}</div>
+                    ${navigationHTML}
+                </div>
+            `;
+        }
+
+        function updateQuestionGrid() {
+            const questions = mockData.subjects[currentSubject];
+            
+            const gridHTML = `
+                <h3>${currentSubject.charAt(0).toUpperCase() + currentSubject.slice(1)} Questions</h3>
+                <div class="grid-numbers">
+                    ${questions.map((_, index) => {
+                        const questionKey = `${currentSubject}-${index}`;
+                        const isAnswered = answers[questionKey] !== undefined;
+                        const isCurrent = index === currentQuestionIndex;
+                        return `
+                            <div class="grid-number ${isAnswered ? 'answered' : ''} ${isCurrent ? 'current' : ''}"
+                                 onclick="jumpToQuestion(${index})">
+                                ${index + 1}
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+
+            document.getElementById('questionGrid').innerHTML = gridHTML;
+        }
+
+        function selectOption(optionIndex) {
+            const questionKey = `${currentSubject}-${currentQuestionIndex}`;
+            answers[questionKey] = optionIndex;
+            displayQuestion();
+            updateQuestionGrid();
+        }
+
+        function nextQuestion() {
+            const questions = mockData.subjects[currentSubject];
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                displayQuestion();
+                updateQuestionGrid();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                displayQuestion();
+                updateQuestionGrid();
+            }
+        }
+
+        function jumpToQuestion(index) {
+            currentQuestionIndex = index;
+            displayQuestion();
+            updateQuestionGrid();
+        }
+
+        function startTimer() {
+            updateTimerDisplay();
+            timerInterval = setInterval(() => {
+                timeRemaining--;
+                updateTimerDisplay();
+
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert('Time is up! Submitting your exam...');
+                    submitExam();
+                }
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const hours = Math.floor(timeRemaining / 3600);
+            const minutes = Math.floor((timeRemaining % 3600) / 60);
+            const seconds = timeRemaining % 60;
+
+            const display = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            const timerElement = document.getElementById('timer');
+            timerElement.textContent = display;
+
+            if (timeRemaining < 300) { // Last 5 minutes
+                timerElement.classList.add('warning');
+            }
+        }
+
+        function setupListeners() {
+            // Fullscreen change listener
+            document.addEventListener('fullscreenchange', handleFullscreenChange);
+            document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
+            document.addEventListener('mozfullscreenchange', handleFullscreenChange);
+            document.addEventListener('MSFullscreenChange', handleFullscreenChange);
+
+            // Page visibility change
+            document.addEventListener('visibilitychange', handleVisibilityChange);
+
+            // Prevent right click
+            document.addEventListener('contextmenu', (e) => e.preventDefault());
+        }
+
+        function handleFullscreenChange() {
+            isFullscreen = !!(document.fullscreenElement || document.webkitFullscreenElement || 
+                            document.mozFullScreenElement || document.msFullscreenElement);
+
+            if (!isFullscreen && examStartTime) {
+                useChance('You exited fullscreen mode!');
+            }
+        }
+
+        function handleVisibilityChange() {
+            if (document.hidden && examStartTime) {
+                useChance('You left the exam page!');
+            }
+        }
+
+        function useChance(message) {
+            chancesLeft--;
+            
+            if (chancesLeft <= 0) {
+                clearInterval(timerInterval);
+                alert('You have used all 3 chances. The exam has ended.');
+                submitExam();
+                return;
+            }
+
+            document.getElementById('warningMessage').textContent = message;
+            document.getElementById('chancesDisplay').textContent = chancesLeft;
+            document.getElementById('warningModal').classList.add('active');
+        }
+
+        function continueExam() {
+            document.getElementById('warningModal').classList.remove('active');
+            
+            // Re-enter fullscreen
+            const elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            }
+        }
+
+        async function submitExam() {
+            clearInterval(timerInterval);
+
+            // Format answers for submission
+            const formattedAnswers = [];
+            const subjects = ['english', 'physics', 'chemistry', selectedSubject];
+
+            subjects.forEach(subject => {
+                const questions = mockData.subjects[subject];
+                questions.forEach((_, index) => {
+                    const questionKey = `${subject}-${index}`;
+                    if (answers[questionKey] !== undefined) {
+                        formattedAnswers.push({
+                            subject: subject,
+                            questionIndex: index,
+                            selectedAnswer: answers[questionKey]
+                        });
+                    }
+                });
+            });
+
+            const timeSpent = Math.floor((Date.now() - examStartTime) / 1000);
+
+            try {
+                const response = await fetch(`/api/mocks/${shareId}/submit`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        studentName,
+                        phoneNumber,
+                        selectedSubject,
+                        answers: formattedAnswers,
+                        timeSpent,
+                        chancesUsed: 3 - chancesLeft
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Submission successful, correction data:', data);
+                    
+                    // Exit fullscreen
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                    
+                    // Check if correctionId exists
+                    if (!data.result || !data.result.correctionId) {
+                        console.error('No correctionId in response:', data);
+                        alert('Exam submitted but correction ID is missing. Please contact admin.');
+                        return;
+                    }
+                    
+                    console.log('Redirecting to correction page:', data.result.correctionId);
+                    // Redirect to correction page
+                    window.location.href = `/correction/${data.result.correctionId}`;
+                } else {
+                    console.error('Submission failed:', data);
+                    alert('Failed to submit exam: ' + (data.error || 'Unknown error') + 
+                          (data.details ? '\nDetails: ' + data.details : ''));
+                }
+            } catch (error) {
+                console.error('Submit error:', error);
+                alert('An error occurred while submitting. Please try again.');
+            }
+        }
+
+        // Load mock data on page load
+        loadMockData();
+    </script>
+</body>
+</html>

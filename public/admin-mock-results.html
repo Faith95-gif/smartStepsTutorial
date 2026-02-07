@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mock Results - Smart Steps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .auto-refresh {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .auto-refresh input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .results-table {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #667eea;
+            color: white;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        tbody tr {
+            border-bottom: 1px solid #e0e0e0;
+            transition: background 0.2s;
+        }
+
+        tbody tr:hover {
+            background: #f8f9fa;
+        }
+
+        tbody tr.new-result {
+            animation: highlight 2s ease;
+        }
+
+        @keyframes highlight {
+            0% { background: #d4edda; }
+            100% { background: white; }
+        }
+
+        td {
+            padding: 15px;
+        }
+
+        .score-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .score-excellent {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .score-good {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .score-average {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .score-poor {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .subject-scores {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .subject-score {
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+
+        .delete-btn {
+            background: #f56565;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .delete-btn:hover {
+            opacity: 0.8;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .time-badge {
+            background: #e6f3ff;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #667eea;
+        }
+
+        .chances-badge {
+            background: #fff3cd;
+            padding: 4px 8px;
+            border-radius: 5px;
+            font-size: 12px;
+            color: #856404;
+        }
+
+        @media (max-width: 768px) {
+            .results-table {
+                overflow-x: auto;
+            }
+
+            table {
+                min-width: 800px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">🎓 Smart Steps</div>
+        <a href="/admin-dashboard" class="back-btn">← Back to Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="mockName">Loading...</h1>
+            <p id="mockInfo">Loading results...</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">Total Students</div>
+                <div class="stat-value" id="totalStudents">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Average Score</div>
+                <div class="stat-value" id="averageScore">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Highest Score</div>
+                <div class="stat-value" id="highestScore">0%</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Lowest Score</div>
+                <div class="stat-value" id="lowestScore">0%</div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by name or phone number...">
+            </div>
+            <div class="auto-refresh">
+                <input type="checkbox" id="autoRefresh" checked>
+                <label for="autoRefresh">Auto-refresh (5s)</label>
+            </div>
+        </div>
+
+        <div id="resultsContainer">
+            <div class="loading">Loading results...</div>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = '/admin-login';
+        }
+
+        const mockId = window.location.pathname.split('/').pop();
+        let results = [];
+        let filteredResults = [];
+        let refreshInterval = null;
+        let previousResultsCount = 0;
+
+        async function loadMockInfo() {
+            try {
+                const response = await fetch(`/api/admin/mocks/${mockId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load mock');
+
+                const data = await response.json();
+                document.getElementById('mockName').textContent = `${data.mock.name} - Results`;
+                document.getElementById('mockInfo').textContent = 
+                    `Duration: ${data.mock.duration} minutes | Created: ${new Date(data.mock.createdAt).toLocaleDateString()}`;
+            } catch (error) {
+                console.error('Load mock error:', error);
+            }
+        }
+
+        async function loadResults(highlightNew = false) {
+            try {
+                const response = await fetch(`/api/admin/mocks/${mockId}/results`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load results');
+
+                const data = await response.json();
+                
+                const newResultsCount = data.results.length;
+                const hasNewResults = highlightNew && newResultsCount > previousResultsCount;
+                previousResultsCount = newResultsCount;
+
+                results = data.results;
+                filterResults();
+                displayResults(hasNewResults);
+                updateStats();
+            } catch (error) {
+                console.error('Load results error:', error);
+                document.getElementById('resultsContainer').innerHTML = 
+                    '<div class="empty-state"><h2>Error loading results</h2></div>';
+            }
+        }
+
+        function filterResults() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filteredResults = [...results];
+                return;
+            }
+
+            filteredResults = results.filter(result => 
+                result.studentName.toLowerCase().includes(searchTerm) ||
+                result.phoneNumber.includes(searchTerm)
+            );
+        }
+
+        function displayResults(highlightNew = false) {
+            const container = document.getElementById('resultsContainer');
+
+            if (filteredResults.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No Results Yet</h2>
+                        <p>Results will appear here as students complete the mock exam</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check for duplicate phone numbers
+            const phoneNumbers = {};
+            filteredResults.forEach(result => {
+                if (!phoneNumbers[result.phoneNumber]) {
+                    phoneNumbers[result.phoneNumber] = [];
+                }
+                phoneNumbers[result.phoneNumber].push(result);
+            });
+
+            const tableHTML = `
+                <div class="results-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Student Name</th>
+                                <th>Phone</th>
+                                <th>4th Subject</th>
+                                <th>Subject Scores</th>
+                                <th>Total Score</th>
+                                <th>Percentage</th>
+                                <th>Time Spent</th>
+                                <th>Chances Used</th>
+                                <th>Submitted</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${filteredResults.map((result, index) => {
+                                const scoreClass = 
+                                    result.percentage >= 75 ? 'score-excellent' :
+                                    result.percentage >= 60 ? 'score-good' :
+                                    result.percentage >= 45 ? 'score-average' : 'score-poor';
+
+                                const isNew = highlightNew && index === 0;
+                                const timeMinutes = Math.floor(result.timeSpent / 60);
+                                const timeSeconds = result.timeSpent % 60;
+                                
+                                // Check if this phone number appears multiple times
+                                const isDuplicate = phoneNumbers[result.phoneNumber].length > 1;
+                                const duplicateWarning = isDuplicate ? 
+                                    '<span style="color: #f56565; font-weight: bold;"> ⚠️ DUPLICATE</span>' : '';
+
+                                return `
+                                    <tr class="${isNew ? 'new-result' : ''}">
+                                        <td>${result.studentName}</td>
+                                        <td>${result.phoneNumber}${duplicateWarning}</td>
+                                        <td>${result.selectedSubject.charAt(0).toUpperCase() + result.selectedSubject.slice(1)}</td>
+                                        <td>
+                                            <div class="subject-scores">
+                                                <span class="subject-score">Eng: ${result.scores.english.score}/${result.scores.english.total}</span>
+                                                <span class="subject-score">Phy: ${result.scores.physics.score}/${result.scores.physics.total}</span>
+                                                <span class="subject-score">Che: ${result.scores.chemistry.score}/${result.scores.chemistry.total}</span>
+                                                <span class="subject-score">${result.scores.fourth.subject.charAt(0).toUpperCase() + result.scores.fourth.subject.slice(1)}: ${result.scores.fourth.score}/${result.scores.fourth.total}</span>
+                                            </div>
+                                        </td>
+                                        <td><strong>${result.totalScore}/${result.totalQuestions}</strong></td>
+                                        <td><span class="score-badge ${scoreClass}">${result.percentage}%</span></td>
+                                        <td><span class="time-badge">${timeMinutes}m ${timeSeconds}s</span></td>
+                                        <td><span class="chances-badge">${result.chancesUsed}/3</span></td>
+                                        <td>${new Date(result.submittedAt).toLocaleString()}</td>
+                                        <td>
+                                            <button class="delete-btn" onclick="deleteResult('${result._id}', '${result.studentName}')">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+            `;
+
+            container.innerHTML = tableHTML;
+        }
+
+        function updateStats() {
+            document.getElementById('totalStudents').textContent = results.length;
+
+            if (results.length === 0) {
+                document.getElementById('averageScore').textContent = '0%';
+                document.getElementById('highestScore').textContent = '0%';
+                document.getElementById('lowestScore').textContent = '0%';
+                return;
+            }
+
+            const percentages = results.map(r => r.percentage);
+            const average = (percentages.reduce((a, b) => a + b, 0) / percentages.length).toFixed(1);
+            const highest = Math.max(...percentages).toFixed(1);
+            const lowest = Math.min(...percentages).toFixed(1);
+
+            document.getElementById('averageScore').textContent = `${average}%`;
+            document.getElementById('highestScore').textContent = `${highest}%`;
+            document.getElementById('lowestScore').textContent = `${lowest}%`;
+        }
+
+        async function deleteResult(resultId, studentName) {
+            if (!confirm(`Are you sure you want to delete ${studentName}'s result?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/results/${resultId}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    loadResults();
+                } else {
+                    alert('Failed to delete result');
+                }
+            } catch (error) {
+                console.error('Delete result error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', () => {
+            filterResults();
+            displayResults();
+        });
+
+        document.getElementById('autoRefresh').addEventListener('change', (e) => {
+            if (e.target.checked) {
+                startAutoRefresh();
+            } else {
+                stopAutoRefresh();
+            }
+        });
+
+        function startAutoRefresh() {
+            refreshInterval = setInterval(() => {
+                loadResults(true);
+            }, 5000);
+        }
+
+        function stopAutoRefresh() {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+        }
+
+        // Initial load
+        loadMockInfo();
+        loadResults();
+        startAutoRefresh();
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            stopAutoRefresh();
+        });
+    </script>
+</body>
+</html>

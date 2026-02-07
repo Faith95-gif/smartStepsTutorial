@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Mock - Smart Steps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab:hover {
+            color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .add-question-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .questions-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .question-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .question-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .question-number {
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .question-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .btn-edit-q {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-delete-q {
+            background: #f56565;
+            color: white;
+        }
+
+        .question-text {
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .options-list {
+            list-style: none;
+            margin-bottom: 10px;
+        }
+
+        .option-item {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+
+        .option-item.correct {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+        }
+
+        .question-images {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .question-image {
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .options-inputs {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-input-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .option-input-group input[type="radio"] {
+            width: 20px;
+            height: 20px;
+        }
+
+        .option-input-group input[type="text"] {
+            flex: 1;
+        }
+
+        .image-upload {
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .image-upload:hover {
+            border-color: #667eea;
+        }
+
+        .image-upload input {
+            display: none;
+        }
+
+        .preview-images {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .preview-image {
+            position: relative;
+            max-width: 150px;
+        }
+
+        .preview-image img {
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #f56565;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                flex-wrap: wrap;
+            }
+
+            .tab {
+                padding: 10px 15px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">🎓 Smart Steps</div>
+        <a href="/admin-dashboard" class="back-btn">← Back to Dashboard</a>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="mockName">Loading...</h1>
+            <p id="mockInfo">Loading mock information...</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" data-subject="english">English (60)</button>
+            <button class="tab" data-subject="physics">Physics (40)</button>
+            <button class="tab" data-subject="chemistry">Chemistry (40)</button>
+            <button class="tab" data-subject="maths">Maths (40)</button>
+            <button class="tab" data-subject="biology">Biology (40)</button>
+        </div>
+
+        <div id="english" class="tab-content active">
+            <button class="add-question-btn" onclick="showAddQuestion('english')">+ Add English Question</button>
+            <div id="english-questions" class="questions-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+
+        <div id="physics" class="tab-content">
+            <button class="add-question-btn" onclick="showAddQuestion('physics')">+ Add Physics Question</button>
+            <div id="physics-questions" class="questions-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+
+        <div id="chemistry" class="tab-content">
+            <button class="add-question-btn" onclick="showAddQuestion('chemistry')">+ Add Chemistry Question</button>
+            <div id="chemistry-questions" class="questions-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+
+        <div id="maths" class="tab-content">
+            <button class="add-question-btn" onclick="showAddQuestion('maths')">+ Add Maths Question</button>
+            <div id="maths-questions" class="questions-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+
+        <div id="biology" class="tab-content">
+            <button class="add-question-btn" onclick="showAddQuestion('biology')">+ Add Biology Question</button>
+            <div id="biology-questions" class="questions-list">
+                <div class="loading">Loading questions...</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Question Modal -->
+    <div id="questionModal" class="modal">
+        <div class="modal-content">
+            <h2 id="modalTitle">Add Question</h2>
+            <form id="questionForm">
+                <div class="form-group">
+                    <label for="questionText">Question</label>
+                    <textarea id="questionText" required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Options (Select the correct answer)</label>
+                    <div class="options-inputs">
+                        <div class="option-input-group">
+                            <input type="radio" name="correctAnswer" value="0" required>
+                            <input type="text" id="option0" placeholder="Option A" required>
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correctAnswer" value="1" required>
+                            <input type="text" id="option1" placeholder="Option B" required>
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correctAnswer" value="2" required>
+                            <input type="text" id="option2" placeholder="Option C" required>
+                        </div>
+                        <div class="option-input-group">
+                            <input type="radio" name="correctAnswer" value="3" required>
+                            <input type="text" id="option3" placeholder="Option D" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Images (Optional)</label>
+                    <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+                        <p>Click to upload images</p>
+                        <input type="file" id="imageInput" accept="image/*" multiple>
+                    </div>
+                    <div id="previewImages" class="preview-images"></div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Save Question</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideQuestionModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('adminToken');
+        if (!token) {
+            window.location.href = '/admin-login';
+        }
+
+        const mockId = window.location.pathname.split('/').pop();
+        let currentMock = null;
+        let currentSubject = 'english';
+        let editingQuestion = null;
+        let uploadedImages = [];
+
+        // Tab switching
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const subject = tab.dataset.subject;
+                switchTab(subject);
+            });
+        });
+
+        function switchTab(subject) {
+            currentSubject = subject;
+            
+            // Update tab active state
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelector(`[data-subject="${subject}"]`).classList.add('active');
+            
+            // Update content active state
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(subject).classList.add('active');
+        }
+
+        async function loadMock() {
+            try {
+                const response = await fetch(`/api/admin/mocks/${mockId}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!response.ok) throw new Error('Failed to load mock');
+
+                const data = await response.json();
+                currentMock = data.mock;
+
+                document.getElementById('mockName').textContent = currentMock.name;
+                document.getElementById('mockInfo').textContent = 
+                    `Duration: ${currentMock.duration} minutes | Created: ${new Date(currentMock.createdAt).toLocaleDateString()}`;
+
+                displayQuestions();
+            } catch (error) {
+                console.error('Load mock error:', error);
+                alert('Failed to load mock exam');
+            }
+        }
+
+        function displayQuestions() {
+            const subjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
+            
+            subjects.forEach(subject => {
+                const container = document.getElementById(`${subject}-questions`);
+                const questions = currentMock.subjects[subject];
+
+                if (questions.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No questions added yet</div>';
+                    return;
+                }
+
+                const questionsHTML = questions.map((q, index) => `
+                    <div class="question-card">
+                        <div class="question-header">
+                            <span class="question-number">Question ${index + 1}</span>
+                            <div class="question-actions">
+                                <button class="btn-small btn-edit-q" onclick="editQuestion('${subject}', ${index})">Edit</button>
+                                <button class="btn-small btn-delete-q" onclick="deleteQuestion('${subject}', ${index})">Delete</button>
+                            </div>
+                        </div>
+                        <div class="question-text">${q.question}</div>
+                        <ul class="options-list">
+                            ${q.options.map((opt, i) => `
+                                <li class="option-item ${i === q.correctAnswer ? 'correct' : ''}">
+                                    ${String.fromCharCode(65 + i)}. ${opt}
+                                    ${i === q.correctAnswer ? ' ✓' : ''}
+                                </li>
+                            `).join('')}
+                        </ul>
+                        ${q.imageUrls && q.imageUrls.length > 0 ? `
+                            <div class="question-images">
+                                ${q.imageUrls.map(url => `
+                                    <img src="${url}" alt="Question image" class="question-image">
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `).join('');
+
+                container.innerHTML = questionsHTML;
+            });
+        }
+
+        function showAddQuestion(subject) {
+            currentSubject = subject;
+            editingQuestion = null;
+            document.getElementById('modalTitle').textContent = `Add ${subject.charAt(0).toUpperCase() + subject.slice(1)} Question`;
+            document.getElementById('questionForm').reset();
+            document.getElementById('previewImages').innerHTML = '';
+            uploadedImages = [];
+            document.getElementById('questionModal').classList.add('active');
+        }
+
+        function editQuestion(subject, index) {
+            currentSubject = subject;
+            editingQuestion = index;
+            const question = currentMock.subjects[subject][index];
+
+            document.getElementById('modalTitle').textContent = 'Edit Question';
+            document.getElementById('questionText').value = question.question;
+            
+            question.options.forEach((opt, i) => {
+                document.getElementById(`option${i}`).value = opt;
+            });
+            
+            document.querySelector(`input[name="correctAnswer"][value="${question.correctAnswer}"]`).checked = true;
+            
+            uploadedImages = [];
+            document.getElementById('previewImages').innerHTML = '';
+            
+            document.getElementById('questionModal').classList.add('active');
+        }
+
+        function hideQuestionModal() {
+            document.getElementById('questionModal').classList.remove('active');
+            document.getElementById('questionForm').reset();
+            uploadedImages = [];
+            editingQuestion = null;
+        }
+
+        document.getElementById('imageInput').addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            const previewContainer = document.getElementById('previewImages');
+            
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    uploadedImages.push(event.target.result);
+                    
+                    const imgDiv = document.createElement('div');
+                    imgDiv.className = 'preview-image';
+                    imgDiv.innerHTML = `
+                        <img src="${event.target.result}" alt="Preview">
+                        <button type="button" class="remove-image" onclick="removeImage(${uploadedImages.length - 1})">×</button>
+                    `;
+                    previewContainer.appendChild(imgDiv);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        function removeImage(index) {
+            uploadedImages.splice(index, 1);
+            const previewContainer = document.getElementById('previewImages');
+            previewContainer.children[index].remove();
+        }
+
+        document.getElementById('questionForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const question = document.getElementById('questionText').value;
+            const options = [
+                document.getElementById('option0').value,
+                document.getElementById('option1').value,
+                document.getElementById('option2').value,
+                document.getElementById('option3').value
+            ];
+            const correctAnswer = parseInt(document.querySelector('input[name="correctAnswer"]:checked').value);
+
+            const questionData = {
+                subject: currentSubject,
+                question,
+                options,
+                correctAnswer,
+                images: uploadedImages
+            };
+
+            try {
+                let response;
+                if (editingQuestion !== null) {
+                    response = await fetch(`/api/admin/mocks/${mockId}/questions/${currentSubject}/${editingQuestion}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(questionData)
+                    });
+                } else {
+                    response = await fetch(`/api/admin/mocks/${mockId}/questions`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(questionData)
+                    });
+                }
+
+                if (response.ok) {
+                    hideQuestionModal();
+                    loadMock();
+                } else {
+                    alert('Failed to save question');
+                }
+            } catch (error) {
+                console.error('Save question error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        async function deleteQuestion(subject, index) {
+            if (!confirm('Are you sure you want to delete this question?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/mocks/${mockId}/questions/${subject}/${index}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    loadMock();
+                } else {
+                    alert('Failed to delete question');
+                }
+            } catch (error) {
+                console.error('Delete question error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        document.getElementById('questionModal').addEventListener('click', (e) => {
+            if (e.target.id === 'questionModal') {
+                hideQuestionModal();
+            }
+        });
+
+        loadMock();
+    </script>
+</body>
+</html>

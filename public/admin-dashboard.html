@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Smart Steps</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .navbar-user {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+        }
+
+        .create-mock-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 30px;
+            transition: transform 0.2s;
+        }
+
+        .create-mock-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .mocks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .mock-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .mock-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .mock-card h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        .mock-info {
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .mock-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .mock-info-item:last-child {
+            border-bottom: none;
+        }
+
+        .mock-info-label {
+            font-weight: 600;
+        }
+
+        .question-counts {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .question-count {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .question-count-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .question-count-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .mock-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.8;
+        }
+
+        .btn-edit {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-results {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-delete {
+            background: #f56565;
+            color: white;
+        }
+
+        .share-link {
+            background: #e6f3ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            word-break: break-all;
+            font-size: 13px;
+            color: #667eea;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .share-link:hover {
+            background: #cce5ff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-state h2 {
+            margin-bottom: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .mocks-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .question-counts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">🎓 Smart Steps</div>
+        <div class="navbar-user">
+            <span id="adminName">Admin</span>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="header">
+            <h1>Mock Exam Dashboard</h1>
+            <p>Manage your mock exams and view student results</p>
+        </div>
+
+        <button class="create-mock-btn" onclick="showCreateModal()">+ Create New Mock Exam</button>
+
+        <div id="mocksContainer">
+            <div class="loading">Loading mock exams...</div>
+        </div>
+    </div>
+
+    <!-- Create Mock Modal -->
+    <div id="createModal" class="modal">
+        <div class="modal-content">
+            <h2>Create New Mock Exam</h2>
+            <form id="createMockForm">
+                <div class="form-group">
+                    <label for="mockName">Mock Exam Name</label>
+                    <input type="text" id="mockName" required placeholder="e.g., JAMB Mock 2025">
+                </div>
+                <div class="form-group">
+                    <label for="mockDuration">Duration (minutes)</label>
+                    <input type="number" id="mockDuration" required placeholder="e.g., 180" min="1">
+                </div>
+                <div class="modal-actions">
+                    <button type="submit" class="btn btn-primary">Create Mock</button>
+                    <button type="button" class="btn btn-secondary" onclick="hideCreateModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('adminToken');
+        const adminName = localStorage.getItem('adminName');
+        
+        if (!token) {
+            window.location.href = '/admin-login';
+        }
+
+        document.getElementById('adminName').textContent = adminName || 'Admin';
+
+        async function loadMocks() {
+            try {
+                const response = await fetch('/api/admin/mocks', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    if (response.status === 401) {
+                        localStorage.removeItem('adminToken');
+                        window.location.href = '/admin-login';
+                        return;
+                    }
+                    throw new Error('Failed to load mocks');
+                }
+
+                const data = await response.json();
+                displayMocks(data.mocks);
+            } catch (error) {
+                console.error('Load mocks error:', error);
+                document.getElementById('mocksContainer').innerHTML = 
+                    '<div class="empty-state"><h2>Error loading mock exams</h2></div>';
+            }
+        }
+
+        function displayMocks(mocks) {
+            const container = document.getElementById('mocksContainer');
+            
+            if (mocks.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>No Mock Exams Yet</h2>
+                        <p>Create your first mock exam to get started</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const mocksHTML = mocks.map(mock => `
+                <div class="mock-card">
+                    <h3>${mock.name}</h3>
+                    <div class="mock-info">
+                        <div class="mock-info-item">
+                            <span class="mock-info-label">Duration:</span>
+                            <span>${mock.duration} minutes</span>
+                        </div>
+                        <div class="mock-info-item">
+                            <span class="mock-info-label">Created:</span>
+                            <span>${new Date(mock.createdAt).toLocaleDateString()}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="question-counts">
+                        <div class="question-count">
+                            <div class="question-count-label">English</div>
+                            <div class="question-count-value">${mock.questionCounts.english}</div>
+                        </div>
+                        <div class="question-count">
+                            <div class="question-count-label">Physics</div>
+                            <div class="question-count-value">${mock.questionCounts.physics}</div>
+                        </div>
+                        <div class="question-count">
+                            <div class="question-count-label">Chemistry</div>
+                            <div class="question-count-value">${mock.questionCounts.chemistry}</div>
+                        </div>
+                        <div class="question-count">
+                            <div class="question-count-label">Maths</div>
+                            <div class="question-count-value">${mock.questionCounts.maths}</div>
+                        </div>
+                        <div class="question-count">
+                            <div class="question-count-label">Biology</div>
+                            <div class="question-count-value">${mock.questionCounts.biology}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="share-link" onclick="copyLink('${mock.shareId}')">
+                        📋 Click to copy student link
+                    </div>
+                    
+                    <div class="mock-actions">
+                        <button class="btn btn-edit" onclick="editMock('${mock.id}')">Edit Questions</button>
+                        <button class="btn btn-results" onclick="viewResults('${mock.id}')">View Results</button>
+                        <button class="btn btn-delete" onclick="deleteMock('${mock.id}', '${mock.name}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = `<div class="mocks-grid">${mocksHTML}</div>`;
+        }
+
+        function showCreateModal() {
+            document.getElementById('createModal').classList.add('active');
+        }
+
+        function hideCreateModal() {
+            document.getElementById('createModal').classList.remove('active');
+            document.getElementById('createMockForm').reset();
+        }
+
+        document.getElementById('createMockForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const name = document.getElementById('mockName').value;
+            const duration = document.getElementById('mockDuration').value;
+
+            try {
+                const response = await fetch('/api/admin/mocks', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name, duration })
+                });
+
+                if (response.ok) {
+                    hideCreateModal();
+                    loadMocks();
+                } else {
+                    alert('Failed to create mock exam');
+                }
+            } catch (error) {
+                console.error('Create mock error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        });
+
+        function copyLink(shareId) {
+            const link = `${window.location.origin}/mock/${shareId}`;
+            navigator.clipboard.writeText(link).then(() => {
+                alert('Link copied to clipboard!');
+            }).catch(() => {
+                alert('Failed to copy link. Please try again.');
+            });
+        }
+
+        function editMock(id) {
+            window.location.href = `/admin/edit-mock/${id}`;
+        }
+
+        function viewResults(id) {
+            window.location.href = `/admin/mock-results/${id}`;
+        }
+
+        async function deleteMock(id, name) {
+            if (!confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/admin/mocks/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    loadMocks();
+                } else {
+                    alert('Failed to delete mock exam');
+                }
+            } catch (error) {
+                console.error('Delete mock error:', error);
+                alert('An error occurred. Please try again.');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('adminToken');
+            localStorage.removeItem('adminName');
+            window.location.href = '/admin-login';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('createModal').addEventListener('click', (e) => {
+            if (e.target.id === 'createModal') {
+                hideCreateModal();
+            }
+        });
+
+        // Load mocks on page load
+        loadMocks();
+    </script>
+</body>
+</html>
