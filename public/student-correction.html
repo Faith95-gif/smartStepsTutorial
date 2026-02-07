@@ -626,11 +626,15 @@
                 });
             });
 
+            // Convert score to /400 scale
+            const scaledScore = Math.round((correctionData.totalScore / correctionData.totalQuestions) * 400);
+            
             const html = `
                 <div class="results-card">
                     <div class="score-summary">
                         <div class="score-label">Your Score</div>
-                        <div class="main-score">${correctionData.totalScore}/${correctionData.totalQuestions}</div>
+                        <div class="main-score">${scaledScore}/400</div>
+                        <div style="font-size: 14px; color: var(--color-text-tertiary); margin-bottom: 16px;">(${correctionData.totalScore}/${correctionData.totalQuestions})</div>
                         <div class="percentage ${percentageClass}">${correctionData.percentage}%</div>
                     </div>
 
@@ -656,19 +660,23 @@
                     <div class="subject-scores">
                         <div class="subject-score-card">
                             <h3>English</h3>
-                            <div class="score">${correctionData.scores.english.score}/${correctionData.scores.english.total}</div>
+                            <div class="score">${Math.round((correctionData.scores.english.score / correctionData.scores.english.total) * 100)}/100</div>
+                            <div style="font-size: 12px; color: var(--color-text-tertiary); margin-top: 4px;">(${correctionData.scores.english.score}/${correctionData.scores.english.total})</div>
                         </div>
                         <div class="subject-score-card">
                             <h3>Physics</h3>
-                            <div class="score">${correctionData.scores.physics.score}/${correctionData.scores.physics.total}</div>
+                            <div class="score">${Math.round((correctionData.scores.physics.score / correctionData.scores.physics.total) * 100)}/100</div>
+                            <div style="font-size: 12px; color: var(--color-text-tertiary); margin-top: 4px;">(${correctionData.scores.physics.score}/${correctionData.scores.physics.total})</div>
                         </div>
                         <div class="subject-score-card">
                             <h3>Chemistry</h3>
-                            <div class="score">${correctionData.scores.chemistry.score}/${correctionData.scores.chemistry.total}</div>
+                            <div class="score">${Math.round((correctionData.scores.chemistry.score / correctionData.scores.chemistry.total) * 100)}/100</div>
+                            <div style="font-size: 12px; color: var(--color-text-tertiary); margin-top: 4px;">(${correctionData.scores.chemistry.score}/${correctionData.scores.chemistry.total})</div>
                         </div>
                         <div class="subject-score-card">
                             <h3>${correctionData.selectedSubject.charAt(0).toUpperCase() + correctionData.selectedSubject.slice(1)}</h3>
-                            <div class="score">${correctionData.scores.fourth.score}/${correctionData.scores.fourth.total}</div>
+                            <div class="score">${Math.round((correctionData.scores.fourth.score / correctionData.scores.fourth.total) * 100)}/100</div>
+                            <div style="font-size: 12px; color: var(--color-text-tertiary); margin-top: 4px;">(${correctionData.scores.fourth.score}/${correctionData.scores.fourth.total})</div>
                         </div>
                     </div>
                 </div>
