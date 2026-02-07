@@ -814,11 +814,13 @@
                 <div class="rules-box">
                     <h3>⚠️ Important Rules</h3>
                     <ul>
-                        <li><strong style="color: #ef4444;">You can only attempt this mock ONCE on this device</strong></li>
+                        <li><strong style="color: #ef4444;">You can only attempt this mock ONCE</strong></li>
                         <li>You have <strong>3 chances</strong> only</li>
                         <li>Leaving this page will use 1 chance</li>
                         <li>Exiting fullscreen will use 1 chance</li>
                         <li>After 3 chances, the exam ends automatically</li>
+                        <li>Any student who takes this mock exam using a fake or altered name will have their scores deleted.</li>
+                        <li>No usage of AI, you would be on your own in the exam</li>
                         <li>The exam must be completed in <span id="durationDisplay">--</span> minutes</li>
                     </ul>
                 </div>
@@ -864,32 +866,58 @@
         const shareId = window.location.pathname.split('/').pop();
         console.log('Loading mock with shareId:', shareId);
         
-        // Check if this mock has already been attempted on this device
-        const attemptKey = `mock_attempted_${shareId}`;
-        const hasAttempted = localStorage.getItem(attemptKey);
-        
-        if (hasAttempted) {
-            // Show already attempted message
-            document.getElementById('welcomeScreen').innerHTML = `
-                <div class="welcome-container" style="text-align: center;">
-                    <h1 style="color: #f56565; font-size: 48px;">⚠️</h1>
-                    <h1 style="color: #333; margin: 20px 0;">Mock Already Attempted</h1>
-                    <p style="color: #666; font-size: 18px; line-height: 1.6;">
-                        You have already attempted this mock exam on this device.<br>
-                        <strong>Each student is allowed only ONE attempt per mock.</strong>
-                    </p>
-                    <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 30px 0; border: 2px solid #ffc107;">
-                        <p style="color: #856404; margin: 0;">
-                            <strong>Attempted on:</strong> ${hasAttempted}
-                        </p>
-                    </div>
-                    <p style="color: #999; font-size: 14px;">
-                        If you believe this is an error, please contact the administrator.
-                    </p>
-                </div>
-            `;
-            throw new Error('Mock already attempted on this device');
-        }
+        // Check device on page load using IP address
+        (async function checkDevice() {
+            try {
+                // Check if this device (IP) has already attempted this mock
+                const checkResponse = await fetch(`/api/mocks/${shareId}/check-device`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({})
+                });
+                
+                const checkData = await checkResponse.json();
+                
+                if (!checkData.canAttempt) {
+                    // Device has already attempted this mock
+                    const attemptDate = checkData.attemptedAt ? 
+                        new Date(checkData.attemptedAt).toLocaleString() : 'Unknown';
+                    
+                    document.getElementById('welcomeScreen').innerHTML = `
+                        <div class="welcome-container" style="text-align: center;">
+                            <h1 style="color: #f56565; font-size: 48px;">⚠️</h1>
+                            <h1 style="color: #333; margin: 20px 0;">Mock Already Attempted</h1>
+                            <p style="color: #666; font-size: 18px; line-height: 1.6;">
+                                This device has already attempted this mock exam.<br>
+                                <strong>Each device is allowed only ONE attempt per mock.</strong>
+                            </p>
+                            <div style="background: #fff3cd; padding: 20px; border-radius: 10px; margin: 30px 0; border: 2px solid #ffc107;">
+                                <p style="color: #856404; margin: 0;">
+                                    <strong>Attempted on:</strong> ${attemptDate}
+                                </p>
+                            </div>
+                            ${checkData.hasResult && checkData.correctionId ? `
+                                <a href="/correction/${checkData.correctionId}" style="display: inline-block; padding: 14px 28px; background: #0066ff; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; margin-top: 16px;">
+                                    View Your Results
+                                </a>
+                            ` : ''}
+                            <p style="color: #999; font-size: 14px; margin-top: 20px;">
+                                If you believe this is an error, please contact the administrator.
+                            </p>
+                        </div>
+                    `;
+                    throw new Error('Mock already attempted on this device');
+                }
+                
+                console.log('Device can attempt mock. IP:', checkData.ipAddress);
+            } catch (error) {
+                if (error.message !== 'Mock already attempted on this device') {
+                    console.error('Error checking device:', error);
+                }
+            }
+        })();
         
         let mockData = null;
         let studentName = '';
@@ -947,36 +975,38 @@
             phoneNumber = document.getElementById('phoneNumber').value;
             selectedSubject = document.getElementById('subjectChoice').value;
 
-            // Check if this phone number has already attempted this mock
+            // Register device attempt with backend (using IP address)
             try {
-                const checkResponse = await fetch(`/api/mocks/${shareId}/check-attempt`, {
+                const registerResponse = await fetch(`/api/mocks/${shareId}/register-device`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ phoneNumber })
+                    body: JSON.stringify({ 
+                        phoneNumber 
+                    })
                 });
 
-                const checkData = await checkResponse.json();
+                const registerData = await registerResponse.json();
 
-                if (checkData.attempted) {
-                    alert(`This phone number has already been used to attempt this mock exam.\n\nPrevious attempt by: ${checkData.studentName}\nDate: ${new Date(checkData.attemptDate).toLocaleString()}\n\nEach student is allowed only ONE attempt per mock.`);
+                if (!registerResponse.ok) {
+                    if (registerData.attemptedAt) {
+                        alert(`This device has already attempted this mock exam.\n\nAttempted on: ${new Date(registerData.attemptedAt).toLocaleString()}\n\nEach device is allowed only ONE attempt per mock.`);
+                    } else {
+                        alert(registerData.error || 'Failed to register device attempt');
+                    }
                     return;
                 }
-            } catch (error) {
-                console.error('Error checking attempt:', error);
-                // Continue anyway if check fails (network error, etc.)
-            }
 
-            startExam();
+                console.log('Device registered successfully. IP:', registerData.ipAddress);
+                startExam();
+            } catch (error) {
+                console.error('Error registering device:', error);
+                alert('Failed to start exam. Please try again.');
+            }
         });
 
         function startExam() {
-            // Mark this mock as attempted on this device
-            const attemptKey = `mock_attempted_${shareId}`;
-            const attemptDate = new Date().toLocaleString();
-            localStorage.setItem(attemptKey, attemptDate);
-            
             // Request fullscreen
             const elem = document.documentElement;
             if (elem.requestFullscreen) {
