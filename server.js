@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -30,6 +31,16 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY || '125497217998532',
     api_secret: process.env.CLOUDINARY_API_SECRET || 'w5UR9A2UgzujVlcuzmnOFRr56Bg'
 });
+
+// CORS configuration - MUST come before other middleware
+app.use(cors({
+    origin: process.env.NODE_ENV === 'production' 
+        ? ['https://smartstepstutorial.onrender.com'] 
+        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+}));
 
 // Middleware
 app.use(express.json({ limit: '50mb' }));
@@ -608,6 +619,54 @@ app.delete('/api/admin/mocks/:id/questions/:subject/:index', authenticateAdmin, 
     } catch (error) {
         console.error('Delete question error:', error);
         res.status(500).json({ error: 'Failed to delete question' });
+    }
+});
+
+// Bulk Update Mock Questions (for setting questions from code)
+app.put('/api/admin/mocks/:id/bulk-update', authenticateAdmin, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { subjects } = req.body;
+
+        const mock = await MockExam.findOne({ 
+            _id: id,
+            adminId: req.admin._id 
+        });
+
+        if (!mock) {
+            return res.status(404).json({ error: 'Mock exam not found' });
+        }
+
+        // Validate subjects structure
+        const validSubjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
+        for (const subject of validSubjects) {
+            if (subjects[subject]) {
+                mock.subjects[subject] = subjects[subject].map(q => ({
+                    question: q.question,
+                    options: q.options,
+                    correctAnswer: parseInt(q.correctAnswer),
+                    imageUrls: q.imageUrls || [],
+                    imagePublicIds: q.imagePublicIds || []
+                }));
+            }
+        }
+
+        await mock.save();
+
+        res.json({ 
+            success: true,
+            message: 'Questions updated successfully',
+            questionCounts: {
+                english: mock.subjects.english.length,
+                physics: mock.subjects.physics.length,
+                chemistry: mock.subjects.chemistry.length,
+                maths: mock.subjects.maths.length,
+                biology: mock.subjects.biology.length
+            }
+        });
+    } catch (error) {
+        console.error('Bulk update error:', error);
+        res.status(500).json({ error: 'Failed to bulk update questions' });
     }
 });
 
