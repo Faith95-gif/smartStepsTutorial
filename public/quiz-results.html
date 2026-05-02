@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Results - Smart Steps Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/logo.css">
+    <link rel="stylesheet" href="/css/quiz-results.css">
+    <style>
+        /* Inline styles for delete functionality - add these to your CSS file */
+        .table-actions {
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background: var(--card-background, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        
+        .bulk-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .btn-error {
+            background: #ef4444;
+            color: white;
+            border: none;
+        }
+        
+        .btn-error:hover:not(:disabled) {
+            background: #dc2626;
+            transform: translateY(-1px);
+        }
+        
+        .btn-error:disabled {
+            background: #94a3b8;
+            color: #ffffff;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+        
+        .btn-sm {
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            min-width: 300px;
+            animation: slideInRight 0.3s ease-out;
+        }
+        
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(100%); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .notification-success {
+            background: rgba(16, 185, 129, 0.95);
+            color: white;
+        }
+        
+        .notification-error {
+            background: rgba(239, 68, 68, 0.95);
+            color: white;
+        }
+        
+        .notification-close {
+            background: none;
+            border: none;
+            color: inherit;
+            cursor: pointer;
+            padding: 0.25rem;
+            border-radius: 0.25rem;
+            margin-left: auto;
+            opacity: 0.8;
+        }
+        
+        .notification-close:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        
+        @media (max-width: 768px) {
+            .bulk-actions { flex-direction: column; align-items: flex-start; }
+            .action-buttons { flex-direction: column; width: 100%; }
+            .action-buttons .btn { width: 100%; justify-content: center; }
+            .notification { left: 10px; right: 10px; min-width: auto; }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+             <div class="logo"><img class="" src="/img/steps_smart.png" alt=""></div>
+                <span>Smart Steps Tutorial</span>
+            </div>
+            <div class="nav-links">
+                <a href="/teacher-dashboard" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div id="loadingContainer" class="text-center">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
+            <p class="mt-3">Loading quiz results...</p>
+        </div>
+
+        <div id="resultsContainer" class="quiz-container hidden">
+            <div class="dashboard-header">
+                <h1 class="dashboard-title">
+                    <i class="fas fa-chart-bar"></i>
+                    Quiz Results
+                </h1>
+                <div id="quizInfo" class="dashboard-subtitle"></div>
+                
+                <div id="quizStats" class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAttempts">0</div>
+                        <div class="stat-label">Total Attempts</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="averageScore">0%</div>
+                        <div class="stat-label">Average Score</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="highestScore">0%</div>
+                        <div class="stat-label">Highest Score</div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="responsesTable"></div>
+        </div>
+
+        <div id="errorContainer" class="quiz-container hidden">
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-triangle"></i>
+                <span>Quiz results not found or access denied.</span>
+            </div>
+            <div class="text-center">
+                <a href="/teacher-dashboard" class="btn btn-primary">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/quiz-results.js"></script>
+</body>
+</html>

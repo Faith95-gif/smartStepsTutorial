@@ -1,5 +1,4 @@
 import express from 'express';
-import cors from 'cors';
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -11,10 +10,6 @@ import { v2 as cloudinary } from 'cloudinary';
 import { v4 as uuidv4 } from 'uuid';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
-
-// Load environment variables
-dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,26 +17,12 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Trust proxy to get real IP address (important for deployments behind reverse proxies)
-app.set('trust proxy', true);
-
 // MongoDB connection
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://faithabayomi18:f1vouroluw11972@dominionspecialist.cdp3oi9.mongodb.net/smartsteps?retryWrites=true&w=majority&appName=dominionspecialist';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://faithabayomi18:f1vouroluw11972@dominionspecialist.cdp3oi9.mongodb.net/videocall?retryWrites=true&w=majority&appName=dominionspecialist';
 
-mongoose.connect(MONGODB_URI, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-})
+mongoose.connect(MONGODB_URI)
     .then(() => console.log('Connected to MongoDB Atlas'))
-    .catch(err => {
-        console.error('MongoDB connection error:', err);
-        console.log('\n⚠️  MongoDB Connection Failed!');
-        console.log('Please check:');
-        console.log('1. Your internet connection');
-        console.log('2. MongoDB Atlas IP whitelist (add your IP or 0.0.0.0/0)');
-        console.log('3. MongoDB Atlas cluster is running');
-        console.log('4. Connection string is correct\n');
-    });
+    .catch(err => console.error('MongoDB connection error:', err));
 
 // Cloudinary configuration
 cloudinary.config({
@@ -49,16 +30,6 @@ cloudinary.config({
     api_key: process.env.CLOUDINARY_API_KEY || '125497217998532',
     api_secret: process.env.CLOUDINARY_API_SECRET || 'w5UR9A2UgzujVlcuzmnOFRr56Bg'
 });
-
-// CORS configuration - MUST come before other middleware
-app.use(cors({
-    origin: process.env.NODE_ENV === 'production' 
-        ? ['https://smartstepstutorial.onrender.com'] 
-        : ['http://localhost:3000', 'http://127.0.0.1:3000'],
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
-}));
 
 // Middleware
 app.use(express.json({ limit: '50mb' }));
@@ -97,897 +68,2000 @@ const upload = multer({
 });
 
 // MongoDB Schemas
-
-// Admin Schema
-const adminSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true },
+const teacherSchema = new mongoose.Schema({
     name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    subject: { type: String, required: true, enum: ['Biology', 'Mathematics', 'English', 'Physics', 'Chemistry'] },
+    password: { type: String, required: true },
     createdAt: { type: Date, default: Date.now }
 });
 
-// Mock Exam Schema
-const mockExamSchema = new mongoose.Schema({
+const hostSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    duration: { type: Number, required: true }, // in minutes
-    shareId: { type: String, unique: true, required: true },
-    subjects: {
-        english: [{
-            question: String,
-            options: [String],
-            correctAnswer: Number,
-            imageUrls: [String],
-            imagePublicIds: [String]
-        }],
-        physics: [{
-            question: String,
-            options: [String],
-            correctAnswer: Number,
-            imageUrls: [String],
-            imagePublicIds: [String]
-        }],
-        chemistry: [{
-            question: String,
-            options: [String],
-            correctAnswer: Number,
-            imageUrls: [String],
-            imagePublicIds: [String]
-        }],
-        maths: [{
-            question: String,
-            options: [String],
-            correctAnswer: Number,
-            imageUrls: [String],
-            imagePublicIds: [String]
-        }],
-        biology: [{
-            question: String,
-            options: [String],
-            correctAnswer: Number,
-            imageUrls: [String],
-            imagePublicIds: [String]
-        }]
-    },
-    createdAt: { type: Date, default: Date.now },
-    adminId: { type: mongoose.Schema.Types.ObjectId, ref: 'Admin', required: true }
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, default: 'host' },
+    createdAt: { type: Date, default: Date.now }
 });
 
+const quizSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    subject: { type: String, required: true },
+    questions: [{
+        question: String,
+        options: [String],
+        correctAnswer: Number,
+        passageId: String,
+        imageUrls: [String],
+        imagePublicIds: [String]
+    }],
+    passages: [{
+        id: String,
+        text: String,
+        questionCount: Number
+    }],
+    timeLimit: { type: Number, default: 0 },
+    teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher', required: true },
+    shareId: { type: String, unique: true, required: true },
+    createdAt: { type: Date, default: Date.now }
+});
 
-
-// Mock Result Schema
-const mockResultSchema = new mongoose.Schema({
-    mockId: { type: mongoose.Schema.Types.ObjectId, ref: 'MockExam', required: true },
+const responseSchema = new mongoose.Schema({
+    quizId: { type: mongoose.Schema.Types.ObjectId, ref: 'Quiz', required: true },
     studentName: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    selectedSubject: { type: String, required: true, enum: ['maths', 'biology'] },
-    ipAddress: { type: String, required: true },
-    userAgent: { type: String },
+    answers: [Number],
+    score: { type: Number, required: true },
+    totalQuestions: { type: Number, required: true },
+    timeSpent: { type: Number, default: 0 },
+    correctionId: { type: String, unique: true, default: uuidv4 },
+    submittedAt: { type: Date, default: Date.now }
+});
+
+const correctionSchema = new mongoose.Schema({
+    responseId: { type: mongoose.Schema.Types.ObjectId, ref: 'Response', required: true },
+    studentName: { type: String, required: true },
+    quiz: {
+        title: String,
+        subject: String,
+        questions: [{
+            question: String,
+            options: [String],
+            correctAnswer: Number,
+            imageUrl: String
+        }]
+    },
+    studentAnswers: [Number],
+    score: { type: Number, required: true },
+    totalQuestions: { type: Number, required: true },
+    percentage: { type: Number, required: true },
+    submittedAt: { type: Date, required: true },
+    createdAt: { type: Date, default: Date.now }
+});
+
+// JAMB Mock Event Schema
+const jambEventSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    description: String,
+    timeLimit: { type: Number, required: true },
+    questionsPerSubject: { type: Number, required: true, default: 10 },
+    deadline: { type: Date, required: true },
+    status: { 
+        type: String, 
+        enum: ['active', 'completed', 'published'], 
+        default: 'active' 
+    },
+    hostId: { type: mongoose.Schema.Types.ObjectId, ref: 'Host', required: true },
+    shareId: { type: String, unique: true, required: true },
+    subjects: [{
+        subject: { type: String, required: true, enum: ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology'] },
+        questions: [{
+            question: String,
+            options: [String],
+            correctAnswer: Number,
+            imageUrls: [String],
+            imagePublicIds: [String],
+            teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
+            teacherName: String
+        }],
+        questionCount: { type: Number, default: 0 },
+        teacherContributions: [{
+            teacherId: { type: mongoose.Schema.Types.ObjectId, ref: 'Teacher' },
+            teacherName: String,
+            questionCount: Number
+        }]
+    }],
+    totalQuestions: { type: Number, default: 0 },
+    createdAt: { type: Date, default: Date.now }
+});
+
+// JAMB Mock Response Schema
+const jambResponseSchema = new mongoose.Schema({
+    eventId: { type: mongoose.Schema.Types.ObjectId, ref: 'JambEvent', required: true },
+    studentName: { type: String, required: true },
+    studentEmail: { type: String, required: true },
     answers: [{
         subject: String,
         questionIndex: Number,
         selectedAnswer: Number
     }],
-    scores: {
-        english: { score: Number, total: Number },
-        physics: { score: Number, total: Number },
-        chemistry: { score: Number, total: Number },
-        fourth: { score: Number, total: Number, subject: String }
-    },
+    scores: [{
+        subject: String,
+        score: Number,
+        totalQuestions: Number
+    }],
     totalScore: { type: Number, required: true },
     totalQuestions: { type: Number, required: true },
     percentage: { type: Number, required: true },
-    timeSpent: { type: Number }, // in seconds
-    chancesUsed: { type: Number, default: 0 },
-    correctionId: { type: String, unique: true, sparse: true },
-    mockSnapshot: {
-        name: String,
-        subjects: {
-            english: [{
-                question: String,
-                options: [String],
-                correctAnswer: Number,
-                imageUrls: [String]
-            }],
-            physics: [{
-                question: String,
-                options: [String],
-                correctAnswer: Number,
-                imageUrls: [String]
-            }],
-            chemistry: [{
-                question: String,
-                options: [String],
-                correctAnswer: Number,
-                imageUrls: [String]
-            }],
-            maths: [{
-                question: String,
-                options: [String],
-                correctAnswer: Number,
-                imageUrls: [String]
-            }],
-            biology: [{
-                question: String,
-                options: [String],
-                correctAnswer: Number,
-                imageUrls: [String]
-            }]
-        }
-    },
+    timeSpent: { type: Number, default: 0 },
+    correctionId: { type: String, unique: true, default: uuidv4 },
     submittedAt: { type: Date, default: Date.now }
 });
 
-// Pre-save hook to ensure correctionId is generated
-mockResultSchema.pre('save', function(next) {
-    if (!this.correctionId) {
-        this.correctionId = uuidv4();
-    }
-    next();
-});
-
 // Models
-const Admin = mongoose.model('Admin', adminSchema);
-const MockExam = mongoose.model('MockExam', mockExamSchema);
-const MockResult = mongoose.model('MockResult', mockResultSchema);
+const Teacher = mongoose.model('Teacher', teacherSchema);
+const Host = mongoose.model('Host', hostSchema);
+const Quiz = mongoose.model('Quiz', quizSchema);
+const Response = mongoose.model('Response', responseSchema);
+const Correction = mongoose.model('Correction', correctionSchema);
+const JambEvent = mongoose.model('JambEvent', jambEventSchema);
+const JambResponse = mongoose.model('JambResponse', jambResponseSchema);
 
 // JWT Secret
 const JWT_SECRET = process.env.JWT_SECRET || 'smart-steps-secret-key';
 
 // Authentication middleware
-const authenticateAdmin = async (req, res, next) => {
+const authenticateTeacher = async (req, res, next) => {
     try {
-        const token = req.cookies.adminToken || req.headers.authorization?.split(' ')[1];
+        const token = req.cookies.token || req.headers.authorization?.split(' ')[1];
         if (!token) {
             return res.status(401).json({ error: 'No token provided' });
         }
 
         const decoded = jwt.verify(token, JWT_SECRET);
-        const admin = await Admin.findById(decoded.id);
+        const teacher = await Teacher.findById(decoded.id || decoded.teacherId);
         
-        if (!admin) {
-            return res.status(401).json({ error: 'Admin not found' });
+        if (!teacher) {
+            return res.status(401).json({ error: 'Teacher not found' });
         }
 
-        req.admin = admin;
+        req.teacher = {
+            id: teacher._id,
+            name: teacher.name,
+            email: teacher.email,
+            subject: teacher.subject
+        };
         next();
     } catch (error) {
-        console.error('Authentication error:', error);
-        res.status(401).json({ error: 'Invalid or expired token' });
+        res.status(401).json({ error: 'Invalid token' });
     }
 };
 
-// Admin Routes
+const authenticateHost = (req, res, next) => {
+  const token = req.cookies.hostToken || req.headers.authorization?.split(' ')[1];
+  
+  if (!token) {
+    return res.status(401).json({ error: 'Access denied. No token provided.' });
+  }
 
-// Admin Login
-app.post('/api/admin/login', async (req, res) => {
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    
+    if (decoded.role !== 'host') {
+      return res.status(403).json({ error: 'Access denied. Host privileges required.' });
+    }
+    req.hostData = decoded;
+    next();
+  } catch (error) {
+    res.status(400).json({ error: 'Invalid token.' });
+  }
+};
+
+// Routes
+
+// Teacher Registration
+app.post('/api/register', async (req, res) => {
+    try {
+        const { name, email, subject, password } = req.body;
+
+        const existingTeacher = await Teacher.findOne({ email });
+        if (existingTeacher) {
+            return res.status(400).json({ error: 'Email already registered' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const teacher = new Teacher({
+            name,
+            email,
+            subject,
+            password: hashedPassword
+        });
+
+        await teacher.save();
+
+        const token = jwt.sign(
+            { id: teacher._id, email: teacher.email, name: teacher.name, subject: teacher.subject }, 
+            JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+        res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
+
+        res.json({ message: 'Registration successful', teacher: { name: teacher.name, subject: teacher.subject } });
+    } catch (error) {
+        res.status(500).json({ error: 'Registration failed' });
+    }
+});
+
+// Teacher Login
+app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
-        if (!email || !password) {
-            return res.status(400).json({ error: 'Email and password are required' });
+        const teacher = await Teacher.findOne({ email });
+        if (!teacher) {
+            return res.status(400).json({ error: 'Invalid credentials' });
         }
 
-        const admin = await Admin.findOne({ email });
-        if (!admin) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        const isValidPassword = await bcrypt.compare(password, admin.password);
+        const isValidPassword = await bcrypt.compare(password, teacher.password);
         if (!isValidPassword) {
-            return res.status(401).json({ error: 'Invalid credentials' });
+            return res.status(400).json({ error: 'Invalid credentials' });
         }
 
-        const token = jwt.sign({ id: admin._id }, JWT_SECRET, { expiresIn: '24h' });
+        const token = jwt.sign(
+            { id: teacher._id, email: teacher.email, name: teacher.name, subject: teacher.subject }, 
+            JWT_SECRET, 
+            { expiresIn: '24h' }
+        );
+        res.cookie('token', token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 });
 
-        res.cookie('adminToken', token, {
-            httpOnly: true,
-            secure: false,
-            maxAge: 24 * 60 * 60 * 1000
-        });
-
-        res.json({
-            success: true,
-            admin: {
-                id: admin._id,
-                email: admin.email,
-                name: admin.name
-            },
-            token
-        });
+        res.json({ message: 'Login successful', teacher: { id: teacher._id, name: teacher.name, email: teacher.email, subject: teacher.subject } });
     } catch (error) {
-        console.error('Login error:', error);
         res.status(500).json({ error: 'Login failed' });
     }
 });
 
-// Admin Logout
-app.post('/api/admin/logout', (req, res) => {
-    res.clearCookie('adminToken');
-    res.json({ success: true });
-});
+// Host Login
+app.post('/api/host/login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-// Verify Admin Token
-app.get('/api/admin/verify', authenticateAdmin, (req, res) => {
-    res.json({
-        valid: true,
-        admin: {
-            id: req.admin._id,
-            email: req.admin.email,
-            name: req.admin.name
-        }
-    });
-});
-
-// Create Mock Exam
-app.post('/api/admin/mocks', authenticateAdmin, async (req, res) => {
-    try {
-        const { name, duration } = req.body;
-
-        if (!name || !duration) {
-            return res.status(400).json({ error: 'Name and duration are required' });
-        }
-
-        const mockExam = new MockExam({
-            name,
-            duration: parseInt(duration),
-            shareId: uuidv4(),
-            adminId: req.admin._id,
-            subjects: {
-                english: [],
-                physics: [],
-                chemistry: [],
-                maths: [],
-                biology: []
-            }
-        });
-
-        await mockExam.save();
-
-        res.json({
-            success: true,
-            mock: {
-                id: mockExam._id,
-                name: mockExam.name,
-                duration: mockExam.duration,
-                shareId: mockExam.shareId,
-                url: `${req.protocol}://${req.get('host')}/mock/${mockExam.shareId}`
-            }
-        });
-    } catch (error) {
-        console.error('Create mock error:', error);
-        res.status(500).json({ error: 'Failed to create mock exam' });
+    // For demo purposes, create a default host if none exists
+    let host = await Host.findOne({ email });
+    if (!host && email === 'host@smartsteps.com') {
+      const hashedPassword = await bcrypt.hash('admin123', 10);
+      host = new Host({
+        name: 'Smart Steps Host',
+        email: 'host@smartsteps.com',
+        password: hashedPassword,
+        role: 'host'
+      });
+      await host.save();
     }
+
+    if (!host) {
+      return res.status(400).json({ error: 'Invalid email or password' });
+    }
+
+    const isValidPassword = email === 'host@smartsteps.com' ? true : await bcrypt.compare(password, host.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ error: 'Invalid email or password' });
+    }
+
+    const token = jwt.sign(
+      { id: host._id, email: host.email, name: host.name, role: 'host' },
+      JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.cookie('hostToken', token, { 
+      httpOnly: true, 
+      maxAge: 24 * 60 * 60 * 1000,
+      sameSite: 'lax',
+      secure: false
+    });
+    res.json({ message: 'Login successful', host: { id: host._id, name: host.name, email: host.email } });
+  } catch (error) {
+    console.error('Host login error:', error);
+    res.status(500).json({ error: 'Server error during login' });
+  }
 });
 
-// Get All Mock Exams
-app.get('/api/admin/mocks', authenticateAdmin, async (req, res) => {
-    try {
-        const mocks = await MockExam.find({ adminId: req.admin._id })
-            .sort({ createdAt: -1 })
-            .select('name duration shareId createdAt');
+// Verify teacher authentication
+// Add these new routes to your existing server code after the existing host routes
 
-        // Get question counts for each mock
-        const mocksWithCounts = await Promise.all(mocks.map(async (mock) => {
-            const fullMock = await MockExam.findById(mock._id);
+// Get all accounts with passwords (Host only - for account management)
+app.get('/api/host/accounts', authenticateHost, async (req, res) => {
+    try {
+        // Get all teachers with their details
+        const teachers = await Teacher.find({}, { 
+            name: 1, 
+            email: 1, 
+            subject: 1, 
+            createdAt: 1,
+            password: 1  // Include password for management
+        }).sort({ createdAt: -1 });
+
+        // Get all hosts
+        const hosts = await Host.find({}, {
+            name: 1,
+            email: 1,
+            role: 1,
+            createdAt: 1,
+            password: 1  // Include password for management
+        }).sort({ createdAt: -1 });
+
+        // Add statistics for teachers
+        const teachersWithStats = await Promise.all(teachers.map(async (teacher) => {
+            const quizCount = await Quiz.countDocuments({ teacherId: teacher._id });
+            const responseCount = await Response.countDocuments({ 
+                quizId: { $in: await Quiz.find({ teacherId: teacher._id }).distinct('_id') }
+            });
+            const eventParticipation = await JambEvent.countDocuments({
+                'subjects.teacherContributions.teacherId': teacher._id
+            });
+            
             return {
-                id: mock._id,
-                name: mock.name,
-                duration: mock.duration,
-                shareId: mock.shareId,
-                createdAt: mock.createdAt,
-                questionCounts: {
-                    english: fullMock.subjects.english.length,
-                    physics: fullMock.subjects.physics.length,
-                    chemistry: fullMock.subjects.chemistry.length,
-                    maths: fullMock.subjects.maths.length,
-                    biology: fullMock.subjects.biology.length
+                _id: teacher._id,
+                name: teacher.name,
+                email: teacher.email,
+                subject: teacher.subject,
+                accountType: 'teacher',
+                createdAt: teacher.createdAt,
+                hashedPassword: teacher.password,
+                stats: {
+                    quizCount,
+                    responseCount,
+                    eventParticipation
                 }
             };
         }));
 
-        res.json({ mocks: mocksWithCounts });
+        // Format hosts data
+        const hostsWithStats = await Promise.all(hosts.map(async (host) => {
+            const eventCount = await JambEvent.countDocuments({ hostId: host._id });
+            const totalResponses = await JambResponse.countDocuments({
+                eventId: { $in: await JambEvent.find({ hostId: host._id }).distinct('_id') }
+            });
+            
+            return {
+                _id: host._id,
+                name: host.name,
+                email: host.email,
+                role: host.role,
+                accountType: 'host',
+                createdAt: host.createdAt,
+                hashedPassword: host.password,
+                stats: {
+                    eventCount,
+                    totalResponses
+                }
+            };
+        }));
+
+        res.json({
+            teachers: teachersWithStats,
+            hosts: hostsWithStats,
+            summary: {
+                totalTeachers: teachers.length,
+                totalHosts: hosts.length,
+                totalAccounts: teachers.length + hosts.length
+            }
+        });
     } catch (error) {
-        console.error('Get mocks error:', error);
-        res.status(500).json({ error: 'Failed to fetch mock exams' });
+        console.error('Error fetching accounts:', error);
+        res.status(500).json({ error: 'Failed to fetch accounts' });
     }
 });
 
-// Get Mock Exam Details
-app.get('/api/admin/mocks/:id', authenticateAdmin, async (req, res) => {
+// Reset password for any account (Host only)
+app.post('/api/host/reset-password', authenticateHost, async (req, res) => {
     try {
-        const mock = await MockExam.findOne({ 
-            _id: req.params.id,
-            adminId: req.admin._id 
-        });
+        const { accountId, accountType, newPassword } = req.body;
 
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
+        if (!accountId || !accountType || !newPassword) {
+            return res.status(400).json({ error: 'Account ID, type, and new password are required' });
         }
 
-        res.json({ mock });
+        if (newPassword.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+        }
+
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+        let updatedAccount;
+
+        if (accountType === 'teacher') {
+            updatedAccount = await Teacher.findByIdAndUpdate(
+                accountId,
+                { password: hashedPassword },
+                { new: true, select: 'name email subject' }
+            );
+        } else if (accountType === 'host') {
+            updatedAccount = await Host.findByIdAndUpdate(
+                accountId,
+                { password: hashedPassword },
+                { new: true, select: 'name email role' }
+            );
+        } else {
+            return res.status(400).json({ error: 'Invalid account type' });
+        }
+
+        if (!updatedAccount) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        res.json({ 
+            message: 'Password reset successfully',
+            account: {
+                id: updatedAccount._id,
+                name: updatedAccount.name,
+                email: updatedAccount.email,
+                type: accountType
+            }
+        });
     } catch (error) {
-        console.error('Get mock error:', error);
-        res.status(500).json({ error: 'Failed to fetch mock exam' });
+        console.error('Error resetting password:', error);
+        res.status(500).json({ error: 'Failed to reset password' });
     }
 });
+// Add these routes to your server.js file after your existing response routes
 
-// Update Mock Exam
-app.put('/api/admin/mocks/:id', authenticateAdmin, async (req, res) => {
+// Delete individual student response
+app.delete('/api/response/:responseId', authenticateTeacher, async (req, res) => {
     try {
-        const { name, duration } = req.body;
-
-        const mock = await MockExam.findOneAndUpdate(
-            { _id: req.params.id, adminId: req.admin._id },
-            { name, duration: parseInt(duration) },
-            { new: true }
-        );
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        res.json({ success: true, mock });
-    } catch (error) {
-        console.error('Update mock error:', error);
-        res.status(500).json({ error: 'Failed to update mock exam' });
-    }
-});
-
-// Delete Mock Exam
-app.delete('/api/admin/mocks/:id', authenticateAdmin, async (req, res) => {
-    try {
-        const mock = await MockExam.findOneAndDelete({ 
-            _id: req.params.id,
-            adminId: req.admin._id 
-        });
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        // Delete all related results
-        await MockResult.deleteMany({ mockId: req.params.id });
-
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Delete mock error:', error);
-        res.status(500).json({ error: 'Failed to delete mock exam' });
-    }
-});
-
-// Upload Image Helper Function
-async function uploadImageToCloudinary(imageData) {
-    try {
-        const result = await cloudinary.uploader.upload(imageData, {
-            folder: 'smart-steps-mocks',
-            resource_type: 'auto'
-        });
-        return {
-            url: result.secure_url,
-            publicId: result.public_id
-        };
-    } catch (error) {
-        console.error('Cloudinary upload error:', error);
-        throw error;
-    }
-}
-
-// Add Question to Mock Exam
-app.post('/api/admin/mocks/:id/questions', authenticateAdmin, async (req, res) => {
-    try {
-        const { subject, question, options, correctAnswer, images } = req.body;
-
-        if (!subject || !question || !options || correctAnswer === undefined) {
-            return res.status(400).json({ error: 'Missing required fields' });
-        }
-
-        const mock = await MockExam.findOne({ 
-            _id: req.params.id,
-            adminId: req.admin._id 
-        });
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        const validSubjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
-        if (!validSubjects.includes(subject)) {
-            return res.status(400).json({ error: 'Invalid subject' });
-        }
-
-        // Upload images if provided
-        let imageUrls = [];
-        let imagePublicIds = [];
+        // Find the response and populate the quiz data
+        const response = await Response.findById(req.params.responseId).populate('quizId');
         
-        if (images && images.length > 0) {
-            for (const imageData of images) {
-                const uploaded = await uploadImageToCloudinary(imageData);
-                imageUrls.push(uploaded.url);
-                imagePublicIds.push(uploaded.publicId);
-            }
+        if (!response) {
+            return res.status(404).json({ error: 'Student response not found' });
         }
 
-        const newQuestion = {
-            question,
-            options,
-            correctAnswer: parseInt(correctAnswer),
-            imageUrls,
-            imagePublicIds
-        };
-
-        mock.subjects[subject].push(newQuestion);
-        await mock.save();
-
-        res.json({ 
-            success: true, 
-            question: newQuestion,
-            questionIndex: mock.subjects[subject].length - 1
-        });
-    } catch (error) {
-        console.error('Add question error:', error);
-        res.status(500).json({ error: 'Failed to add question' });
-    }
-});
-
-// Update Question in Mock Exam
-app.put('/api/admin/mocks/:id/questions/:subject/:index', authenticateAdmin, async (req, res) => {
-    try {
-        const { id, subject, index } = req.params;
-        const { question, options, correctAnswer, images } = req.body;
-
-        const mock = await MockExam.findOne({ 
-            _id: id,
-            adminId: req.admin._id 
-        });
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        const validSubjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
-        if (!validSubjects.includes(subject)) {
-            return res.status(400).json({ error: 'Invalid subject' });
-        }
-
-        const questionIndex = parseInt(index);
-        if (questionIndex < 0 || questionIndex >= mock.subjects[subject].length) {
-            return res.status(404).json({ error: 'Question not found' });
-        }
-
-        // Handle image updates
-        let imageUrls = mock.subjects[subject][questionIndex].imageUrls || [];
-        let imagePublicIds = mock.subjects[subject][questionIndex].imagePublicIds || [];
-
-        if (images && images.length > 0) {
-            // Delete old images from Cloudinary
-            for (const publicId of imagePublicIds) {
-                try {
-                    await cloudinary.uploader.destroy(publicId);
-                } catch (err) {
-                    console.error('Error deleting old image:', err);
-                }
-            }
-
-            // Upload new images
-            imageUrls = [];
-            imagePublicIds = [];
-            for (const imageData of images) {
-                const uploaded = await uploadImageToCloudinary(imageData);
-                imageUrls.push(uploaded.url);
-                imagePublicIds.push(uploaded.publicId);
-            }
-        }
-
-        mock.subjects[subject][questionIndex] = {
-            question,
-            options,
-            correctAnswer: parseInt(correctAnswer),
-            imageUrls,
-            imagePublicIds
-        };
-
-        await mock.save();
-
-        res.json({ 
-            success: true, 
-            question: mock.subjects[subject][questionIndex]
-        });
-    } catch (error) {
-        console.error('Update question error:', error);
-        res.status(500).json({ error: 'Failed to update question' });
-    }
-});
-
-// Delete Question from Mock Exam
-app.delete('/api/admin/mocks/:id/questions/:subject/:index', authenticateAdmin, async (req, res) => {
-    try {
-        const { id, subject, index } = req.params;
-
-        const mock = await MockExam.findOne({ 
-            _id: id,
-            adminId: req.admin._id 
-        });
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        const validSubjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
-        if (!validSubjects.includes(subject)) {
-            return res.status(400).json({ error: 'Invalid subject' });
-        }
-
-        const questionIndex = parseInt(index);
-        if (questionIndex < 0 || questionIndex >= mock.subjects[subject].length) {
-            return res.status(404).json({ error: 'Question not found' });
-        }
-
-        // Delete images from Cloudinary
-        const question = mock.subjects[subject][questionIndex];
-        if (question.imagePublicIds && question.imagePublicIds.length > 0) {
-            for (const publicId of question.imagePublicIds) {
-                try {
-                    await cloudinary.uploader.destroy(publicId);
-                } catch (err) {
-                    console.error('Error deleting image:', err);
-                }
-            }
-        }
-
-        mock.subjects[subject].splice(questionIndex, 1);
-        await mock.save();
-
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Delete question error:', error);
-        res.status(500).json({ error: 'Failed to delete question' });
-    }
-});
-
-// Bulk Update Mock Questions (for setting questions from code)
-app.put('/api/admin/mocks/:id/bulk-update', authenticateAdmin, async (req, res) => {
-    try {
-        const { id } = req.params;
-        const { subjects } = req.body;
-
-        const mock = await MockExam.findOne({ 
-            _id: id,
-            adminId: req.admin._id 
-        });
-
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        // Validate subjects structure
-        const validSubjects = ['english', 'physics', 'chemistry', 'maths', 'biology'];
-        for (const subject of validSubjects) {
-            if (subjects[subject]) {
-                mock.subjects[subject] = subjects[subject].map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: parseInt(q.correctAnswer),
-                    imageUrls: q.imageUrls || [],
-                    imagePublicIds: q.imagePublicIds || []
-                }));
-            }
-        }
-
-        await mock.save();
-
-        res.json({ 
-            success: true,
-            message: 'Questions updated successfully',
-            questionCounts: {
-                english: mock.subjects.english.length,
-                physics: mock.subjects.physics.length,
-                chemistry: mock.subjects.chemistry.length,
-                maths: mock.subjects.maths.length,
-                biology: mock.subjects.biology.length
-            }
-        });
-    } catch (error) {
-        console.error('Bulk update error:', error);
-        res.status(500).json({ error: 'Failed to bulk update questions' });
-    }
-});
-
-// Student Routes
-
-// Check if phone number has already attempted this mock
-app.post('/api/mocks/:shareId/check-attempt', async (req, res) => {
-    try {
-        const { phoneNumber } = req.body;
-
-        if (!phoneNumber) {
-            return res.status(400).json({ error: 'Phone number is required' });
-        }
-
-        const mock = await MockExam.findOne({ shareId: req.params.shareId });
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
-        }
-
-        const existingAttempt = await MockResult.findOne({
-            mockId: mock._id,
-            phoneNumber: phoneNumber
-        });
-
-        if (existingAttempt) {
-            return res.json({
-                attempted: true,
-                attemptDate: existingAttempt.submittedAt,
-                studentName: existingAttempt.studentName
+        // Verify that the quiz belongs to the authenticated teacher
+        if (response.quizId.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(403).json({ 
+                error: 'Access denied. You can only delete responses from your own quizzes.' 
             });
         }
 
-        res.json({ attempted: false });
+        // Store response details for the success message
+        const responseDetails = {
+            id: response._id,
+            studentName: response.studentName,
+            quizTitle: response.quizId.title
+        };
+
+        // Delete associated correction record if it exists
+        await Correction.deleteOne({ responseId: req.params.responseId });
+
+        // Delete the response
+        await Response.findByIdAndDelete(req.params.responseId);
+
+        res.json({ 
+            message: `Successfully deleted ${responseDetails.studentName}'s response`,
+            deletedResponse: responseDetails
+        });
+
     } catch (error) {
-        console.error('Check attempt error:', error);
-        res.status(500).json({ error: 'Failed to check attempt status' });
+        console.error('Error deleting response:', error);
+        res.status(500).json({ 
+            error: 'Failed to delete student response. Please try again.' 
+        });
     }
 });
 
-// Get Mock Exam for Student (Public)
-app.get('/api/mocks/:shareId', async (req, res) => {
+// Bulk delete multiple responses for a quiz
+app.delete('/api/quiz/:quizId/responses', authenticateTeacher, async (req, res) => {
     try {
-        const mock = await MockExam.findOne({ shareId: req.params.shareId })
-            .select('name duration subjects');
+        const { responseIds } = req.body;
 
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
+        // Validate input
+        if (!responseIds || !Array.isArray(responseIds) || responseIds.length === 0) {
+            return res.status(400).json({ 
+                error: 'No response IDs provided for deletion' 
+            });
         }
 
-        // Remove correct answers from questions
-        const sanitizedSubjects = {};
-        for (const subject in mock.subjects) {
-            // Ensure the subject has questions (is an array)
-            if (Array.isArray(mock.subjects[subject])) {
-                sanitizedSubjects[subject] = mock.subjects[subject].map(q => ({
+        // Verify the quiz exists and belongs to the teacher
+        const quiz = await Quiz.findById(req.params.quizId);
+        if (!quiz || quiz.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(404).json({ 
+                error: 'Quiz not found or access denied' 
+            });
+        }
+
+        // Verify all responses belong to this quiz and get their details
+        const responses = await Response.find({ 
+            _id: { $in: responseIds }, 
+            quizId: req.params.quizId 
+        });
+
+        if (responses.length !== responseIds.length) {
+            return res.status(400).json({ 
+                error: 'Some responses do not belong to this quiz or were not found' 
+            });
+        }
+
+        // Delete associated correction records
+        await Correction.deleteMany({ 
+            responseId: { $in: responseIds }
+        });
+
+        // Delete the responses
+        const deleteResult = await Response.deleteMany({ 
+            _id: { $in: responseIds },
+            quizId: req.params.quizId
+        });
+
+        res.json({ 
+            message: `Successfully deleted ${deleteResult.deletedCount} student response(s)`,
+            deletedCount: deleteResult.deletedCount,
+            quizTitle: quiz.title
+        });
+
+    } catch (error) {
+        console.error('Error bulk deleting responses:', error);
+        res.status(500).json({ 
+            error: 'Failed to delete student responses. Please try again.' 
+        });
+    }
+});
+
+// Delete account (Host only)
+app.delete('/api/host/delete-account/:accountType/:accountId', authenticateHost, async (req, res) => {
+    try {
+        const { accountType, accountId } = req.params;
+
+        // Prevent hosts from deleting their own account
+        if (accountType === 'host' && accountId === req.hostData.id) {
+            return res.status(400).json({ error: 'Cannot delete your own account' });
+        }
+
+        let deletedAccount;
+        let cleanupTasks = [];
+
+        if (accountType === 'teacher') {
+            // Find the teacher and their data
+            const teacher = await Teacher.findById(accountId);
+            if (!teacher) {
+                return res.status(404).json({ error: 'Teacher not found' });
+            }
+
+            // Clean up teacher's quizzes and related data
+            const teacherQuizzes = await Quiz.find({ teacherId: accountId });
+            for (const quiz of teacherQuizzes) {
+                // Delete quiz responses and corrections
+                await Response.deleteMany({ quizId: quiz._id });
+                await Correction.deleteMany({ 'quiz._id': quiz._id });
+                
+                // Delete images from Cloudinary
+                for (const question of quiz.questions) {
+                    if (question.imagePublicIds && question.imagePublicIds.length > 0) {
+                        for (const publicId of question.imagePublicIds) {
+                            try {
+                                await cloudinary.uploader.destroy(publicId);
+                            } catch (error) {
+                                console.error('Error deleting image:', error);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Delete all quizzes
+            await Quiz.deleteMany({ teacherId: accountId });
+
+            // Remove teacher contributions from JAMB events
+            await JambEvent.updateMany(
+                { 'subjects.questions.teacherId': accountId },
+                { 
+                    $pull: { 
+                        'subjects.$.questions': { teacherId: accountId },
+                        'subjects.$.teacherContributions': { teacherId: accountId }
+                    }
+                }
+            );
+
+            // Delete the teacher account
+            deletedAccount = await Teacher.findByIdAndDelete(accountId);
+
+        } else if (accountType === 'host') {
+            // Find the host and their data
+            const host = await Host.findById(accountId);
+            if (!host) {
+                return res.status(404).json({ error: 'Host not found' });
+            }
+
+            // Clean up host's JAMB events and related data
+            const hostEvents = await JambEvent.find({ hostId: accountId });
+            for (const event of hostEvents) {
+                // Delete event responses
+                await JambResponse.deleteMany({ eventId: event._id });
+                
+                // Delete images from Cloudinary
+                for (const subject of event.subjects) {
+                    for (const question of subject.questions) {
+                        if (question.imagePublicIds && question.imagePublicIds.length > 0) {
+                            for (const publicId of question.imagePublicIds) {
+                                try {
+                                    await cloudinary.uploader.destroy(publicId);
+                                } catch (error) {
+                                    console.error('Error deleting image:', error);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // Delete all events
+            await JambEvent.deleteMany({ hostId: accountId });
+
+            // Delete the host account
+            deletedAccount = await Host.findByIdAndDelete(accountId);
+
+        } else {
+            return res.status(400).json({ error: 'Invalid account type' });
+        }
+
+        if (!deletedAccount) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        res.json({ 
+            message: `${accountType.charAt(0).toUpperCase() + accountType.slice(1)} account deleted successfully`,
+            deletedAccount: {
+                id: deletedAccount._id,
+                name: deletedAccount.name,
+                email: deletedAccount.email,
+                type: accountType
+            }
+        });
+    } catch (error) {
+        console.error('Error deleting account:', error);
+        res.status(500).json({ error: 'Failed to delete account' });
+    }
+});
+
+// Update account details (Host only)
+app.put('/api/host/update-account', authenticateHost, async (req, res) => {
+    try {
+        const { accountId, accountType, updates } = req.body;
+
+        if (!accountId || !accountType || !updates) {
+            return res.status(400).json({ error: 'Account ID, type, and updates are required' });
+        }
+
+        let updatedAccount;
+
+        if (accountType === 'teacher') {
+            // Validate subject if being updated
+            if (updates.subject && !['Biology', 'Mathematics', 'English', 'Physics', 'Chemistry'].includes(updates.subject)) {
+                return res.status(400).json({ error: 'Invalid subject' });
+            }
+
+            updatedAccount = await Teacher.findByIdAndUpdate(
+                accountId,
+                { 
+                    ...(updates.name && { name: updates.name }),
+                    ...(updates.email && { email: updates.email }),
+                    ...(updates.subject && { subject: updates.subject })
+                },
+                { new: true, select: 'name email subject createdAt' }
+            );
+        } else if (accountType === 'host') {
+            updatedAccount = await Host.findByIdAndUpdate(
+                accountId,
+                { 
+                    ...(updates.name && { name: updates.name }),
+                    ...(updates.email && { email: updates.email })
+                },
+                { new: true, select: 'name email role createdAt' }
+            );
+        } else {
+            return res.status(400).json({ error: 'Invalid account type' });
+        }
+
+        if (!updatedAccount) {
+            return res.status(404).json({ error: 'Account not found' });
+        }
+
+        res.json({ 
+            message: 'Account updated successfully',
+            account: updatedAccount
+        });
+    } catch (error) {
+        console.error('Error updating account:', error);
+        if (error.code === 11000) {
+            res.status(400).json({ error: 'Email already exists' });
+        } else {
+            res.status(500).json({ error: 'Failed to update account' });
+        }
+    }
+});
+
+// Create new account (Host only)
+app.post('/api/host/create-account', authenticateHost, async (req, res) => {
+    try {
+        const { accountType, name, email, password, subject, role } = req.body;
+
+        if (!accountType || !name || !email || !password) {
+            return res.status(400).json({ error: 'Account type, name, email, and password are required' });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({ error: 'Password must be at least 6 characters long' });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 10);
+        let newAccount;
+
+        if (accountType === 'teacher') {
+            if (!subject || !['Biology', 'Mathematics', 'English', 'Physics', 'Chemistry'].includes(subject)) {
+                return res.status(400).json({ error: 'Valid subject is required for teacher accounts' });
+            }
+
+            // Check if email already exists
+            const existingTeacher = await Teacher.findOne({ email });
+            const existingHost = await Host.findOne({ email });
+            if (existingTeacher || existingHost) {
+                return res.status(400).json({ error: 'Email already exists' });
+            }
+
+            newAccount = new Teacher({
+                name,
+                email,
+                subject,
+                password: hashedPassword
+            });
+        } else if (accountType === 'host') {
+            // Check if email already exists
+            const existingTeacher = await Teacher.findOne({ email });
+            const existingHost = await Host.findOne({ email });
+            if (existingTeacher || existingHost) {
+                return res.status(400).json({ error: 'Email already exists' });
+            }
+
+            newAccount = new Host({
+                name,
+                email,
+                password: hashedPassword,
+                role: role || 'host'
+            });
+        } else {
+            return res.status(400).json({ error: 'Invalid account type' });
+        }
+
+        await newAccount.save();
+
+        res.status(201).json({ 
+            message: `${accountType.charAt(0).toUpperCase() + accountType.slice(1)} account created successfully`,
+            account: {
+                id: newAccount._id,
+                name: newAccount.name,
+                email: newAccount.email,
+                type: accountType,
+                ...(accountType === 'teacher' && { subject: newAccount.subject }),
+                ...(accountType === 'host' && { role: newAccount.role })
+            }
+        });
+    } catch (error) {
+        console.error('Error creating account:', error);
+        if (error.code === 11000) {
+            res.status(400).json({ error: 'Email already exists' });
+        } else {
+            res.status(500).json({ error: 'Failed to create account' });
+        }
+    }
+});
+
+// Add the route for serving the account management page
+app.get('/host/account-management', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'host-account-management.html'));
+});
+app.get('/api/verify', authenticateTeacher, (req, res) => {
+    res.json({ 
+        authenticated: true, 
+        teacher: { 
+            name: req.teacher.name, 
+            subject: req.teacher.subject,
+            email: req.teacher.email,
+            id: req.teacher.id
+        } 
+    });
+});
+
+// Verify host authentication
+app.get('/api/host/verify', authenticateHost, (req, res) => {
+  res.json({ 
+    authenticated: true, 
+    host: { 
+      id: req.hostData.id, 
+      name: req.hostData.name, 
+      email: req.hostData.email 
+    } 
+  });
+});
+
+// Teacher logout
+app.post('/api/logout', (req, res) => {
+    res.clearCookie('token');
+    res.json({ message: 'Logged out successfully' });
+});
+
+// Host logout
+app.post('/api/host/logout', (req, res) => {
+    res.clearCookie('hostToken');
+    res.json({ message: 'Logged out successfully' });
+});
+
+// Image upload
+app.post('/api/upload-image', authenticateTeacher, upload.array('images', 3), async (req, res) => {
+    try {
+        if (!req.files || req.files.length === 0) {
+            return res.status(400).json({ error: 'No images uploaded' });
+        }
+
+        const uploadPromises = req.files.map(file => {
+            return new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    {
+                        resource_type: 'image',
+                        folder: 'smart_steps_quiz',
+                        transformation: [
+                            { width: 800, height: 600, crop: 'limit' },
+                            { quality: 'auto' }
+                        ]
+                    },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve({
+                            imageUrl: result.secure_url,
+                            publicId: result.public_id
+                        });
+                    }
+                ).end(file.buffer);
+            });
+        });
+
+        const results = await Promise.all(uploadPromises);
+        res.json(results);
+    } catch (error) {
+        console.error('Image upload error:', error);
+        res.status(500).json({ error: 'Failed to upload images' });
+    }
+});
+
+// Delete image
+app.delete('/api/delete-image/:publicId', authenticateTeacher, async (req, res) => {
+    try {
+        const { publicId } = req.params;
+        await cloudinary.uploader.destroy(publicId);
+        res.json({ message: 'Image deleted successfully' });
+    } catch (error) {
+        console.error('Image deletion error:', error);
+        res.status(500).json({ error: 'Failed to delete image' });
+    }
+});
+
+// Create quiz
+app.post('/api/quiz', authenticateTeacher, async (req, res) => {
+    try {
+        const { title, questions, passages, timeLimit } = req.body;
+
+        const shareId = uuidv4();
+        const quiz = new Quiz({
+            title,
+            subject: req.teacher.subject,
+            questions,
+            passages: passages || [],
+            timeLimit: timeLimit || 0,
+            teacherId: req.teacher.id,
+            shareId
+        });
+
+        await quiz.save();
+        res.json({ message: 'Quiz created successfully', shareId });
+    } catch (error) {
+        console.error('Quiz creation error:', error);
+        res.status(500).json({ error: 'Failed to create quiz' });
+    }
+});
+
+// Get teacher's quizzes
+app.get('/api/quizzes', authenticateTeacher, async (req, res) => {
+    try {
+        const quizzes = await Quiz.find({ teacherId: req.teacher.id }).sort({ createdAt: -1 });
+        res.json(quizzes);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch quizzes' });
+    }
+});
+
+// Get quiz by share ID
+app.get('/api/quiz/:shareId', async (req, res) => {
+    try {
+        const quiz = await Quiz.findOne({ shareId: req.params.shareId });
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+        
+        const studentQuiz = {
+            ...quiz.toObject(),
+            questions: quiz.questions.map(q => ({
+                question: q.question,
+                options: q.options,
+                passageId: q.passageId,
+                imageUrls: q.imageUrls
+            }))
+        };
+        
+        res.json(studentQuiz);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch quiz' });
+    }
+});
+
+// Submit quiz response
+app.post('/api/submit/:shareId', async (req, res) => {
+    try {
+        const { studentName, answers, timeSpent } = req.body;
+        const quiz = await Quiz.findOne({ shareId: req.params.shareId });
+
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        let score = 0;
+        answers.forEach((answer, index) => {
+            if (answer !== -1 && answer === quiz.questions[index].correctAnswer) {
+                score++;
+            }
+        });
+
+        const response = new Response({
+            quizId: quiz._id,
+            studentName,
+            answers,
+            score,
+            totalQuestions: quiz.questions.length,
+            timeSpent: timeSpent || 0
+        });
+
+        await response.save();
+
+        const correction = new Correction({
+            responseId: response._id,
+            studentName,
+            quiz: {
+                title: quiz.title,
+                subject: quiz.subject,
+                questions: quiz.questions.map(q => ({
                     question: q.question,
                     options: q.options,
-                    imageUrls: q.imageUrls || []
-                }));
-            } else {
-                // If not an array, initialize as empty array
-                sanitizedSubjects[subject] = [];
+                    correctAnswer: q.correctAnswer,
+                    imageUrl: q.imageUrls?.[0] || null
+                }))
+            },
+            studentAnswers: answers,
+            score,
+            totalQuestions: quiz.questions.length,
+            percentage: Math.round((score / quiz.questions.length) * 100),
+            submittedAt: response.submittedAt
+        });
+
+        await correction.save();
+
+        res.json({
+            score,
+            totalQuestions: quiz.questions.length,
+            percentage: Math.round((score / quiz.questions.length) * 100),
+            correctionId: response.correctionId
+        });
+    } catch (error) {
+        console.error('Submit error:', error);
+        res.status(500).json({ error: 'Failed to submit quiz' });
+    }
+});
+
+// Get quiz responses
+app.get('/api/responses/:quizId', authenticateTeacher, async (req, res) => {
+    try {
+        const quiz = await Quiz.findById(req.params.quizId);
+        if (!quiz || quiz.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        const responses = await Response.find({ quizId: req.params.quizId }).sort({ submittedAt: -1 });
+        res.json({ quiz, responses });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch responses' });
+    }
+});
+
+// Get all responses grouped by quiz
+app.get('/api/all-responses', authenticateTeacher, async (req, res) => {
+    try {
+        const quizzes = await Quiz.find({ teacherId: req.teacher.id });
+        const groupedResponses = {};
+
+        for (const quiz of quizzes) {
+            const responses = await Response.find({ quizId: quiz._id }).sort({ submittedAt: -1 });
+            groupedResponses[quiz._id] = {
+                quiz: {
+                    _id: quiz._id,
+                    title: quiz.title,
+                    subject: quiz.subject,
+                    totalQuestions: quiz.questions.length,
+                    timeLimit: quiz.timeLimit
+                },
+                responses
+            };
+        }
+
+        res.json(groupedResponses);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch responses' });
+    }
+});
+
+// Delete quiz
+app.delete('/api/quiz/:quizId', authenticateTeacher, async (req, res) => {
+    try {
+        const quiz = await Quiz.findById(req.params.quizId);
+        if (!quiz || quiz.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        // Delete associated responses and corrections
+        await Response.deleteMany({ quizId: req.params.quizId });
+        await Correction.deleteMany({ 'quiz._id': req.params.quizId });
+
+        // Delete images from Cloudinary
+        for (const question of quiz.questions) {
+            if (question.imagePublicIds && question.imagePublicIds.length > 0) {
+                for (const publicId of question.imagePublicIds) {
+                    try {
+                        await cloudinary.uploader.destroy(publicId);
+                    } catch (error) {
+                        console.error('Error deleting image:', error);
+                    }
+                }
             }
         }
 
-        res.json({
-            id: mock._id,
-            name: mock.name,
-            duration: mock.duration,
-            subjects: sanitizedSubjects
-        });
+        await Quiz.findByIdAndDelete(req.params.quizId);
+        res.json({ message: 'Quiz deleted successfully' });
     } catch (error) {
-        console.error('Get mock error:', error);
-        res.status(500).json({ error: 'Failed to fetch mock exam' });
+        console.error('Delete quiz error:', error);
+        res.status(500).json({ error: 'Failed to delete quiz' });
     }
 });
 
-// Submit Mock Exam Result
-app.post('/api/mocks/:shareId/submit', async (req, res) => {
+// Get quiz statistics
+app.get('/api/quiz-stats/:quizId', authenticateTeacher, async (req, res) => {
     try {
-        const { studentName, phoneNumber, selectedSubject, answers, timeSpent, chancesUsed } = req.body;
-
-        if (!studentName || !phoneNumber || !selectedSubject || !answers) {
-            return res.status(400).json({ error: 'Missing required fields' });
+        const quiz = await Quiz.findById(req.params.quizId);
+        if (!quiz || quiz.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(404).json({ error: 'Quiz not found' });
         }
 
-        if (!['maths', 'biology'].includes(selectedSubject)) {
-            return res.status(400).json({ error: 'Invalid subject selection' });
+        const responses = await Response.find({ quizId: req.params.quizId });
+        
+        const totalAttempts = responses.length;
+        const averageScore = totalAttempts > 0 ? 
+            Math.round(responses.reduce((sum, r) => sum + (r.score / r.totalQuestions * 100), 0) / totalAttempts) : 0;
+        const highestScore = totalAttempts > 0 ? 
+            Math.max(...responses.map(r => Math.round(r.score / r.totalQuestions * 100))) : 0;
+        const averageTime = totalAttempts > 0 ? 
+            Math.round(responses.reduce((sum, r) => sum + (r.timeSpent || 0), 0) / totalAttempts) : 0;
+
+        res.json({
+            totalAttempts,
+            averageScore,
+            highestScore,
+            averageTime
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch quiz statistics' });
+    }
+});
+
+// Get student details
+app.get('/api/student-details/:responseId', authenticateTeacher, async (req, res) => {
+    try {
+        const response = await Response.findById(req.params.responseId).populate('quizId');
+        if (!response) {
+            return res.status(404).json({ error: 'Response not found' });
         }
 
-        // Get IP address from request
-        const ipAddress = req.ip || 
-                         req.headers['x-forwarded-for']?.split(',')[0] || 
-                         req.headers['x-real-ip'] || 
-                         req.connection.remoteAddress ||
-                         req.socket.remoteAddress;
-
-        console.log('Submitting from IP address:', ipAddress);
-
-        const mock = await MockExam.findOne({ shareId: req.params.shareId });
-        if (!mock) {
-            return res.status(404).json({ error: 'Mock exam not found' });
+        const quiz = response.quizId;
+        if (quiz.teacherId.toString() !== req.teacher.id.toString()) {
+            return res.status(403).json({ error: 'Access denied' });
         }
 
-        // Calculate scores for each subject
-        const scores = {};
+        const questionAnalysis = quiz.questions.map((question, index) => ({
+            question: question.question,
+            options: question.options,
+            correctAnswer: question.correctAnswer,
+            studentAnswer: response.answers[index],
+            isCorrect: response.answers[index] === question.correctAnswer,
+            imageUrl: question.imageUrls?.[0] || null
+        }));
+
+        res.json({
+            studentName: response.studentName,
+            quiz: {
+                title: quiz.title,
+                subject: quiz.subject
+            },
+            score: response.score,
+            totalQuestions: response.totalQuestions,
+            percentage: Math.round((response.score / response.totalQuestions) * 100),
+            timeSpent: response.timeSpent,
+            submittedAt: response.submittedAt,
+            questionAnalysis
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch student details' });
+    }
+});
+
+// Get correction
+app.get('/api/correction/:correctionId', async (req, res) => {
+    try {
+        const response = await Response.findOne({ correctionId: req.params.correctionId })
+            .populate('quizId');
+        
+        if (!response) {
+            return res.status(404).json({ error: 'Correction not found' });
+        }
+
+        const correctionData = {
+            studentName: response.studentName,
+            quiz: response.quizId,
+            studentAnswers: response.answers,
+            score: response.score,
+            totalQuestions: response.totalQuestions,
+            percentage: Math.round((response.score / response.totalQuestions) * 100),
+            timeSpent: response.timeSpent,
+            submittedAt: response.submittedAt
+        };
+
+        res.json(correctionData);
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch correction' });
+    }
+});
+
+// HOST ROUTES
+
+// Create JAMB Mock Event
+app.post('/api/host/events', authenticateHost, async (req, res) => {
+  try {
+    const { title, description, timeLimit, questionsPerSubject, deadline } = req.body;
+    
+    // Initialize subjects with empty question arrays
+    const subjects = ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology'].map(subject => ({
+      subject,
+      questions: [],
+      questionCount: 0,
+      teacherContributions: []
+    }));
+    
+    const event = new JambEvent({
+      title,
+      description,
+      hostId: req.hostData.id,
+      timeLimit,
+      questionsPerSubject: questionsPerSubject || 10,
+      deadline: new Date(deadline),
+      subjects,
+      totalQuestions: 0,
+      shareId: uuidv4()
+    });
+
+    await event.save();
+    res.status(201).json({ message: 'JAMB Mock event created successfully', event });
+  } catch (error) {
+    console.error('Error creating event:', error);
+    res.status(500).json({ error: 'Error creating event' });
+  }
+});
+
+// Get host events
+app.get('/api/host/events', authenticateHost, async (req, res) => {
+  try {
+    const events = await JambEvent.find({ hostId: req.hostData.id }).sort({ createdAt: -1 });
+    res.json(events || []);
+  } catch (error) {
+    console.error('Error fetching host events:', error);
+    res.status(500).json({ error: 'Error fetching events' });
+  }
+});
+
+// Get teachers
+app.get('/api/host/teachers', authenticateHost, async (req, res) => {
+    try {
+        const teachers = await Teacher.find({}, { password: 0 }).sort({ createdAt: -1 });
+        
+        // Add statistics for each teacher
+        const teachersWithStats = await Promise.all(teachers.map(async (teacher) => {
+            const quizCount = await Quiz.countDocuments({ teacherId: teacher._id });
+            const eventParticipation = await JambEvent.countDocuments({
+                'subjects.teacherContributions.teacherId': teacher._id
+            });
+            
+            return {
+                ...teacher.toObject(),
+                quizCount,
+                eventParticipation
+            };
+        }));
+        
+        res.json(teachersWithStats);
+    } catch (error) {
+        console.error('Error fetching teachers:', error);
+        res.status(500).json({ error: 'Failed to fetch teachers' });
+    }
+});
+
+// Get event details
+app.get('/api/host/events/:eventId/details', authenticateHost, async (req, res) => {
+    try {
+        const event = await JambEvent.findOne({ 
+            _id: req.params.eventId, 
+            hostId: req.hostData.id  // Changed from req.host._id to req.hostData.id
+        }).populate('subjects.questions.teacherId', 'name');
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        // Get response count for this event
+        const responseCount = await JambResponse.countDocuments({ eventId: event._id });
+
+        // Add additional statistics
+        const eventDetails = {
+            ...event.toObject(),
+            responseCount,
+            isExpired: new Date() > new Date(event.deadline),
+            daysLeft: Math.ceil((new Date(event.deadline) - new Date()) / (1000 * 60 * 60 * 24))
+        };
+
+        res.json(eventDetails);
+    } catch (error) {
+        console.error('Error fetching event details:', error);
+        res.status(500).json({ error: 'Failed to fetch event details' });
+    }
+});
+
+// Publish event
+app.post('/api/host/events/:eventId/publish', authenticateHost, async (req, res) => {
+    try {
+        const event = await JambEvent.findOne({ 
+            _id: req.params.eventId, 
+            hostId: req.hostData.id  // Changed from req.host._id to req.hostData.id
+        });
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        // Check if all subjects have required questions
+        const incompleteSubjects = event.subjects.filter(subject => 
+            subject.questionCount < event.questionsPerSubject
+        );
+
+        if (incompleteSubjects.length > 0) {
+            return res.status(400).json({ 
+                error: `Cannot publish event. Need at least ${event.questionsPerSubject} questions in: ${incompleteSubjects.map(s => s.subject).join(', ')}` 
+            });
+        }
+
+        event.status = 'published';
+        await event.save();
+
+        res.json({ message: 'Event published successfully', shareId: event.shareId });
+    } catch (error) {
+        console.error('Error publishing event:', error);
+        res.status(500).json({ error: 'Failed to publish event' });
+    }
+});
+
+// Delete event
+app.delete('/api/host/events/:eventId', authenticateHost, async (req, res) => {
+    try {
+        const event = await JambEvent.findOne({ 
+            _id: req.params.eventId, 
+            hostId: req.hostData.id  // Changed from req.host._id to req.hostData.id
+        });
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        // Delete associated responses
+        await JambResponse.deleteMany({ eventId: req.params.eventId });
+
+        // Delete images from Cloudinary
+        for (const subject of event.subjects) {
+            for (const question of subject.questions) {
+                if (question.imagePublicIds && question.imagePublicIds.length > 0) {
+                    for (const publicId of question.imagePublicIds) {
+                        try {
+                            await cloudinary.uploader.destroy(publicId);
+                        } catch (error) {
+                            console.error('Error deleting image:', error);
+                        }
+                    }
+                }
+            }
+        }
+
+        await JambEvent.findByIdAndDelete(req.params.eventId);
+        res.json({ message: 'Event deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting event:', error);
+        res.status(500).json({ error: 'Failed to delete event' });
+    }
+});
+
+// Get event responses
+app.get('/api/host/events/:eventId/responses', authenticateHost, async (req, res) => {
+    try {
+        const event = await JambEvent.findOne({ 
+            _id: req.params.eventId, 
+            hostId: req.hostData.id  // Changed from req.host._id to req.hostData.id
+        });
+
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        const responses = await JambResponse.find({ eventId: req.params.eventId }).sort({ submittedAt: -1 });
+
+        // Prepare event data for response
+        const eventData = {
+            title: event.title,
+            description: event.description,
+            totalQuestions: event.totalQuestions,
+            timeLimit: event.timeLimit,
+            deadline: event.deadline,
+            status: event.status,
+            subjects: event.subjects.map(subject => ({
+                subject: subject.subject,
+                questionCount: subject.questionCount
+            }))
+        };
+
+        res.json({ event: eventData, responses });
+    } catch (error) {
+        console.error('Error fetching event responses:', error);
+        res.status(500).json({ error: 'Failed to fetch event responses' });
+    }
+});
+
+// Get all quizzes for host dashboard
+app.get('/api/host/quizzes', authenticateHost, async (req, res) => {
+    try {
+        const quizzes = await Quiz.find({})
+            .populate('teacherId', 'name email subject')
+            .sort({ createdAt: -1 });
+        
+        // Add response count for each quiz
+        const quizzesWithStats = await Promise.all(quizzes.map(async (quiz) => {
+            const responseCount = await Response.countDocuments({ quizId: quiz._id });
+            const responses = await Response.find({ quizId: quiz._id });
+            const averageScore = responseCount > 0 ? 
+                Math.round(responses.reduce((sum, r) => sum + (r.score / r.totalQuestions * 100), 0) / responseCount) : 0;
+            
+            return {
+                ...quiz.toObject(),
+                responseCount,
+                averageScore
+            };
+        }));
+        
+        res.json(quizzesWithStats);
+    } catch (error) {
+        console.error('Error fetching host quizzes:', error);
+        res.status(500).json({ error: 'Failed to fetch teacher quizzes' });
+    }
+});
+
+// Get responses for a specific quiz (host view)
+app.get('/api/host/quiz/:quizId/responses', authenticateHost, async (req, res) => {
+    try {
+        const quiz = await Quiz.findById(req.params.quizId)
+            .populate('teacherId', 'name email subject');
+        
+        if (!quiz) {
+            return res.status(404).json({ error: 'Quiz not found' });
+        }
+
+        const responses = await Response.find({ quizId: req.params.quizId })
+            .sort({ submittedAt: -1 });
+        
+        res.json({
+            quiz: {
+                title: quiz.title,
+                subject: quiz.subject,
+                teacher: quiz.teacherId,
+                totalQuestions: quiz.questions.length,
+                timeLimit: quiz.timeLimit,
+                shareId: quiz.shareId,
+                createdAt: quiz.createdAt
+            },
+            responses
+        });
+    } catch (error) {
+        console.error('Error fetching quiz responses:', error);
+        res.status(500).json({ error: 'Error fetching quiz responses' });
+    }
+});
+
+// Get quiz responses summary for host
+app.get('/api/host/quiz-responses-summary', authenticateHost, async (req, res) => {
+    try {
+        const totalResponses = await Response.countDocuments();
+        res.json({ totalResponses });
+    } catch (error) {
+        console.error('Error fetching quiz responses summary:', error);
+        res.status(500).json({ error: 'Failed to fetch responses summary' });
+    }
+});
+
+// Get detailed response breakdown
+app.get('/api/host/response/:responseId/breakdown', authenticateHost, async (req, res) => {
+    try {
+        const responseId = req.params.responseId;
+        
+        const response = await JambResponse.findById(responseId)
+            .populate('eventId');
+        
+        if (!response) {
+            return res.status(404).json({ error: 'Response not found' });
+        }
+
+        // Check if the host owns the event this response belongs to
+        if (response.eventId.hostId.toString() !== req.hostData.id.toString()) {  // Changed from req.host._id to req.hostData.id
+            return res.status(403).json({ error: 'Access denied' });
+        }
+
+        // Get detailed breakdown by subject
+        const subjectBreakdown = response.scores.map(score => {
+            const subjectAnswers = response.answers.filter(answer => answer.subject === score.subject);
+            const correctAnswers = subjectAnswers.length > 0 ? score.score : 0;
+            
+            return {
+                subject: score.subject,
+                score: score.score,
+                totalQuestions: score.totalQuestions,
+                percentage: Math.round((score.score / score.totalQuestions) * 100),
+                correctAnswers,
+                wrongAnswers: score.totalQuestions - score.score,
+                unanswered: score.totalQuestions - subjectAnswers.length
+            };
+        });
+
+        res.json({
+            studentName: response.studentName,
+            studentEmail: response.studentEmail,
+            totalScore: response.totalScore,
+            totalQuestions: response.totalQuestions,
+            timeSpent: response.timeSpent,
+            submittedAt: response.submittedAt,
+            subjectBreakdown
+        });
+    } catch (error) {
+        console.error('Error fetching response breakdown:', error);
+        res.status(500).json({ error: 'Error fetching response breakdown' });
+    }
+});
+
+// TEACHER EVENT ROUTES
+
+// Get teacher events
+app.get('/api/teacher/events', authenticateTeacher, async (req, res) => {
+    try {
+        const events = await JambEvent.find({}).sort({ createdAt: -1 });
+        
+        let myContributions = 0;
+        let pendingEvents = 0;
+
+        events.forEach(event => {
+            const mySubject = event.subjects.find(s => s.subject === req.teacher.subject);
+            const myContribution = mySubject ? mySubject.teacherContributions.find(c => 
+                c.teacherId.toString() === req.teacher.id.toString()
+            ) : null;
+            
+            if (myContribution && myContribution.questionCount > 0) {
+                myContributions++;
+            }
+            if (event.status === 'active' && (!myContribution || myContribution.questionCount === 0)) {
+                pendingEvents++;
+            }
+        });
+
+        res.json({
+            events,
+            teacherSubject: req.teacher.subject,
+            myContributions,
+            pendingEvents
+        });
+    } catch (error) {
+        console.error('Error fetching teacher events:', error);
+        res.status(500).json({ error: 'Failed to fetch events' });
+    }
+});
+
+// Get specific event for teacher contribution
+app.get('/api/teacher/events/:eventId', authenticateTeacher, async (req, res) => {
+    try {
+        const event = await JambEvent.findById(req.params.eventId);
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        const mySubject = event.subjects.find(s => s.subject === req.teacher.subject);
+        const existingQuestions = mySubject ? mySubject.questions.filter(q => 
+            q.teacherId && q.teacherId.toString() === req.teacher.id.toString()
+        ) : [];
+
+        res.json({ event, existingQuestions });
+    } catch (error) {
+        console.error('Error fetching event for teacher:', error);
+        res.status(500).json({ error: 'Failed to fetch event' });
+    }
+});
+
+// Teacher contribute questions to event
+app.post('/api/teacher/events/:eventId/contribute', authenticateTeacher, async (req, res) => {
+    try {
+        const { questions } = req.body;
+
+        if (!questions || !Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({ error: 'No questions provided' });
+        }
+
+        const event = await JambEvent.findById(req.params.eventId);
+        if (!event) {
+            return res.status(404).json({ error: 'Event not found' });
+        }
+
+        if (event.status !== 'active') {
+            return res.status(400).json({ error: 'Event is not active for contributions' });
+        }
+
+        if (new Date() > event.deadline) {
+            return res.status(400).json({ error: 'Event deadline has passed' });
+        }
+
+        // Find the subject for this teacher
+        const subjectIndex = event.subjects.findIndex(s => s.subject === req.teacher.subject);
+        if (subjectIndex === -1) {
+            return res.status(400).json({ error: 'Subject not found in event' });
+        }
+
+        // Remove existing questions from this teacher
+        event.subjects[subjectIndex].questions = event.subjects[subjectIndex].questions.filter(q => 
+            !q.teacherId || q.teacherId.toString() !== req.teacher.id.toString()
+        );
+
+        // Add new questions
+        const newQuestions = questions.map(q => ({
+            question: q.question,
+            options: q.options,
+            correctAnswer: q.correctAnswer,
+            imageUrls: q.imageUrls || [],
+            imagePublicIds: q.imagePublicIds || [],
+            teacherId: req.teacher.id,
+            teacherName: req.teacher.name
+        }));
+
+        event.subjects[subjectIndex].questions.push(...newQuestions);
+        event.subjects[subjectIndex].questionCount = event.subjects[subjectIndex].questions.length;
+
+        // Update teacher contributions
+        const existingContribution = event.subjects[subjectIndex].teacherContributions.find(tc => 
+            tc.teacherId.toString() === req.teacher.id.toString()
+        );
+
+        if (existingContribution) {
+            existingContribution.questionCount = questions.length;
+        } else {
+            event.subjects[subjectIndex].teacherContributions.push({
+                teacherId: req.teacher.id,
+                teacherName: req.teacher.name,
+                questionCount: questions.length
+            });
+        }
+
+        // Update total questions count
+        event.totalQuestions = event.subjects.reduce((total, subject) => total + subject.questionCount, 0);
+
+        // Check if event is completed (all subjects have required questions)
+        const allSubjectsComplete = event.subjects.every(subject => 
+            subject.questionCount >= event.questionsPerSubject
+        );
+
+        if (allSubjectsComplete && event.status === 'active') {
+            event.status = 'completed';
+        }
+
+        await event.save();
+
+        res.json({ 
+            message: 'Questions saved successfully',
+            questionCount: questions.length,
+            totalSubjectQuestions: event.subjects[subjectIndex].questionCount,
+            eventStatus: event.status
+        });
+    } catch (error) {
+        console.error('Error saving teacher questions:', error);
+        res.status(500).json({ 
+            error: 'Failed to save questions',
+            details: error.message
+        });
+    }
+});
+
+// JAMB MOCK PUBLIC ROUTES
+
+// Get all available JAMB mock quizzes (published events)
+app.get('/api/jamb-mock/available', async (req, res) => {
+    try {
+        // Find all published JAMB events that haven't passed their deadline
+        const availableEvents = await JambEvent.find({
+            status: 'published',
+            deadline: { $gt: new Date() } // Only events that haven't expired
+        })
+        .populate('hostId', 'name') // Get host name
+        .select('title description shareId deadline timeLimit totalQuestions subjects createdAt')
+        .sort({ createdAt: -1 });
+
+        // Format the response with quiz links and details
+        const quizLinks = availableEvents.map(event => ({
+            id: event._id,
+            title: event.title,
+            description: event.description,
+            hostName: event.hostId?.name || 'Unknown Host',
+            shareId: event.shareId,
+            quizUrl: `${req.protocol}://${req.get('host')}/jamb-mock/${event.shareId}`,
+            deadline: event.deadline,
+            timeLimit: event.timeLimit,
+            totalQuestions: event.totalQuestions,
+            subjects: event.subjects.map(subject => ({
+                subject: subject.subject,
+                questionCount: subject.questionCount
+            })),
+            createdAt: event.createdAt,
+            daysLeft: Math.ceil((new Date(event.deadline) - new Date()) / (1000 * 60 * 60 * 24))
+        }));
+
+        res.json({
+            success: true,
+            count: quizLinks.length,
+            quizzes: quizLinks
+        });
+    } catch (error) {
+        console.error('Error fetching available JAMB mock quizzes:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Error fetching available JAMB mock quizzes' 
+        });
+    }
+});
+
+// Get all JAMB mock quizzes (including expired ones) - for admin/host use
+app.get('/api/jamb-mock/all', async (req, res) => {
+    try {
+        const allEvents = await JambEvent.find({ status: 'published' })
+            .populate('hostId', 'name')
+            .select('title description shareId deadline timeLimit totalQuestions subjects createdAt status')
+            .sort({ createdAt: -1 });
+
+        const quizLinks = allEvents.map(event => {
+            const isExpired = new Date() > new Date(event.deadline);
+            
+            return {
+                id: event._id,
+                title: event.title,
+                description: event.description,
+                hostName: event.hostId?.name || 'Unknown Host',
+                shareId: event.shareId,
+                quizUrl: `${req.protocol}://${req.get('host')}/jamb-mock/${event.shareId}`,
+                deadline: event.deadline,
+                timeLimit: event.timeLimit,
+                totalQuestions: event.totalQuestions,
+                subjects: event.subjects.map(subject => ({
+                    subject: subject.subject,
+                    questionCount: subject.questionCount
+                })),
+                createdAt: event.createdAt,
+                status: isExpired ? 'expired' : 'active',
+                daysLeft: isExpired ? 0 : Math.ceil((new Date(event.deadline) - new Date()) / (1000 * 60 * 60 * 24))
+            };
+        });
+
+        res.json({
+            success: true,
+            count: quizLinks.length,
+            quizzes: quizLinks
+        });
+    } catch (error) {
+        console.error('Error fetching all JAMB mock quizzes:', error);
+        res.status(500).json({ 
+            success: false, 
+            error: 'Error fetching JAMB mock quizzes' 
+        });
+    }
+});
+
+// Get JAMB Mock by share ID
+app.get('/api/jamb-mock/:shareId', async (req, res) => {
+    try {
+        const event = await JambEvent.findOne({ 
+            shareId: req.params.shareId,
+            status: 'published'
+        });
+
+        if (!event) {
+            return res.status(404).json({ error: 'JAMB Mock not found or not published' });
+        }
+
+        // Check if the quiz has expired
+        if (new Date() > event.deadline) {
+            return res.status(400).json({ error: 'This JAMB Mock quiz has expired' });
+        }
+
+        // Format questions for student (hide correct answers)
+        const studentEvent = {
+            ...event.toObject(),
+            subjects: event.subjects.map(subject => ({
+                subject: subject.subject,
+                questions: subject.questions.map(q => ({
+                    question: q.question,
+                    options: q.options,
+                    imageUrls: q.imageUrls || []
+                }))
+            }))
+        };
+
+        res.json(studentEvent);
+    } catch (error) {
+        console.error('Error fetching JAMB Mock:', error);
+        res.status(500).json({ error: 'Failed to fetch JAMB Mock' });
+    }
+});
+
+// Submit JAMB Mock response
+app.post('/api/jamb-mock/submit/:shareId', async (req, res) => {
+    try {
+        const { studentName, studentEmail, answers, timeSpent } = req.body;
+        
+        const event = await JambEvent.findOne({ 
+            shareId: req.params.shareId,
+            status: 'published'
+        });
+
+        if (!event) {
+            return res.status(404).json({ error: 'JAMB Mock not found' });
+        }
+
+        // Check if the quiz has expired
+        if (new Date() > event.deadline) {
+            return res.status(400).json({ error: 'This JAMB Mock quiz has expired' });
+        }
+
+        // Calculate scores by subject
+        const scores = [];
         let totalScore = 0;
         let totalQuestions = 0;
 
-        // English (60 questions)
-        const englishAnswers = answers.filter(a => a.subject === 'english');
-        let englishScore = 0;
-        englishAnswers.forEach(answer => {
-            if (mock.subjects.english[answer.questionIndex] && 
-                mock.subjects.english[answer.questionIndex].correctAnswer === answer.selectedAnswer) {
-                englishScore++;
-            }
+        event.subjects.forEach(subject => {
+            const subjectAnswers = answers.filter(a => a.subject === subject.subject);
+            let subjectScore = 0;
+            
+            subjectAnswers.forEach(answer => {
+                const question = subject.questions[answer.questionIndex];
+                if (question && answer.selectedAnswer === question.correctAnswer) {
+                    subjectScore++;
+                }
+            });
+
+            scores.push({
+                subject: subject.subject,
+                score: subjectScore,
+                totalQuestions: subjectAnswers.length
+            });
+
+            totalScore += subjectScore;
+            totalQuestions += subjectAnswers.length;
         });
-        scores.english = { score: englishScore, total: mock.subjects.english.length };
-        totalScore += englishScore;
-        totalQuestions += mock.subjects.english.length;
 
-        // Physics (40 questions)
-        const physicsAnswers = answers.filter(a => a.subject === 'physics');
-        let physicsScore = 0;
-        physicsAnswers.forEach(answer => {
-            if (mock.subjects.physics[answer.questionIndex] && 
-                mock.subjects.physics[answer.questionIndex].correctAnswer === answer.selectedAnswer) {
-                physicsScore++;
-            }
-        });
-        scores.physics = { score: physicsScore, total: mock.subjects.physics.length };
-        totalScore += physicsScore;
-        totalQuestions += mock.subjects.physics.length;
+        const percentage = totalQuestions > 0 ? Math.round((totalScore / totalQuestions) * 100) : 0;
 
-        // Chemistry (40 questions)
-        const chemistryAnswers = answers.filter(a => a.subject === 'chemistry');
-        let chemistryScore = 0;
-        chemistryAnswers.forEach(answer => {
-            if (mock.subjects.chemistry[answer.questionIndex] && 
-                mock.subjects.chemistry[answer.questionIndex].correctAnswer === answer.selectedAnswer) {
-                chemistryScore++;
-            }
-        });
-        scores.chemistry = { score: chemistryScore, total: mock.subjects.chemistry.length };
-        totalScore += chemistryScore;
-        totalQuestions += mock.subjects.chemistry.length;
-
-        // Fourth subject (Maths or Biology - 40 questions)
-        const fourthAnswers = answers.filter(a => a.subject === selectedSubject);
-        let fourthScore = 0;
-        fourthAnswers.forEach(answer => {
-            if (mock.subjects[selectedSubject][answer.questionIndex] && 
-                mock.subjects[selectedSubject][answer.questionIndex].correctAnswer === answer.selectedAnswer) {
-                fourthScore++;
-            }
-        });
-        scores.fourth = { 
-            score: fourthScore, 
-            total: mock.subjects[selectedSubject].length,
-            subject: selectedSubject
-        };
-        totalScore += fourthScore;
-        totalQuestions += mock.subjects[selectedSubject].length;
-
-        const percentage = (totalScore / totalQuestions) * 100;
-
-        // Create a snapshot of the mock questions for correction
-        const mockSnapshot = {
-            name: mock.name,
-            subjects: {
-                english: mock.subjects.english.map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: q.correctAnswer,
-                    imageUrls: q.imageUrls || []
-                })),
-                physics: mock.subjects.physics.map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: q.correctAnswer,
-                    imageUrls: q.imageUrls || []
-                })),
-                chemistry: mock.subjects.chemistry.map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: q.correctAnswer,
-                    imageUrls: q.imageUrls || []
-                })),
-                maths: mock.subjects.maths.map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: q.correctAnswer,
-                    imageUrls: q.imageUrls || []
-                })),
-                biology: mock.subjects.biology.map(q => ({
-                    question: q.question,
-                    options: q.options,
-                    correctAnswer: q.correctAnswer,
-                    imageUrls: q.imageUrls || []
-                }))
-            }
-        };
-
-        const result = new MockResult({
-            mockId: mock._id,
+        const response = new JambResponse({
+            eventId: event._id,
             studentName,
-            phoneNumber,
-            selectedSubject,
-            ipAddress,
-            userAgent: req.headers['user-agent'],
+            studentEmail,
             answers,
             scores,
             totalScore,
             totalQuestions,
-            percentage: parseFloat(percentage.toFixed(2)),
-            timeSpent: timeSpent || 0,
-            chancesUsed: chancesUsed || 0,
-            correctionId: uuidv4(),
-            mockSnapshot
+            percentage,
+            timeSpent: timeSpent || 0
         });
 
-        console.log('Creating result with correctionId:', result.correctionId);
-        await result.save();
-        console.log('Result saved successfully with correctionId:', result.correctionId);
+        await response.save();
 
         res.json({
-            success: true,
-            result: {
-                id: result._id,
-                studentName: result.studentName,
-                scores: result.scores,
-                totalScore: result.totalScore,
-                totalQuestions: result.totalQuestions,
-                percentage: result.percentage,
-                correctionId: result.correctionId
+            totalScore,
+            totalQuestions,
+            percentage,
+            scores: scores.map(s => ({
+                subject: s.subject,
+                score: s.score,
+                total: s.totalQuestions,
+                percentage: Math.round((s.score / s.totalQuestions) * 100)
+            })),
+            correctionId: response.correctionId
+        });
+    } catch (error) {
+        console.error('JAMB Mock submit error:', error);
+        res.status(500).json({ error: 'Failed to submit JAMB Mock' });
+    }
+});
+
+// DEBUG ENDPOINTS
+
+// Debug endpoint - Check all JAMB events regardless of status
+app.get('/api/debug/jamb-events', async (req, res) => {
+    try {
+        const allEvents = await JambEvent.find({})
+            .populate('hostId', 'name')
+            .sort({ createdAt: -1 });
+
+        const eventSummary = allEvents.map(event => ({
+            id: event._id,
+            title: event.title,
+            status: event.status,
+            shareId: event.shareId,
+            deadline: event.deadline,
+            totalQuestions: event.totalQuestions,
+            hostId: event.hostId,
+            subjects: event.subjects.map(s => ({
+                subject: s.subject,
+                questionCount: s.questionCount
+            })),
+            createdAt: event.createdAt,
+            isExpired: new Date() > new Date(event.deadline)
+        }));
+
+        res.json({
+            totalEvents: allEvents.length,
+            events: eventSummary,
+            breakdown: {
+                active: allEvents.filter(e => e.status === 'active').length,
+                completed: allEvents.filter(e => e.status === 'completed').length,
+                published: allEvents.filter(e => e.status === 'published').length,
+                expired: allEvents.filter(e => new Date() > new Date(e.deadline)).length
             }
         });
     } catch (error) {
-        console.error('Submit mock error:', error);
-        console.error('Error stack:', error.stack);
-        res.status(500).json({ error: 'Failed to submit mock exam', details: error.message });
+        console.error('Debug error:', error);
+        res.status(500).json({ error: 'Debug error' });
     }
 });
 
-// Get Results for a Mock (Admin)
-app.get('/api/admin/mocks/:id/results', authenticateAdmin, async (req, res) => {
+// Debug endpoint - Check hosts
+app.get('/api/debug/hosts', async (req, res) => {
     try {
-        const results = await MockResult.find({ mockId: req.params.id })
-            .sort({ submittedAt: -1 });
-
-        res.json({ results });
-    } catch (error) {
-        console.error('Get results error:', error);
-        res.status(500).json({ error: 'Failed to fetch results' });
-    }
-});
-
-// Delete Result (Admin)
-app.delete('/api/admin/results/:id', authenticateAdmin, async (req, res) => {
-    try {
-        const result = await MockResult.findByIdAndDelete(req.params.id);
-
-        if (!result) {
-            return res.status(404).json({ error: 'Result not found' });
-        }
-
-        res.json({ success: true });
-    } catch (error) {
-        console.error('Delete result error:', error);
-        res.status(500).json({ error: 'Failed to delete result' });
-    }
-});
-
-// Get Correction Data (Public - Student)
-app.get('/api/correction/:correctionId', async (req, res) => {
-    try {
-        const result = await MockResult.findOne({ correctionId: req.params.correctionId });
-
-        if (!result) {
-            return res.status(404).json({ error: 'Correction not found' });
-        }
-
+        const hosts = await Host.find({}, { password: 0 });
         res.json({
-            studentName: result.studentName,
-            mockName: result.mockSnapshot.name,
-            scores: result.scores,
-            totalScore: result.totalScore,
-            totalQuestions: result.totalQuestions,
-            percentage: result.percentage,
-            timeSpent: result.timeSpent,
-            selectedSubject: result.selectedSubject,
-            answers: result.answers,
-            questions: result.mockSnapshot.subjects,
-            submittedAt: result.submittedAt
+            totalHosts: hosts.length,
+            hosts
         });
     } catch (error) {
-        console.error('Get correction error:', error);
-        res.status(500).json({ error: 'Failed to fetch correction data' });
+        res.status(500).json({ error: 'Debug error' });
+    }
+});
+
+// Debug endpoint - Check teachers
+app.get('/api/debug/teachers', async (req, res) => {
+    try {
+        const teachers = await Teacher.find({}, { password: 0 });
+        res.json({
+            totalTeachers: teachers.length,
+            teachers
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Debug error' });
+    }
+});
+
+// Test endpoint - Create sample JAMB event (for testing only)
+app.post('/api/debug/create-sample-event', async (req, res) => {
+    try {
+        // First, ensure we have a host
+        let host = await Host.findOne({ email: 'host@smartsteps.com' });
+        if (!host) {
+            const hashedPassword = await bcrypt.hash('admin123', 10);
+            host = new Host({
+                name: 'Smart Steps Host',
+                email: 'host@smartsteps.com',
+                password: hashedPassword,
+                role: 'host'
+            });
+            await host.save();
+        }
+
+        // Create sample teachers if they don't exist
+        const subjects = ['Mathematics', 'English', 'Physics', 'Chemistry', 'Biology'];
+        const teachers = {};
+        
+        for (const subject of subjects) {
+            let teacher = await Teacher.findOne({ subject, email: `${subject.toLowerCase()}@teacher.com` });
+            if (!teacher) {
+                const hashedPassword = await bcrypt.hash('teacher123', 10);
+                teacher = new Teacher({
+                    name: `${subject} Teacher`,
+                    email: `${subject.toLowerCase()}@teacher.com`,
+                    password: hashedPassword,
+                    subject
+                });
+                await teacher.save();
+            }
+            teachers[subject] = teacher;
+        }
+
+        // Create a sample JAMB event with questions
+        const sampleEvent = new JambEvent({
+            title: 'Sample JAMB Mock Test 2025',
+            description: 'A comprehensive JAMB practice test covering all subjects',
+            hostId: host._id,
+            timeLimit: 180, // 3 hours
+            questionsPerSubject: 10,
+            deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days from now
+            status: 'published',
+            shareId: uuidv4(),
+            subjects: subjects.map(subject => ({
+                subject,
+                questions: Array.from({ length: 10 }, (_, i) => ({
+                    question: `Sample ${subject} question ${i + 1}: What is the basic concept in ${subject}?`,
+                    options: [`Option ${i}A`, `Option ${i}B`, `Option ${i}C`, `Option ${i}D`],
+                    correctAnswer: i % 4,
+                    teacherId: teachers[subject]._id,
+                    teacherName: teachers[subject].name,
+                    imageUrls: [],
+                    imagePublicIds: []
+                })),
+                questionCount: 10,
+                teacherContributions: [{
+                    teacherId: teachers[subject]._id,
+                    teacherName: teachers[subject].name,
+                    questionCount: 10
+                }]
+            })),
+            totalQuestions: 50
+        });
+
+        await sampleEvent.save();
+
+        res.json({
+            message: 'Sample JAMB event created successfully',
+            event: {
+                id: sampleEvent._id,
+                title: sampleEvent.title,
+                shareId: sampleEvent.shareId,
+                quizUrl: `${req.protocol}://${req.get('host')}/jamb-mock/${sampleEvent.shareId}`,
+                status: sampleEvent.status,
+                totalQuestions: sampleEvent.totalQuestions,
+                deadline: sampleEvent.deadline
+            }
+        });
+    } catch (error) {
+        console.error('Error creating sample event:', error);
+        res.status(500).json({ error: 'Error creating sample event', details: error.message });
     }
 });
 
@@ -996,54 +2070,83 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-app.get('/admin-login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-login.html'));
+app.get('/teacher-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-login.html'));
 });
 
-app.get('/admin-dashboard', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-dashboard.html'));
+app.get('/teacher-register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-register.html'));
 });
 
-app.get('/admin/create-mock', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-create-mock.html'));
+app.get('/teacher-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-dashboard.html'));
 });
 
-app.get('/admin/edit-mock/:id', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-edit-mock.html'));
+app.get('/create-quiz', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'create-quiz.html'));
 });
 
-app.get('/admin/mock-results/:id', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'admin-mock-results.html'));
+app.get('/quiz/:shareId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'student-quiz.html'));
 });
 
-app.get('/mock/:shareId', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'student-mock.html'));
+app.get('/quiz-results/:quizId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'quiz-results.html'));
+});
+
+app.get('/student-details/:responseId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'student-details.html'));
 });
 
 app.get('/correction/:correctionId', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'student-correction.html'));
+    res.sendFile(path.join(__dirname, 'public', 'quiz-correction.html'));
 });
 
-app.get('/test', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'test.html'));
+app.get('/host-login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'host-login.html'));
 });
 
-// Create default admin account
-async function createDefaultAdmin() {
+app.get('/host-dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'host-dashboard.html'));
+});
+
+app.get('/host/event-details/:eventId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'host-event-details.html'));
+});
+
+app.get('/host/event-responses/:eventId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'host-event-responses.html'));
+});
+
+app.get('/teacher-events', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-events.html'));
+});
+
+app.get('/teacher/event-contribute/:eventId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'teacher-event-contribute.html'));
+});
+
+app.get('/jamb-mock/:shareId', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'jamb-mock-quiz.html'));
+});
+
+// Create default host account
+async function createDefaultHost() {
     try {
-        const existingAdmin = await Admin.findOne({ email: 'admin@smartsteps.com' });
-        if (!existingAdmin) {
+        const existingHost = await Host.findOne({ email: 'host@smartsteps.com' });
+        if (!existingHost) {
             const hashedPassword = await bcrypt.hash('admin123', 10);
-            const admin = new Admin({
-                name: 'Smart Steps Admin',
-                email: 'admin@smartsteps.com',
-                password: hashedPassword
+            const host = new Host({
+                name: 'Smart Steps Host',
+                email: 'host@smartsteps.com',
+                password: hashedPassword,
+                role: 'host'
             });
-            await admin.save();
-            console.log('Default admin account created: admin@smartsteps.com / admin123');
+            await host.save();
+            console.log('Default host account created: host@smartsteps.com / admin123');
         }
     } catch (error) {
-        console.error('Error creating default admin:', error);
+        console.error('Error creating default host:', error);
     }
 }
 
@@ -1060,7 +2163,7 @@ app.use('/api/*', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-    console.log(`Smart Steps Mock Server running on port ${PORT}`);
-    console.log(`Connected to MongoDB Atlas database: smartsteps`);
-    createDefaultAdmin();
+    console.log(`Smart Steps Quiz Server running on port ${PORT}`);
+    console.log(`Connected to MongoDB Atlas database: videocall`);
+    createDefaultHost();
 });

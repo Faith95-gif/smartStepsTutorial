@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB 2026 Mathematics Guide - Change of Subject of Formulas</title>
+    <link rel="stylesheet" href="header-style.css">
+    <script src="header-script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin: -20px -20px 30px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196f3;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left: 5px solid #4caf50;
+        }
+
+        .types {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 5px solid #ff9800;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+            border-left: 5px solid #9c27b0;
+            margin: 25px 0;
+        }
+
+        .jamb-example {
+            background: linear-gradient(135deg, #fff8e1, #f3e5ab);
+            border-left: 5px solid #ff8f00;
+            margin: 25px 0;
+        }
+
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .math-expression {
+            font-size: 1.1rem;
+            margin: 10px 0;
+            line-height: 2;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 3px;
+        }
+
+        .numerator {
+            border-bottom: 1px solid #333;
+            padding-bottom: 2px;
+            display: block;
+        }
+
+        .denominator {
+            padding-top: 2px;
+            display: block;
+        }
+
+        .calculation-step {
+            margin: 12px 0;
+            padding: 8px 15px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            font-size: 1.05rem;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .math-work {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .memory-tip {
+            background: linear-gradient(135deg, #fff9c4, #ffecb3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            position: relative;
+        }
+
+        .memory-tip::before {
+            content: "💡";
+            position: absolute;
+            left: -15px;
+            top: 15px;
+            background: white;
+            padding: 5px;
+            border-radius: 50%;
+        }
+
+        .memory-tip h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+            margin-left: 20px;
+        }
+
+        .rule-box {
+            background: linear-gradient(135deg, #ffe0e6, #fff0f5);
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #e91e63;
+        }
+
+        .rule-box h4 {
+            color: #c2185b;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .step-solution {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step-solution h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .jamb-tag {
+            background: #ff8f00;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .practice-section {
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-left: 5px solid #66bb6a;
+        }
+
+        .practice-questions {
+            counter-reset: question-counter;
+        }
+
+        .practice-questions li {
+            counter-increment: question-counter;
+            margin: 15px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .practice-questions li::before {
+            content: counter(question-counter);
+            position: absolute;
+            left: 15px;
+            top: 10px;
+            background: #66bb6a;
+            color: white;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .operation-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .operation-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .operation-card h5 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+            
+            .operation-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="main-header">
+    <nav class="nav-container">
+        <a href="#" class="logo">
+            <a href="#" class="logo"><img src="steps_smart.png" alt=""> Smart Steps</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active">Mathematics</a></li>
+            <li class="nav-item"><a href="#">Physics</a></li>
+            <li class="nav-item"><a href="#">Chemistry</a></li>
+            <li class="nav-item"><a href="#">English</a></li>
+            <li class="nav-item"><a href="#">Biology</a></li>
+          
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+
+    <div class="container">
+        <div class="header">
+            <h1>SMART STEPS TUTORIALS</h1>
+            <h2>JAMB 2026 Mathematics Guide</h2>
+            <div class="subtitle">CHANGE OF SUBJECT OF FORMULAS</div>
+        </div>
+
+        <div class="section intro">
+            <h3>🎯 Introduction</h3>
+            <p>Imagine you have a recipe for making jollof rice, but instead of knowing how much rice to use, you want to find out how much water you need. You'd have to rearrange the recipe formula to solve for water instead of rice.</p>
+            <p>This is exactly what <span class="highlight">changing the subject of a formula</span> means - rearranging a formula to make a different variable the main focus (the subject).</p>
+            <p>This topic is crucial for JAMB Mathematics because it appears in algebra, physics formulas, geometry, and many word problems.</p>
+        </div>
+
+        <div class="section definition">
+            <h3>📖 What is Change of Subject of Formula?</h3>
+            <p><strong>Change of subject of formula</strong> means rearranging a mathematical formula to make a different variable stand alone on one side of the equation.</p>
+            
+            <div class="memory-tip">
+                <h4>Key Point:</h4>
+                <p>The <strong>subject</strong> of a formula is the variable that stands alone on one side of the equation (usually the left side).</p>
+            </div>
+
+            <p><strong>Example:</strong></p>
+            <div class="formula">In A = lw, the subject is A</div>
+            <div class="formula">If we change to w = <span class="fraction"><span class="numerator">A</span><span class="denominator">l</span></span>, the subject becomes w</div>
+        </div>
+
+        <div class="section types">
+            <h3>🔧 Basic Operations for Changing Subject</h3>
+            
+            <div class="rule-box">
+                <h4>Golden Rule:</h4>
+                <p>Whatever operation you do to one side of the equation, you must do the same to the other side!</p>
+            </div>
+
+            <div class="operation-grid">
+                <div class="operation-card">
+                    <h5>Addition/Subtraction</h5>
+                    <p>If: x + a = b<br>Then: x = b - a</p>
+                    <p><em>Move terms by changing signs</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Multiplication/Division</h5>
+                    <p>If: ax = b<br>Then: x = <span class="fraction"><span class="numerator">b</span><span class="denominator">a</span></span></p>
+                    <p><em>Move factors by dividing</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Square/Square Root</h5>
+                    <p>If: x² = a<br>Then: x = ±√a</p>
+                    <p><em>Take square root of both sides</em></p>
+                </div>
+
+                <div class="operation-card">
+                    <h5>Fractions</h5>
+                    <p>If: <span class="fraction"><span class="numerator">x</span><span class="denominator">a</span></span> = b<br>Then: x = ab</p>
+                    <p><em>Cross multiply</em></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📝 Worked Examples </h3>
+
+            <div class="example">
+                <h4>Example 1 — Simple Linear Formula</h4>
+                <p><strong>Problem:</strong> Make x the subject of the formula: y = 3x + 5</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> y = 3x + 5</p>
+                    <p><strong>Goal:</strong> Make x the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Cube both sides to remove the cube root</p>
+                        <div class="calculation-step">
+                            P³ = [<span class="fraction"><span class="numerator">Q(R - T)</span><span class="denominator">15</span></span>]
+                        </div>
+                        <div class="calculation-step">
+                            P³ = <span class="fraction"><span class="numerator">Q(R - T)</span><span class="denominator">15</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Multiply both sides by 15</p>
+                        <div class="calculation-step">
+                            15P³ = Q(R - T)
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Divide both sides by Q</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">15P³</span><span class="denominator">Q</span></span> = R - T
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Solve for T</p>
+                        <div class="calculation-step">
+                            T = R - <span class="fraction"><span class="numerator">15P³</span><span class="denominator">Q</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>T = R - <span class="fraction"><span class="numerator">15P³</span><span class="denominator">Q</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 3</h4>
+                <p><strong>Problem:</strong> If <span class="fraction"><span class="numerator">x</span><span class="denominator">a + 1</span></span> + <span class="fraction"><span class="numerator">y</span><span class="denominator">b</span></span> = 1, make y the subject of the relation</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> <span class="fraction"><span class="numerator">x</span><span class="denominator">a + 1</span></span> + <span class="fraction"><span class="numerator">y</span><span class="denominator">b</span></span> = 1</p>
+                    <p><strong>Goal:</strong> Make y the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Subtract <span class="fraction"><span class="numerator">x</span><span class="denominator">a + 1</span></span> from both sides</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">y</span><span class="denominator">b</span></span> = 1 - <span class="fraction"><span class="numerator">x</span><span class="denominator">a + 1</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Express right side with common denominator</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">y</span><span class="denominator">b</span></span> = <span class="fraction"><span class="numerator">a + 1</span><span class="denominator">a + 1</span></span> - <span class="fraction"><span class="numerator">x</span><span class="denominator">a + 1</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">y</span><span class="denominator">b</span></span> = <span class="fraction"><span class="numerator">a + 1 - x</span><span class="denominator">a + 1</span></span>
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Multiply both sides by b</p>
+                        <div class="calculation-step">
+                            y = b × <span class="fraction"><span class="numerator">a + 1 - x</span><span class="denominator">a + 1</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>y = <span class="fraction"><span class="numerator">b(a + 1 - x)</span><span class="denominator">a + 1</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 4</h4>
+                <p><strong>Problem:</strong> Make S the subject of the relation: p = s + <span class="fraction"><span class="numerator">sm²</span><span class="denominator">nr</span></span></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> p = s + <span class="fraction"><span class="numerator">sm²</span><span class="denominator">nr</span></span></p>
+                    <p><strong>Goal:</strong> Make s the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Factor out s from the right side</p>
+                        <div class="calculation-step">
+                            p = s(1 + <span class="fraction"><span class="numerator">m²</span><span class="denominator">nr</span></span>)
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Express the bracket with common denominator</p>
+                        <div class="calculation-step">
+                            p = s(<span class="fraction"><span class="numerator">nr</span><span class="denominator">nr</span></span> + <span class="fraction"><span class="numerator">m²</span><span class="denominator">nr</span></span>)
+                        </div>
+                        <div class="calculation-step">
+                            p = s(<span class="fraction"><span class="numerator">nr + m²</span><span class="denominator">nr</span></span>)
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Divide both sides by (<span class="fraction"><span class="numerator">nr + m²</span><span class="denominator">nr</span></span>)</p>
+                        <div class="calculation-step">
+                            s = p ÷ (<span class="fraction"><span class="numerator">nr + m²</span><span class="denominator">nr</span></span>)
+                        </div>
+                        <div class="calculation-step">
+                            s = p × <span class="fraction"><span class="numerator">nr</span><span class="denominator">nr + m²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>s = <span class="fraction"><span class="numerator">nrp</span><span class="denominator">nr + m²</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 5</h4>
+                <p><strong>Problem:</strong> Given m = N√<span class="fraction"><span class="numerator">SL</span><span class="denominator">T</span></span>, make T the subject of the formula</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> m = N√<span class="fraction"><span class="numerator">SL</span><span class="denominator">T</span></span></p>
+                    <p><strong>Goal:</strong> Make T the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Divide both sides by N</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">m</span><span class="denominator">N</span></span> = √<span class="fraction"><span class="numerator">SL</span><span class="denominator">T</span></span>
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Square both sides to remove the square root</p>
+                        <div class="calculation-step">
+                            (<span class="fraction"><span class="numerator">m</span><span class="denominator">N</span></span>)² = <span class="fraction"><span class="numerator">SL</span><span class="denominator">T</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">m²</span><span class="denominator">N²</span></span> = <span class="fraction"><span class="numerator">SL</span><span class="denominator">T</span></span>
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Cross multiply</p>
+                        <div class="calculation-step">
+                            m²T = N²SL
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Divide both sides by m²</p>
+                        <div class="calculation-step">
+                            T = <span class="fraction"><span class="numerator">N²SL</span><span class="denominator">m²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>T = <span class="fraction"><span class="numerator">N²SL</span><span class="denominator">m²</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 6</h4>
+                <p><strong>Problem:</strong> Make x the subject of the equation: s = 2 + <span class="fraction"><span class="numerator">t</span><span class="denominator">5</span></span>(x + <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y)</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> s = 2 + <span class="fraction"><span class="numerator">t</span><span class="denominator">5</span></span>(x + <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y)</p>
+                    <p><strong>Goal:</strong> Make x the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Subtract 2 from both sides</p>
+                        <div class="calculation-step">
+                            s - 2 = <span class="fraction"><span class="numerator">t</span><span class="denominator">5</span></span>(x + <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y)
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Multiply both sides by <span class="fraction"><span class="numerator">5</span><span class="denominator">t</span></span></p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">5(s - 2)</span><span class="denominator">t</span></span> = x + <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Subtract <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y from both sides</p>
+                        <div class="calculation-step">
+                            x = <span class="fraction"><span class="numerator">5(s - 2)</span><span class="denominator">t</span></span> - <span class="fraction"><span class="numerator">3</span><span class="denominator">5</span></span>y
+                        </div>
+                        <div class="calculation-step">
+                            <strong>x = <span class="fraction"><span class="numerator">5(s - 2)</span><span class="denominator">t</span></span> - <span class="fraction"><span class="numerator">3y</span><span class="denominator">5</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 7</h4>
+                <p><strong>Problem:</strong> If gt² - k - w = 0, make g the subject of the formula</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> gt² - k - w = 0</p>
+                    <p><strong>Goal:</strong> Make g the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Add k and w to both sides</p>
+                        <div class="calculation-step">
+                            gt² - k - w + k + w = 0 + k + w
+                        </div>
+                        <div class="calculation-step">
+                            gt² = k + w
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Divide both sides by t²</p>
+                        <div class="calculation-step">
+                            <span class="fraction"><span class="numerator">gt²</span><span class="denominator">t²</span></span> = <span class="fraction"><span class="numerator">k + w</span><span class="denominator">t²</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>g = <span class="fraction"><span class="numerator">k + w</span><span class="denominator">t²</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="jamb-example">
+                <div class="jamb-tag">JAMB Past Question</div>
+                <h4>JAMB Question 8</h4>
+                <p><strong>Problem:</strong> Make c the subject of the equation: a(b + c) + <span class="fraction"><span class="numerator">5</span><span class="denominator">d</span></span> - 2 = 0</p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    <p><strong>Given formula:</strong> a(b + c) + <span class="fraction"><span class="numerator">5</span><span class="denominator">d</span></span> - 2 = 0</p>
+                    <p><strong>Goal:</strong> Make c the subject</p>
+                    
+                    <div class="math-work">
+                        <p><strong>Step 1:</strong> Expand the brackets</p>
+                        <div class="calculation-step">
+                            ab + ac + <span class="fraction"><span class="numerator">5</span><span class="denominator">d</span></span> - 2 = 0
+                        </div>
+                        
+                        <p><strong>Step 2:</strong> Isolate the term with c</p>
+                        <div class="calculation-step">
+                            ac = 0 - ab - <span class="fraction"><span class="numerator">5</span><span class="denominator">d</span></span> + 2
+                        </div>
+                        <div class="calculation-step">
+                            ac = 2 - ab - <span class="fraction"><span class="numerator">5</span><span class="denominator">d</span></span>
+                        </div>
+                        
+                        <p><strong>Step 3:</strong> Express with common denominator</p>
+                        <div class="calculation-step">
+                            ac = <span class="fraction"><span class="numerator">2d - abd - 5</span><span class="denominator">d</span></span>
+                        </div>
+                        
+                        <p><strong>Step 4:</strong> Divide both sides by a</p>
+                        <div class="calculation-step">
+                            c = <span class="fraction"><span class="numerator">2d - abd - 5</span><span class="denominator">ad</span></span>
+                        </div>
+                        <div class="calculation-step">
+                            <strong>c = <span class="fraction"><span class="numerator">2d - 5 - abd</span><span class="denominator">ad</span></span></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>⚡ Quick Method Guide</h3>
+            
+            <div class="rule-box">
+                <h4>Step-by-Step Approach:</h4>
+                <ol>
+                    <li><strong>Identify</strong> the variable you want to make the subject</li>
+                    <li><strong>Isolate</strong> terms containing that variable on one side</li>
+                    <li><strong>Move</strong> all other terms to the opposite side</li>
+                    <li><strong>Factor out</strong> the variable if it appears in multiple terms</li>
+                    <li><strong>Divide</strong> by the coefficient of the variable</li>
+                    <li><strong>Apply inverse operations</strong> (square root, reciprocal, etc.) if needed</li>
+                </ol>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Memory Tips:</h4>
+                <ul>
+                    <li><strong>BODMAS in reverse:</strong> Undo operations in opposite order</li>
+                    <li><strong>What crosses the equals sign changes sign</strong> (+/- operations)</li>
+                    <li><strong>What moves across becomes reciprocal</strong> (×/÷ operations)</li>
+                    <li><strong>Check your answer</strong> by substituting back into the original formula</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="section practice-section">
+            <h3>🎯 Practice Questions (For JAMB 2026 Preparation)</h3>
+            
+            <p><strong>Basic Level:</strong></p>
+            <ol class="practice-questions">
+                <li>Make x the subject: y = 2x - 7</li>
+                <li>Make b the subject: a = 5b + 3c</li>
+                <li>Make r the subject: C = 2πr</li>
+                <li>Make h the subject: A = <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>bh</li>
+                <li>Make t the subject: d = <span class="fraction"><span class="numerator">s</span><span class="denominator">t</span></span></li>
+            </ol>
+
+            <p><strong>Intermediate Level:</strong></p>
+            <ol class="practice-questions" start="6">
+                <li>Make y the subject: <span class="fraction"><span class="numerator">x</span><span class="denominator">y</span></span> + z = w</li>
+                <li>Make p the subject: q = √(p² + r²)</li>
+                <li>Make m the subject: E = mc²</li>
+                <li>Make x the subject: y = <span class="fraction"><span class="numerator">ax + b</span><span class="denominator">cx + d</span></span></li>
+                <li>Make r the subject: V = <span class="fraction"><span class="numerator">4</span><span class="denominator">3</span></span>πr³</li>
+            </ol>
+
+            <p><strong>Advanced Level (JAMB):</strong></p>
+            <ol class="practice-questions" start="11">
+                <li>Make x the subject: √(ax + b) = cx + d</li>
+                <li>Make t the subject: P = <span class="fraction"><span class="numerator">A</span><span class="denominator">(1 + rt)</span></span></li>
+                <li>Make n the subject: S = <span class="fraction"><span class="numerator">a(rⁿ - 1)</span><span class="denominator">r - 1</span></span></li>
+                <li>Make θ the subject: sin θ = <span class="fraction"><span class="numerator">opposite</span><span class="denominator">hypotenuse</span></span></li>
+                <li>Make k the subject: y = Ae^(kx)</li>
+            </ol>
+
+            <p><strong>JAMB Past Questions for Practice:</strong></p>
+            <ol class="practice-questions" start="16">
+                <li>Make r the subject: <span class="fraction"><span class="numerator">ab</span><span class="denominator">c²</span></span> - <span class="fraction"><span class="numerator">pr</span><span class="denominator">d²</span></span> = 1 (JAMB)</li>
+                <li>Make y the subject: z = √(x²y + k) (JAMB)</li>
+                <li>Make m the subject: p = q + <span class="fraction"><span class="numerator">qm³</span><span class="denominator">nr</span></span> (JAMB)</li>
+                <li>Make w the subject: v²w - x - y = 0 (JAMB)</li>
+                <li>Make t the subject: R = [<span class="fraction"><span class="numerator">P(S - t)</span><span class="denominator">10</span></span>]<sup>1/2</sup> (JAMB)</li>
+            </ol>
+        </div>
+
+        <div class="section">
+            <h3>🔍 Common Mistakes to Avoid</h3>
+            
+            <div class="rule-box">
+                <h4>⚠️ Watch Out For:</h4>
+                <ul>
+                    <li><strong>Sign errors:</strong> Remember +5 becomes -5 when moved across equals</li>
+                    <li><strong>Reciprocal confusion:</strong> <span class="fraction"><span class="numerator">1</span><span class="denominator">x</span></span> = y means x = <span class="fraction"><span class="numerator">1</span><span class="denominator">y</span></span>, not x = y</li>
+                    <li><strong>Square root signs:</strong> √x² = |x|, consider positive and negative values</li>
+                    <li><strong>Factoring mistakes:</strong> Don't forget to factor out common terms</li>
+                    <li><strong>Order of operations:</strong> Follow BODMAS when simplifying</li>
+                    <li><strong>Fraction operations:</strong> Always find common denominators before adding/subtracting</li>
+                    <li><strong>Power operations:</strong> Remember (aᵐ)ⁿ = aᵐⁿ and aᵐ × aⁿ = aᵐ⁺ⁿ</li>
+                </ul>
+            </div>
+
+            <div class="memory-tip">
+                <h4>JAMB Exam Tips:</h4>
+                <ul>
+                    <li><strong>Always verify</strong> your answer by substituting back into the original equation</li>
+                    <li><strong>Look for the simplest form</strong> - JAMB answers are usually in their simplest form</li>
+                    <li><strong>Check all options</strong> before selecting your answer</li>
+                    <li><strong>Practice with past questions</strong> to understand JAMB's question patterns</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 Smart Steps Tutorials | One Smart Step Closer to Success<br>
+            <em>Enhanced with JAMB Past Questions for 2026 Preparation</em>
+        </div>
+    </div>
+</body>
+</html>
+                

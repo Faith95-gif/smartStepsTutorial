@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Mock - Smart Steps</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -14,691 +11,381 @@
             box-sizing: border-box;
         }
 
-        :root {
-            --color-bg: #fafafa;
-            --color-bg-elevated: #ffffff;
-            --color-border: rgba(0, 0, 0, 0.06);
-            --color-border-hover: rgba(0, 0, 0, 0.12);
-            --color-text-primary: #0a0a0a;
-            --color-text-secondary: #666666;
-            --color-text-tertiary: #999999;
-            --color-accent: #0066ff;
-            --color-accent-hover: #0052cc;
-            --color-accent-light: rgba(0, 102, 255, 0.08);
-            --color-success: #0ea05a;
-            --color-success-light: rgba(14, 160, 90, 0.08);
-            --color-danger: #ef4444;
-            --color-danger-light: rgba(239, 68, 68, 0.08);
-            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.03);
-            --shadow-md: 0 4px 12px 0 rgba(0, 0, 0, 0.04);
-            --shadow-lg: 0 12px 32px 0 rgba(0, 0, 0, 0.06);
-            --radius-sm: 8px;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --radius-xl: 20px;
-            --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
-            --font-display: 'Instrument Serif', serif;
-            --font-body: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-        }
-
         body {
-            font-family: var(--font-body);
-            background: var(--color-bg);
-            color: var(--color-text-primary);
-            line-height: 1.6;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
         }
 
-        /* Navigation */
         .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(12px) saturate(180%);
-            -webkit-backdrop-filter: blur(12px) saturate(180%);
-            border-bottom: 1px solid var(--color-border);
-        }
-
-        .navbar-inner {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 32px;
-            height: 72px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
             display: flex;
-            align-items: center;
             justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-brand {
-            font-family: var(--font-display);
-            font-size: 20px;
-            font-weight: 600;
-            letter-spacing: -0.01em;
-            color: var(--color-text-primary);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .navbar-brand::before {
-            content: '🎓';
             font-size: 24px;
+            font-weight: bold;
         }
 
         .back-btn {
-            font-family: var(--font-body);
-            font-size: 14px;
-            font-weight: 500;
-            padding: 8px 16px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--color-border);
-            background: var(--color-bg-elevated);
-            color: var(--color-text-secondary);
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 8px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .back-btn::before {
-            content: '←';
-            font-size: 16px;
+            transition: background 0.3s;
         }
 
         .back-btn:hover {
-            border-color: var(--color-border-hover);
-            color: var(--color-text-primary);
-            transform: translateX(-2px);
+            background: rgba(255, 255, 255, 0.3);
         }
 
-        /* Container */
         .container {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 48px 32px 96px;
+            padding: 30px 20px;
         }
 
-        /* Header */
         .header {
-            margin-bottom: 40px;
-            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 30px;
         }
 
         .header h1 {
-            font-family: var(--font-display);
-            font-size: 42px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            line-height: 1.1;
-            color: var(--color-text-primary);
-            margin-bottom: 12px;
+            color: #333;
+            margin-bottom: 10px;
         }
 
-        .header p {
-            font-size: 16px;
-            color: var(--color-text-secondary);
-            letter-spacing: -0.01em;
-        }
-
-        /* Tabs */
         .tabs {
             display: flex;
-            gap: 8px;
-            margin-bottom: 32px;
-            padding-bottom: 4px;
-            overflow-x: auto;
-            animation: fadeInUp 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s both;
-        }
-
-        .tabs::-webkit-scrollbar {
-            height: 4px;
-        }
-
-        .tabs::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        .tabs::-webkit-scrollbar-thumb {
-            background: var(--color-border);
-            border-radius: 2px;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
         }
 
         .tab {
-            font-family: var(--font-body);
-            font-size: 14px;
-            font-weight: 600;
-            padding: 10px 20px;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--color-border);
-            background: var(--color-bg-elevated);
-            color: var(--color-text-secondary);
+            padding: 15px 30px;
+            background: none;
+            border: none;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-            white-space: nowrap;
-        }
-
-        .tab:hover {
-            border-color: var(--color-border-hover);
-            color: var(--color-text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
         }
 
         .tab.active {
-            background: var(--color-accent);
-            color: white;
-            border-color: var(--color-accent);
+            color: #667eea;
+            border-bottom-color: #667eea;
         }
 
-        /* Tab Content */
+        .tab:hover {
+            color: #667eea;
+        }
+
         .tab-content {
             display: none;
-            animation: fadeInUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .tab-content.active {
             display: block;
         }
 
-        /* Add Question Button */
         .add-question-btn {
-            font-family: var(--font-body);
-            font-size: 15px;
-            font-weight: 600;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            border: none;
-            background: var(--color-accent);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-            box-shadow: 0 1px 2px rgba(0, 102, 255, 0.1);
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
-        .add-question-btn::before {
-            content: '+';
-            font-size: 20px;
-            font-weight: 400;
-        }
-
-        .add-question-btn:hover {
-            background: var(--color-accent-hover);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(0, 102, 255, 0.2);
-        }
-
-        .add-question-btn:active {
-            transform: translateY(0);
-        }
-
-        /* Questions List */
         .questions-list {
-            display: grid;
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        /* Loading State */
-        .loading {
-            text-align: center;
-            padding: 64px 32px;
-            color: var(--color-text-secondary);
-            font-size: 15px;
-            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 64px 32px;
-            color: var(--color-text-secondary);
-            font-size: 15px;
-        }
-
-        /* Question Card */
         .question-card {
-            background: var(--color-bg-elevated);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-lg);
-            padding: 24px;
-            transition: all var(--transition-base);
-        }
-
-        .question-card:hover {
-            border-color: var(--color-border-hover);
-            box-shadow: var(--shadow-md);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         .question-header {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-            padding-bottom: 16px;
-            border-bottom: 1px solid var(--color-border);
+            align-items: start;
+            margin-bottom: 15px;
         }
 
         .question-number {
-            font-size: 13px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--color-text-tertiary);
+            font-weight: bold;
+            color: #667eea;
+            font-size: 18px;
         }
 
         .question-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
         }
 
         .btn-small {
-            font-family: var(--font-body);
-            font-size: 13px;
-            font-weight: 600;
             padding: 6px 12px;
-            border-radius: var(--radius-sm);
-            border: 1px solid var(--color-border);
-            background: var(--color-bg-elevated);
+            border: none;
+            border-radius: 5px;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-        }
-
-        .btn-small:hover {
-            transform: translateY(-1px);
+            font-size: 14px;
+            font-weight: 600;
         }
 
         .btn-edit-q {
-            color: var(--color-accent);
-            border-color: rgba(0, 102, 255, 0.2);
-        }
-
-        .btn-edit-q:hover {
-            background: var(--color-accent-light);
-            border-color: rgba(0, 102, 255, 0.3);
+            background: #667eea;
+            color: white;
         }
 
         .btn-delete-q {
-            color: var(--color-danger);
-            border-color: rgba(239, 68, 68, 0.2);
-        }
-
-        .btn-delete-q:hover {
-            background: var(--color-danger-light);
-            border-color: rgba(239, 68, 68, 0.3);
+            background: #f56565;
+            color: white;
         }
 
         .question-text {
-            font-size: 16px;
-            font-weight: 500;
-            color: var(--color-text-primary);
-            margin-bottom: 16px;
+            color: #333;
+            margin-bottom: 15px;
             line-height: 1.6;
-            letter-spacing: -0.01em;
         }
 
-        /* Options List */
         .options-list {
             list-style: none;
-            display: grid;
-            gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 10px;
         }
 
         .option-item {
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-sm);
-            padding: 12px 16px;
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            letter-spacing: -0.01em;
-            transition: all var(--transition-fast);
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            background: #f8f9fa;
         }
 
         .option-item.correct {
-            background: var(--color-success-light);
-            border-color: rgba(14, 160, 90, 0.2);
-            color: var(--color-success);
-            font-weight: 600;
+            background: #d4edda;
+            border-left: 4px solid #28a745;
         }
 
-        /* Question Images */
         .question-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 12px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         .question-image {
-            width: 100%;
-            border-radius: var(--radius-md);
-            border: 1px solid var(--color-border);
+            max-width: 200px;
+            max-height: 200px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        /* Modal */
         .modal {
+            display: none;
             position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(4px);
-            -webkit-backdrop-filter: blur(4px);
-            display: flex;
-            align-items: center;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
             justify-content: center;
+            align-items: center;
             z-index: 1000;
-            opacity: 0;
-            visibility: hidden;
-            transition: all var(--transition-base);
-            padding: 24px;
             overflow-y: auto;
         }
 
         .modal.active {
-            opacity: 1;
-            visibility: visible;
+            display: flex;
         }
 
         .modal-content {
-            background: var(--color-bg-elevated);
-            border-radius: var(--radius-lg);
-            padding: 40px;
-            max-width: 640px;
-            width: 100%;
-            box-shadow: var(--shadow-lg);
-            transform: scale(0.95) translateY(20px);
-            transition: all var(--transition-base);
-            margin: auto;
-        }
-
-        .modal.active .modal-content {
-            transform: scale(1) translateY(0);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            margin: 20px;
         }
 
         .modal-content h2 {
-            font-family: var(--font-display);
-            font-size: 32px;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--color-text-primary);
-            margin-bottom: 32px;
+            margin-bottom: 20px;
+            color: #333;
         }
 
-        /* Form */
         .form-group {
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
             display: block;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--color-text-primary);
             margin-bottom: 8px;
-            letter-spacing: -0.01em;
+            color: #333;
+            font-weight: 600;
         }
 
-        .form-group input,
         .form-group textarea {
-            font-family: var(--font-body);
-            font-size: 15px;
             width: 100%;
-            padding: 12px 16px;
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius-md);
-            background: var(--color-bg-elevated);
-            color: var(--color-text-primary);
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-        }
-
-        .form-group textarea {
-            min-height: 120px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
             resize: vertical;
+            min-height: 100px;
         }
 
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: var(--color-text-tertiary);
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
         }
 
         .form-group input:focus,
         .form-group textarea:focus {
             outline: none;
-            border-color: var(--color-accent);
-            box-shadow: 0 0 0 3px var(--color-accent-light);
+            border-color: #667eea;
         }
 
-        .form-group input:hover:not(:focus),
-        .form-group textarea:hover:not(:focus) {
-            border-color: var(--color-border-hover);
-        }
-
-        /* Options Inputs */
         .options-inputs {
-            display: grid;
-            gap: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .option-input-group {
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
         .option-input-group input[type="radio"] {
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--color-accent);
-            flex-shrink: 0;
+            width: 20px;
+            height: 20px;
         }
 
         .option-input-group input[type="text"] {
             flex: 1;
         }
 
-        /* Image Upload */
         .image-upload {
-            border: 2px dashed var(--color-border);
-            border-radius: var(--radius-md);
-            padding: 32px;
+            border: 2px dashed #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
             text-align: center;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            background: var(--color-bg);
+            transition: border-color 0.3s;
         }
 
         .image-upload:hover {
-            border-color: var(--color-accent);
-            background: var(--color-accent-light);
+            border-color: #667eea;
         }
 
-        .image-upload p {
-            font-size: 14px;
-            color: var(--color-text-secondary);
-            font-weight: 500;
-        }
-
-        .image-upload input[type="file"] {
+        .image-upload input {
             display: none;
         }
 
-        /* Preview Images */
         .preview-images {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 12px;
-            margin-top: 16px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
         }
 
         .preview-image {
             position: relative;
-            aspect-ratio: 1;
-            border-radius: var(--radius-md);
-            overflow: hidden;
-            border: 1px solid var(--color-border);
+            max-width: 150px;
         }
 
         .preview-image img {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
+            border-radius: 8px;
         }
 
         .remove-image {
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            border: none;
-            background: rgba(0, 0, 0, 0.7);
+            top: 5px;
+            right: 5px;
+            background: #f56565;
             color: white;
-            font-size: 20px;
-            font-weight: 300;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
             cursor: pointer;
-            transition: all var(--transition-fast);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            line-height: 1;
         }
 
-        .remove-image:hover {
-            background: var(--color-danger);
-            transform: scale(1.1);
-        }
-
-        /* Modal Actions */
         .modal-actions {
             display: flex;
-            gap: 12px;
-            margin-top: 32px;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
         }
 
         .btn-primary {
-            flex: 1;
-            background: var(--color-accent);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            border: none;
-            font-size: 15px;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-            font-family: var(--font-body);
-        }
-
-        .btn-primary:hover {
-            background: var(--color-accent-hover);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0, 102, 255, 0.3);
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
         }
 
         .btn-secondary {
-            flex: 1;
-            background: var(--color-bg);
-            color: var(--color-text-secondary);
-            border: 1px solid var(--color-border);
-            font-size: 15px;
-            padding: 14px 24px;
-            border-radius: var(--radius-md);
-            font-weight: 600;
-            cursor: pointer;
-            transition: all var(--transition-fast);
-            letter-spacing: -0.01em;
-            font-family: var(--font-body);
+            background: #e0e0e0;
+            color: #333;
         }
 
-        .btn-secondary:hover {
-            background: var(--color-bg-elevated);
-            color: var(--color-text-primary);
-            border-color: var(--color-border-hover);
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
         }
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
         }
 
-        @keyframes pulse {
-            0%, 100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.5;
-            }
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .navbar-inner {
-                padding: 0 20px;
-                height: 64px;
-            }
-
-            .container {
-                padding: 32px 20px 64px;
-            }
-
-            .header h1 {
-                font-size: 32px;
-            }
-
             .tabs {
-                gap: 6px;
+                flex-wrap: wrap;
             }
 
             .tab {
-                font-size: 13px;
-                padding: 8px 14px;
-            }
-
-            .question-card {
-                padding: 20px;
-            }
-
-            .modal-content {
-                padding: 32px 24px;
-            }
-
-            .modal-content h2 {
-                font-size: 28px;
+                padding: 10px 15px;
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <div class="navbar-inner">
-            <div class="navbar-brand">Smart Steps</div>
-            <a href="/admin-dashboard" class="back-btn">Back to Dashboard</a>
-        </div>
+        <div class="navbar-brand">🎓 Smart Steps</div>
+        <a href="/admin-dashboard" class="back-btn">← Back to Dashboard</a>
     </nav>
 
     <div class="container">
@@ -716,35 +403,35 @@
         </div>
 
         <div id="english" class="tab-content active">
-            <button class="add-question-btn" onclick="showAddQuestion('english')">Add English Question</button>
+            <button class="add-question-btn" onclick="showAddQuestion('english')">+ Add English Question</button>
             <div id="english-questions" class="questions-list">
                 <div class="loading">Loading questions...</div>
             </div>
         </div>
 
         <div id="physics" class="tab-content">
-            <button class="add-question-btn" onclick="showAddQuestion('physics')">Add Physics Question</button>
+            <button class="add-question-btn" onclick="showAddQuestion('physics')">+ Add Physics Question</button>
             <div id="physics-questions" class="questions-list">
                 <div class="loading">Loading questions...</div>
             </div>
         </div>
 
         <div id="chemistry" class="tab-content">
-            <button class="add-question-btn" onclick="showAddQuestion('chemistry')">Add Chemistry Question</button>
+            <button class="add-question-btn" onclick="showAddQuestion('chemistry')">+ Add Chemistry Question</button>
             <div id="chemistry-questions" class="questions-list">
                 <div class="loading">Loading questions...</div>
             </div>
         </div>
 
         <div id="maths" class="tab-content">
-            <button class="add-question-btn" onclick="showAddQuestion('maths')">Add Maths Question</button>
+            <button class="add-question-btn" onclick="showAddQuestion('maths')">+ Add Maths Question</button>
             <div id="maths-questions" class="questions-list">
                 <div class="loading">Loading questions...</div>
             </div>
         </div>
 
         <div id="biology" class="tab-content">
-            <button class="add-question-btn" onclick="showAddQuestion('biology')">Add Biology Question</button>
+            <button class="add-question-btn" onclick="showAddQuestion('biology')">+ Add Biology Question</button>
             <div id="biology-questions" class="questions-list">
                 <div class="loading">Loading questions...</div>
             </div>
@@ -758,7 +445,7 @@
             <form id="questionForm">
                 <div class="form-group">
                     <label for="questionText">Question</label>
-                    <textarea id="questionText" required placeholder="Enter your question here..."></textarea>
+                    <textarea id="questionText" required></textarea>
                 </div>
 
                 <div class="form-group">
@@ -812,1182 +499,6 @@
         let editingQuestion = null;
         let uploadedImages = [];
 
-        // ============================================
-        // CONFIGURE YOUR QUESTIONS HERE
-        // ============================================
-        // Set USE_CONFIGURED_QUESTIONS to true to use the questions below
-        // Set it to false to load questions from the database
-        const USE_CONFIGURED_QUESTIONS = true;
-        
-        // Your question bank - paste your questions here
-        const CONFIGURED_QUESTIONS = {
-             english: [
-    // SECTION A: COMPREHENSION - Passage 1
-    {
-        question: "What is the main idea of the passage?",
-        options: ["Urban schools are better than rural schools.", "Education is crucial for societal development despite challenges.", "Teachers in rural schools are unqualified.", "Government programs are ineffective."],
-        correctAnswer: 1
-    },
-    {
-        question: "The word 'resilience' in the passage most nearly means:",
-        options: ["laziness", "determination to overcome difficulties", "intelligence", "obedience"],
-        correctAnswer: 1
-    },
-    {
-        question: "According to the passage, which of the following is true?",
-        options: ["Rural schools have better facilities than urban schools.", "Urban schools face overcrowding.", "NGOs and governments support education through programs.", "Education is only about acquiring knowledge."],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following is implied in the passage?",
-        options: ["Only urban students can succeed.", "Teachers are not important in education.", "Access to education varies depending on location.", "Technology is unhelpful in education."],
-        correctAnswer: 2
-    },
-    {
-        question: "What is the purpose of teacher training workshops mentioned in the passage?",
-        options: ["To replace teachers", "To improve the quality of teaching", "To reduce classroom sizes", "To provide scholarships"],
-        correctAnswer: 1
-    },
-    {
-        question: "The passage suggests that education prepares individuals for:",
-        options: ["leisure activities", "social, economic, and technological challenges", "memorization tasks only", "rural living"],
-        correctAnswer: 1
-    },
-    // SECTION A: COMPREHENSION - Passage 2
-    {
-        question: "What is the central idea of the passage?",
-        options: ["Fossil fuels have no effect on the environment.", "Climate change is urgent and requires both collective and individual action.", "Natural disasters occur naturally and cannot be prevented.", "Renewable energy is less effective than fossil fuels."],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following is NOT mentioned as a solution to climate change?",
-        options: ["Using solar energy", "Reforestation", "Reducing energy consumption", "Expanding fossil fuel use"],
-        correctAnswer: 3
-    },
-    {
-        question: "The phrase 'pressing challenges' most nearly means:",
-        options: ["urgent problems", "minor difficulties", "hidden issues", "future predictions"],
-        correctAnswer: 0
-    },
-    {
-        question: "According to the passage, individuals can help combat climate change by:",
-        options: ["Ignoring government policies", "Supporting environmentally friendly practices", "Relying solely on technology", "Planting only ornamental trees"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following can be inferred from the passage?",
-        options: ["Climate change only affects humans.", "Governments, scientists, and individuals all have a role in mitigation.", "Natural disasters are increasing due to ignorance.", "Fossil fuels are renewable energy sources."],
-        correctAnswer: 1
-    },
-    {
-        question: "The passage implies that climate change can affect:",
-        options: ["ecosystems, human health, and economies", "only the oceans", "only animals", "only urban areas"],
-        correctAnswer: 0
-    },
-    
-    // NEW COMPREHENSION QUESTIONS - Passage 3
-    {
-        question: "What role did Mr. Ope Wande's dual profession (as a teacher and pastor) play in this chapter?",
-        options: ["He managed the school's finances.", "He handled the discipline of students.", "He organized the WASSCE celebration.", "He provided spiritual guidance to the principal."],
-        correctAnswer: 3
-    },
-    {
-        question: "What was the MD's reaction to the principal's behavior?",
-        options: ["She was puzzled and concerned, seeking to understand the cause.", "She called for an emergency staff meeting.", "She immediately reprimanded him for being unprofessional.", "She ordered him to leave the school."],
-        correctAnswer: 0
-    },
-    {
-        question: "What did Mrs. Apeh do after she realized the principal needed further help?",
-        options: ["She called the Managing Director, Mrs. Ibidun Gloss.", "She asked the principal to go home.", "She called the principal's wife.", "She asked the staff to leave the school."],
-        correctAnswer: 0
-    },
-    {
-        question: "What had happened the previous day that could have contributed to the principal's distress?",
-        options: ["The school celebrated its success in the WASSCE exams.", "The school faced a major financial loss.", "The principal was reprimanded by the MD.", "The principal had received bad news about his family."],
-        correctAnswer: 0
-    },
-    {
-        question: "What humorous comment did Mr. Audu, the Fine Arts teacher, make about the school management's financial decisions?",
-        options: ["He said that the MD was both a witch and wizard.", "He mocked the MD's financial skills.", "He praised the MD for her savvy decisions.", "He suggested the school needed more financial transparency."],
-        correctAnswer: 0
-    },
-    {
-        question: "What did the MD do to further investigate the principal's condition?",
-        options: ["She called a staff meeting to discuss the issue.", "She consulted with the school's guidance counselor.", "She called the principal's wife on phone.", "She called a doctor to assess the principal."],
-        correctAnswer: 2
-    },
-    {
-        question: "What was one of the main school management changes that contributed to a drop in student lateness?",
-        options: ["A reduction in school fees", "An expansion of the school's boarding facilities", "A more lenient approach to lateness", "A stricter enforcement of attendance rules"],
-        correctAnswer: 0
-    },
-    {
-        question: "What was the school's response to the outstanding performance in the WASSCE exams?",
-        options: ["It offered no recognition to the teachers or students.", "It celebrated with a formal event and awards.", "It postponed the celebration due to logistical reasons.", "It fired any teacher whose students performed poorly."],
-        correctAnswer: 2
-    },
-    {
-        question: "What did Ikenna Egbu compare Jos to during his presentation?",
-        options: ["Lagos and Abuja", "London and New York", "Plateau State and the North", "Canada and London"],
-        correctAnswer: 1
-    },
-    {
-        question: "What unusual characteristic marked the principal's walk to the podium in the assembly?",
-        options: ["He was running late and walked hurriedly.", "He moved with a heavy, ponderous gait.", "He was accompanied by staff members.", "He walked briskly with confidence."],
-        correctAnswer: 1
-    },
-    
-    // SECTION B: GRAMMAR / STRUCTURE
-    {
-        question: "She _____ been studying for three hours when I called.",
-        options: ["has", "have", "had", "having"],
-        correctAnswer: 2
-    },
-    {
-        question: "If I _____ enough money, I would start my own business.",
-        options: ["have", "had", "will have", "having"],
-        correctAnswer: 1
-    },
-    {
-        question: "The man _____ car was stolen reported to the police.",
-        options: ["who", "whose", "whom", "which"],
-        correctAnswer: 1
-    },
-    {
-        question: "I cannot attend the meeting because I _____ to the doctor.",
-        options: ["go", "am going", "went", "gone"],
-        correctAnswer: 1
-    },
-    {
-        question: "Choose the correct sentence:",
-        options: ["She don't like ice cream.", "She doesn't likes ice cream.", "She doesn't like ice cream.", "She not likes ice cream."],
-        correctAnswer: 2
-    },
-    {
-        question: "The teacher asked him if he _____ completed the assignment.",
-        options: ["has", "had", "have", "having"],
-        correctAnswer: 1
-    },
-    {
-        question: "I have lived in Abuja _____ 2012.",
-        options: ["for", "since", "at", "from"],
-        correctAnswer: 1
-    },
-    {
-        question: "The movie was _____ interesting that I watched it twice.",
-        options: ["so", "very", "too", "enough"],
-        correctAnswer: 0
-    },
-    {
-        question: "They _____ football every Sunday.",
-        options: ["plays", "play", "played", "playing"],
-        correctAnswer: 1
-    },
-    {
-        question: "I enjoy _____ novels during my free time.",
-        options: ["read", "reading", "to read", "reads"],
-        correctAnswer: 1
-    },
-    
-    // SECTION C: VOCABULARY / LEXIS
-    {
-        question: "Synonym of 'abundant':",
-        options: ["scarce", "plentiful", "weak", "tiny"],
-        correctAnswer: 1
-    },
-    {
-        question: "Antonym of 'ancient':",
-        options: ["old", "historic", "modern", "classic"],
-        correctAnswer: 2
-    },
-    {
-        question: "Idiom: 'hit the nail on the head' means:",
-        options: ["To make a mistake", "To be exactly right", "To build something", "To ignore a problem"],
-        correctAnswer: 1
-    },
-    {
-        question: "Benevolent means:",
-        options: ["kind and generous", "cruel", "ignorant", "stubborn"],
-        correctAnswer: 0
-    },
-    {
-        question: "Meticulous means:",
-        options: ["careless", "very careful and precise", "lazy", "quick"],
-        correctAnswer: 1
-    },
-    {
-        question: "Alleviate means:",
-        options: ["worsen", "reduce", "ignore", "build"],
-        correctAnswer: 1
-    },
-    {
-        question: "Diligent is closest in meaning to:",
-        options: ["lazy", "hardworking", "careless", "timid"],
-        correctAnswer: 1
-    },
-    {
-        question: "Ephemeral refers to something that is:",
-        options: ["permanent", "short-lived", "valuable", "large"],
-        correctAnswer: 1
-    },
-    {
-        question: "Synonym of 'frugal':",
-        options: ["wasteful", "economical", "generous", "careless"],
-        correctAnswer: 1
-    },
-    {
-        question: "Antonym of 'scarce':",
-        options: ["rare", "plentiful", "limited", "meager"],
-        correctAnswer: 1
-    },
-
-    // SECTION E: ORAL ENGLISH / PHONETICS
-    {
-        question: "Which word has a different stress pattern from the others?",
-        options: ["teacher", "computer", "banana", "table"],
-        correctAnswer: 1
-    },
-    {
-        question: "Choose the word that rhymes with 'light':",
-        options: ["fight", "sit", "left", "fun"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which word is pronounced differently from the others?",
-        options: ["though", "through", "thought", "tough"],
-        correctAnswer: 1
-    },
-    {
-        question: "Homophone of 'write' is:",
-        options: ["right", "rite", "both A and B", "wright"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following words has three syllables?",
-        options: ["elephant", "table", "run", "cat"],
-        correctAnswer: 0
-    },
-    
-    // SECTION F: MIXED PRACTICE / APPLICATION
-    {
-        question: "He _____ gone to the market before it rained.",
-        options: ["has", "have", "had", "having"],
-        correctAnswer: 2
-    },
-    {
-        question: "The teacher asked me _____ I had completed my homework.",
-        options: ["that", "if", "whether", "B and C"],
-        correctAnswer: 3
-    },
-    {
-        question: "Choose the correct plural of 'analysis':",
-        options: ["analysises", "analyses", "analysi", "analysis"],
-        correctAnswer: 1
-    },
-    {
-        question: "The opposite of 'optimistic' is:",
-        options: ["hopeful", "pessimistic", "cheerful", "bright"],
-        correctAnswer: 1
-    },
-    {
-        question: "Select the correct sentence:",
-        options: ["I have saw that movie.", "I have seen that movie.", "I have see that movie.", "I seen that movie."],
-        correctAnswer: 1
-    },
-    {
-        question: "Fill in the blank: 'She _____ a cake when I arrived.'",
-        options: ["bakes", "baked", "was baking", "baking"],
-        correctAnswer: 2
-    },
-    {
-        question: "Idiom: 'Break the ice' means:",
-        options: ["To start a conversation", "To break something", "To fight", "To leave"],
-        correctAnswer: 0
-    },
-    
-    // ADDITIONAL FILL IN THE GAPS QUESTIONS (to reach 60 total)
-    {
-        question: "By this time tomorrow, we _____ our final exams.",
-        options: ["will finish", "will have finished", "finished", "are finishing"],
-        correctAnswer: 1
-    },
-    {
-        question: "Neither the students nor the teacher _____ present at the meeting.",
-        options: ["was", "were", "is", "are"],
-        correctAnswer: 0
-    },
-    {
-        question: "She would rather _____ at home than go to the party.",
-        options: ["stay", "stays", "staying", "to stay"],
-        correctAnswer: 0
-    },
-    {
-        question: "The children _____ in the garden since morning.",
-        options: ["play", "are playing", "have been playing", "played"],
-        correctAnswer: 2
-    },
-    {
-        question: "I wish I _____ more time to complete the project.",
-        options: ["have", "had", "will have", "having"],
-        correctAnswer: 1
-    },
-    {
-        question: "The book _____ on the table belongs to me.",
-        options: ["laying", "lying", "laid", "lied"],
-        correctAnswer: 1
-    },
-    {
-        question: "_____ you ever been to Paris?",
-        options: ["Did", "Have", "Has", "Do"],
-        correctAnswer: 1
-    },
-    {
-        question: "She is good _____ mathematics.",
-        options: ["in", "at", "on", "with"],
-        correctAnswer: 1
-    },
-    {
-        question: "The cat jumped _____ the fence.",
-        options: ["over", "above", "on", "at"],
-        correctAnswer: 0
-    }
-],
-physics: [
-                    {
-                        question: "The inner diameter of a test tube can be measured accurately using a",
-                        options: ["Micrometer screw gauge", "Pair of dividers", "Metre rule", "Pair of vernier calipers"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "The SI unit of force is",
-                        options: ["Joule", "Newton", "Watt", "Pascal"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "The force that keeps an object moving in a circular path is called",
-                        options: ["Frictional force", "Gravitational force", "Centripetal force", "Magnetic force"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "When two bodies collide and stick together, the collision is said to be",
-                        options: ["Elastic", "Inelastic", "Perfect", "Uniform"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "Energy possessed by a body due to its position is called",
-                        options: ["Kinetic energy", "Heat energy", "Potential energy", "Electrical energy"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "Which colour in the visible spectrum has the longest wavelength?",
-                        options: ["Red", "Blue", "Yellow", "Violet"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "The power of a lens in diopters is",
-                        options: ["3f", "1/f", "2f", "f"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "A quantity that has both magnitude and direction is called",
-                        options: ["Scalar", "Vector", "Constant", "Speed"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "Ice floats on water because",
-                        options: ["Ice is heavier than water", "Ice has higher density", "Ice has lower density", "Ice absorbs heat"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The pressure–temperature graph is a straight line through the origin only if temperature is measured in",
-                        options: ["Rankine", "Celsius", "Fahrenheit", "Thermodynamic scale"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "Efficiency of a machine is always",
-                        options: ["Greater than 100%", "Equal to 100%", "Less than or equal to 100%", "Zero"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The force of attraction between any two masses is called",
-                        options: ["Magnetic force", "Electric force", "Gravitational force", "Nuclear force"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The time taken by a pendulum to complete one oscillation is called",
-                        options: ["Frequency", "Amplitude", "Period", "Wavelength"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The resultant of two forces acting on an object is maximum if the angle between them is",
-                        options: ["45°", "0°", "90°", "180°"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "A few grains of salt in water eventually dissolve because of",
-                        options: ["Convection", "Osmosis", "Capillarity", "Diffusion"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "The force required to keep an object moving in a circle depends on",
-                        options: ["Mass only", "Speed only", "Radius only", "Mass, speed, and radius"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "Recoil of a gun is an example of",
-                        options: ["Conservation of energy", "Conservation of mass", "Conservation of momentum", "Conservation of charge"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "If the length of a simple pendulum is increased, its period",
-                        options: ["Decreases", "Remains the same", "Increases", "Becomes zero"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "Which of these is a derived unit?",
-                        options: ["Kilogram", "Metre", "Newton", "Second"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The resultant force of two equal and opposite forces acting on a body is",
-                        options: ["Zero", "Doubled", "Half", "Same"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "The centre of gravity of a uniform metre rule is at",
-                        options: ["25 cm", "30 cm", "40 cm", "50 cm"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "The velocity ratio of a machine is defined as the ratio of",
-                        options: ["Load to effort", "Effort to load", "Distance moved by effort to distance moved by load", "Distance moved by load to distance moved by effort"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "In a projectile fired horizontally from a cliff, the horizontal velocity component is",
-                        options: ["Constant throughout", "Increasing", "Decreasing", "Zero"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "Two forces of 5 N and 12 N act at right angles. The resultant force is",
-                        options: ["17 N", "13 N", "√(5² + 12²) N", "7 N"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "When two equal and opposite forces act on a body along the same line, the body is in",
-                        options: ["Translational motion", "Equilibrium", "Acceleration", "Rotation"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "Which of the following is a scalar quantity?",
-                        options: ["Momentum", "Displacement", "Energy", "Force"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "Pressure in a fluid at a given depth depends on",
-                        options: ["Shape of container", "Depth and density", "Volume", "Mass of container"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "The SI unit of pressure is",
-                        options: ["Newton", "Pascal", "Joule", "Pascal metre"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "When a body is projected at an angle of 45°, the horizontal range is",
-                        options: ["Maximum", "Minimum", "Midway", "Constant"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "A lever is an example of a",
-                        options: ["Simple machine", "Complex machine", "Engine", "Motor"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "A straight-line velocity–time graph indicates",
-                        options: ["Uniform acceleration", "Uniform velocity", "Variable acceleration", "Zero velocity"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "Mean acceleration is defined as the change in velocity divided by",
-                        options: ["Distance", "Time", "Speed", "Force"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "A body performing simple harmonic motion has zero velocity at",
-                        options: ["Mean position", "Extreme position", "All points", "Random points"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "Which is NOT an example of simple harmonic motion?",
-                        options: ["Tuning fork", "Simple pendulum (small angle)", "Oscillation of a diving board", "A car moving on a straight road"],
-                        correctAnswer: 3
-                    },
-                    {
-                        question: "In equilibrium of coplanar forces, the resultant force is",
-                        options: ["Maximum", "Minimum", "Zero", "Positive"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "The slope of a displacement–time graph represents",
-                        options: ["Distance travelled", "Velocity", "Acceleration", "Force"],
-                        correctAnswer: 1
-                    },
-                    {
-                        question: "A machine has a mechanical advantage less than 1 when",
-                        options: ["Effort is less than load", "Effort equals load", "Effort is greater than load", "Efficiency is 100%"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "When a moving body comes to rest, its final velocity is",
-                        options: ["Maximum", "Minimum", "Zero", "Negative"],
-                        correctAnswer: 2
-                    },
-                    {
-                        question: "If the length of a pendulum is increased four times, its period becomes",
-                        options: ["Twice", "Four times", "Half", "Unchanged"],
-                        correctAnswer: 0
-                    },
-                    {
-                        question: "Which of these is NOT a fundamental SI unit?",
-                        options: ["Metre", "Ampere", "Kelvin", "Radian"],
-                        correctAnswer: 3
-                    }
-                ],
-                
-                chemistry: [
-    {
-        question: "The atomic number of an element represents the number of",
-        options: ["Protons only", "Neutrons only", "Electrons only", "Protons + Neutrons"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of the following is a noble gas?",
-        options: ["Oxygen", "Nitrogen", "Neon", "Hydrogen"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following compounds is covalent?",
-        options: ["NaCl", "H₂O", "MgO", "KBr"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which element has the electronic configuration 1s² 2s² 2p⁶ 3s² 3p⁴?",
-        options: ["Sulfur", "Phosphorus", "Chlorine", "Argon"],
-        correctAnswer: 0
-    },
-    {
-        question: "The formula of aluminium sulfate is",
-        options: ["Al₂(SO₄)₃", "Al(SO₄)₃", "Al₂SO₄", "Al₂(SO₄)"],
-        correctAnswer: 0
-    },
-    {
-        question: "The oxidation number of sulfur in H₂SO₄ is",
-        options: ["+4", "+6", "+2", "-2"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following substances is amphoteric?",
-        options: ["NaOH", "HCl", "Al(OH)₃", "K₂CO₃"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which gas is evolved when dilute HCl reacts with Zn?",
-        options: ["CO₂", "H₂", "O₂", "N₂"],
-        correctAnswer: 1
-    },
-    {
-        question: "The molar mass of Na₂CO₃ is",
-        options: ["106 g/mol", "84 g/mol", "64 g/mol", "52 g/mol"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of the following is a reducing agent?",
-        options: ["Cl₂", "Na", "O₂", "H₂O₂"],
-        correctAnswer: 1
-    },
-    {
-        question: "In the reaction: 2H₂ + O₂ → 2H₂O, the mole ratio of H₂ to O₂ is",
-        options: ["1:1", "2:1", "1:2", "2:3"],
-        correctAnswer: 1
-    },
-    {
-        question: "The bond angle in water (H₂O) is approximately",
-        options: ["180°", "120°", "104.5°", "90°"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of these is an example of an ester?",
-        options: ["CH₃COOH", "CH₃COOCH₃", "CH₄", "C₂H₅OH"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which halogen is the strongest oxidizing agent?",
-        options: ["Fluorine", "Chlorine", "Bromine", "Iodine"],
-        correctAnswer: 0
-    },
-    {
-        question: "The volume occupied by 1 mole of an ideal gas at STP is",
-        options: ["22.4 L", "24.0 L", "20.0 L", "18.0 L"],
-        correctAnswer: 0
-    },
-    {
-        question: "The hybridization of carbon in CO₂ is",
-        options: ["sp³", "sp²", "sp", "sp³d"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of these compounds can form hydrogen bonds?",
-        options: ["CH₄", "H₂O", "CO₂", "O₂"],
-        correctAnswer: 1
-    },
-    {
-        question: "The empirical formula of a compound containing 40% C, 6.7% H, and 53.3% O is",
-        options: ["CHO", "C₂H₂O₂", "CH₂O", "C₃H₄O"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following is an acidic oxide?",
-        options: ["Na₂O", "CO₂", "Al₂O₃", "SO₃"],
-        correctAnswer: 1
-    },
-    {
-        question: "The electronic configuration of Fe²⁺ is",
-        options: ["[Ar] 3d⁶ 4s²", "[Ar] 3d⁶", "[Ar] 3d⁵ 4s¹", "[Ar] 3d⁵"],
-        correctAnswer: 1
-    },
-    {
-        question: "The molarity of a solution prepared by dissolving 5.85 g of NaCl (M = 58.5 g/mol) in 0.5 L of water is",
-        options: ["0.2 M", "0.1 M", "0.5 M", "1.0 M"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which element shows diagonal relationship with magnesium?",
-        options: ["Lithium", "Sodium", "Calcium", "Potassium"],
-        correctAnswer: 0
-    },
-    {
-        question: "The geometry of NH₃ molecule is",
-        options: ["Linear", "Trigonal planar", "Tetrahedral", "Trigonal pyramidal"],
-        correctAnswer: 3
-    },
-    {
-        question: "Which of these is a primary alcohol?",
-        options: ["CH₃OH", "CH₃CH₂OH", "CH₃CHOHCH₃", "(CH₃)₃COH"],
-        correctAnswer: 1
-    },
-    {
-        question: "The principle behind extraction of metals using electrolysis is",
-        options: ["Redox reaction", "Displacement reaction", "Acid-base reaction", "Precipitation"],
-        correctAnswer: 0
-    },
-    {
-        question: "The pH of a 0.01 M HCl solution is approximately",
-        options: ["2", "4", "7", "12"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of the following is most reactive with water?",
-        options: ["Na", "Mg", "Al", "Zn"],
-        correctAnswer: 0
-    },
-    {
-        question: "The concentration of H⁺ ions in a solution of pH 3 is",
-        options: ["10⁻³ M", "10³ M", "10⁻⁶ M", "3 M"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of these elements has the highest ionization energy?",
-        options: ["Lithium", "Beryllium", "Boron", "Carbon"],
-        correctAnswer: 3
-    },
-    {
-        question: "Which of the following gases is a greenhouse gas?",
-        options: ["O₂", "CO₂", "N₂", "H₂"],
-        correctAnswer: 1
-    },
-    {
-        question: "The molar mass of a gas that occupies 11.2 L at STP and weighs 16 g is",
-        options: ["16 g/mol", "32 g/mol", "28 g/mol", "44 g/mol"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following is a kinetic product?",
-        options: ["1,2-addition in dienes", "1,4-addition in dienes", "Both 1,2- and 1,4-addition equally", "Substitution reaction"],
-        correctAnswer: 0
-    },
-    {
-        question: "In the reaction: C + O₂ → CO₂, carbon is",
-        options: ["Oxidized", "Reduced", "Both oxidized and reduced", "Neither"],
-        correctAnswer: 0
-    },
-    {
-        question: "The type of bond in NaCl is",
-        options: ["Covalent", "Ionic", "Metallic", "Hydrogen"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following compounds is aromatic?",
-        options: ["Cyclohexane", "Benzene", "Cyclopentane", "Ethane"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of these is a transition element?",
-        options: ["Mg", "Fe", "Na", "Al"],
-        correctAnswer: 1
-    },
-    {
-        question: "The functional group in ketones is",
-        options: ["-OH", "-CHO", "C=O", "-COOH"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following statements is true?",
-        options: ["Atomic radius increases across a period", "Electronegativity decreases across a period", "Ionization energy increases across a period", "Metallic character decreases down a group"],
-        correctAnswer: 2
-    },
-    {
-        question: "The major product in the reaction of CH₃CH=CH₂ with HBr is",
-        options: ["CH₃CHBrCH₃", "CH₃CH₂CH₂Br", "CH₃CBr=CH₂", "CH₂BrCH=CH₂"],
-        correctAnswer: 0
-    },
-    {
-        question: "The solubility of a gas in water decreases with",
-        options: ["Increasing temperature", "Increasing pressure", "Decreasing temperature", "No change in temperature"],
-        correctAnswer: 0
-    }
-],
-                maths: [
-    {
-        question: "Evaluate 26 - ∛53",
-        options: ["-(1239 - 10∛39)", "1239 - 10∛39", "-(1239 + 10∛39)", "1239 + 10∛39"],
-        correctAnswer: 2
-    },
-    {
-        question: "Compute 110011₂ + 11111₂",
-        options: ["1001010₂", "1010010₂", "1000110₂", "1000100₂"],
-        correctAnswer: 1
-    },
-    {
-        question: "Simplify (25)⁻¹/² × (27)¹/³ + (121)⁻¹/² × (625)⁻¹/⁴",
-        options: ["34/55", "9/11", "14/5", "3/275"],
-        correctAnswer: 0
-    },
-    {
-        question: "Solve for x: √(x+5) - √(x-1) = 2",
-        options: ["5", "6", "7", "8"],
-        correctAnswer: 0
-    },
-    {
-        question: "If x² - 4x + 3 = 0, find x",
-        options: ["1, 3", "-1, 3", "1, -3", "-1, -3"],
-        correctAnswer: 0
-    },
-    {
-        question: "Find the locus of points equidistant from the lines ax + by + c = 0",
-        options: ["bx - ay + q = 0", "ax - by + q = 0", "bx + ay + q = 0", "ax + by + q = 0"],
-        correctAnswer: 0
-    },
-    {
-        question: "PQRSTW is a regular hexagon and QS intersects RT at V. Calculate ∠TVS",
-        options: ["120°", "90°", "30°", "60°"],
-        correctAnswer: 3
-    },
-    {
-        question: "If the locus of points equidistant from points P and Q meets line PQ at N, then PN equals",
-        options: ["NQ", "¼ NQ", "2 NQ", "½ NQ"],
-        correctAnswer: 0
-    },
-    {
-        question: "Simplify: 1/(√2 + 1) + 1/(√2 - 1)",
-        options: ["0", "2", "2√2", "4"],
-        correctAnswer: 2
-    },
-    {
-        question: "If |x - 3| = 5, then x = ?",
-        options: ["8 only", "-2 only", "8 or -2", "2 or -8"],
-        correctAnswer: 2
-    },
-    {
-        question: "In a Venn diagram, 40 students take Maths, 50 take Physics, 20 take both. Total students = ?",
-        options: ["70", "90", "60", "80"],
-        correctAnswer: 0
-    },
-    {
-        question: "Differentiate y = 3x² + 5x - 7 with respect to x",
-        options: ["3x² + 5", "6x + 5", "6x + 5x", "6x - 7"],
-        correctAnswer: 1
-    },
-    {
-        question: "Solve x² - 6x + 8 = 0",
-        options: ["2, 4", "-2, -4", "1, 8", "-1, -8"],
-        correctAnswer: 0
-    },
-    {
-        question: "If f(x) = 2x + 3, find f(5)",
-        options: ["10", "13", "15", "17"],
-        correctAnswer: 1
-    },
-    {
-        question: "Compute: (32)³/⁵ × (16)⁻²/⁴",
-        options: ["2", "4", "8", "16"],
-        correctAnswer: 1
-    },
-    {
-        question: "Find the distance between points (3, 4) and (7, 1)",
-        options: ["3", "4", "5", "√25"],
-        correctAnswer: 2
-    },
-    {
-        question: "The sum of interior angles of a polygon is 1080°. Number of sides = ?",
-        options: ["6", "7", "8", "9"],
-        correctAnswer: 2
-    },
-    {
-        question: "Integrate ∫(2x³ - 5x² + x - 7)dx",
-        options: ["x⁴/2 - 5x³/3 + x²/2 - 7x + C", "x⁴/2 - 5x³/3 + x²/2 - 7 + C", "x⁴/2 - 5x³/3 + x² - 7x + C", "2x⁴ - 5x³ + x² - 7x + C"],
-        correctAnswer: 0
-    },
-    {
-        question: "The center of the circle x² + y² - 6x + 8y + 9 = 0 is",
-        options: ["(3, -4)", "(3, -4.5)", "(3, 4)", "(-3, 4)"],
-        correctAnswer: 0
-    },
-    {
-        question: "Solve for x: 3ˣ⁺¹ = 27",
-        options: ["1", "2", "3", "4"],
-        correctAnswer: 1
-    },
-    {
-        question: "If sin A = 3/5, find cos A (A in first quadrant)",
-        options: ["3/5", "4/5", "5/3", "1/2"],
-        correctAnswer: 1
-    },
-    {
-        question: "Compute (9¹/² × 27¹/³)/(3²)",
-        options: ["1", "2", "3", "4"],
-        correctAnswer: 0
-    },
-    {
-        question: "Find the 10th term of the AP: 5, 8, 11, …",
-        options: ["29", "32", "35", "38"],
-        correctAnswer: 1
-    },
-    {
-        question: "Solve inequality: 2x - 5 > 7",
-        options: ["x > 6", "x > 1", "x < 6", "x < 1"],
-        correctAnswer: 0
-    },
-    {
-        question: "In a Venn diagram, 20 students take Maths only, 30 take Physics only, 10 take both. Total students = ?",
-        options: ["50", "60", "70", "80"],
-        correctAnswer: 1
-    },
-    {
-        question: "The slope of the line passing through (2, 3) and (4, 7) is",
-        options: ["2", "3", "1", "5"],
-        correctAnswer: 0
-    },
-    {
-        question: "Compute: (1/√2 + 1/√2)²",
-        options: ["1", "2", "4", "½"],
-        correctAnswer: 1
-    },
-    {
-        question: "Differentiate y = 1/x with respect to x",
-        options: ["1", "-1/x²", "1/x²", "-1"],
-        correctAnswer: 1
-    },
-    {
-        question: "Find the common ratio of GP: 2, 6, 18, …",
-        options: ["2", "3", "6", "12"],
-        correctAnswer: 1
-    },
-    {
-        question: "A regular hexagon has side length 6 cm. Distance between opposite vertices = ?",
-        options: ["6√3", "12", "6", "3√3"],
-        correctAnswer: 1
-    },
-    {
-        question: "Simplify: 2³ × 2⁴",
-        options: ["128", "16", "32", "64"],
-        correctAnswer: 0
-    },
-    {
-        question: "Solve for x: x + 1/x = 3, find x² + 1/x²",
-        options: ["5", "7", "9", "11"],
-        correctAnswer: 1
-    },
-    {
-        question: "Integrate ∫(4x³ - 2x)dx",
-        options: ["x⁴ - x² + C", "x⁴ - 2x² + C", "x³ - x² + C", "x³ - 2x² + C"],
-        correctAnswer: 0
-    },
-    {
-        question: "Solve: x² - 4x + 4 = 0",
-        options: ["2", "-2", "±2", "0"],
-        correctAnswer: 0
-    },
-    {
-        question: "Compute: 1011₂ × 10₂",
-        options: ["10110₂", "101100₂", "11110₂", "11100₂"],
-        correctAnswer: 0
-    },
-    {
-        question: "If A⃗ = 2i + 3j, B⃗ = i - j, A⃗ - B⃗ = ?",
-        options: ["i + 4j", "i + 2j", "3i + 2j", "i + j"],
-        correctAnswer: 0
-    },
-    {
-        question: "If tan θ = √3, then θ = ?",
-        options: ["30°", "45°", "60°", "90°"],
-        correctAnswer: 2
-    },
-    {
-        question: "Solve for x: x³ - 27 = 0",
-        options: ["3", "-3", "9", "-9"],
-        correctAnswer: 0
-    },
-    {
-        question: "Find the locus of points equidistant from points (0,0) and (4,0)",
-        options: ["x = 2", "y = 2", "x = 0", "y = 0"],
-        correctAnswer: 0
-    },
-    {
-        question: "Compute: [(25)⁻¹/² × (125)¹/³] / 5⁻¹",
-        options: ["1", "2", "3", "4"],
-        correctAnswer: 0
-    }
-],
-                biology: [
-    {
-        question: "Which of the following is the basic structural unit of life?",
-        options: ["Atom", "Cell", "Tissue", "Organ"],
-        correctAnswer: 1
-    },
-    {
-        question: "The site of photosynthesis in plant cells is",
-        options: ["Mitochondria", "Chloroplast", "Ribosome", "Nucleus"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which organelle is responsible for protein synthesis?",
-        options: ["Golgi apparatus", "Ribosome", "Lysosome", "Nucleus"],
-        correctAnswer: 1
-    },
-    {
-        question: "DNA replication is said to be semi-conservative because",
-        options: ["Each new DNA contains one old strand and one new strand", "DNA is copied in fragments", "DNA has two strands", "It occurs in the cytoplasm"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of the following blood cells are involved in clotting?",
-        options: ["RBC", "WBC", "Platelets", "Plasma"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which process produces gametes in humans?",
-        options: ["Mitosis", "Meiosis", "Fertilization", "Binary fission"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following is a monocot plant?",
-        options: ["Bean", "Maize", "Mango", "Groundnut"],
-        correctAnswer: 1
-    },
-    {
-        question: "The movement of water across a selectively permeable membrane is called",
-        options: ["Diffusion", "Osmosis", "Active transport", "Filtration"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which hormone regulates blood sugar levels?",
-        options: ["Insulin", "Adrenaline", "Thyroxine", "Progesterone"],
-        correctAnswer: 0
-    },
-    {
-        question: "The primary function of alveoli in the lungs is",
-        options: ["Transport oxygen", "Filter air", "Gas exchange", "Trap dust particles"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following organisms is prokaryotic?",
-        options: ["Amoeba", "Bacteria", "Fungi", "Algae"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which part of the neuron receives impulses?",
-        options: ["Axon", "Dendrite", "Myelin sheath", "Soma"],
-        correctAnswer: 1
-    },
-    {
-        question: "The vascular tissue that transports water in plants is",
-        options: ["Phloem", "Xylem", "Cortex", "Cambium"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of these is a sex-linked genetic disorder?",
-        options: ["Sickle cell anemia", "Haemophilia", "Down syndrome", "Thalassemia"],
-        correctAnswer: 1
-    },
-    {
-        question: "The stage of mitosis where chromosomes align at the equatorial plate is",
-        options: ["Prophase", "Metaphase", "Anaphase", "Telophase"],
-        correctAnswer: 1
-    },
-    {
-        question: "In humans, blood group O is considered the universal donor because",
-        options: ["It has no antigens", "It has no antibodies", "It has both antigens", "It has both antibodies"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which of the following is a function of the liver?",
-        options: ["Secrete bile", "Store urine", "Produce insulin", "Filter lymph"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which structure is common to both plant and animal cells?",
-        options: ["Cell wall", "Chloroplast", "Nucleus", "Plastid"],
-        correctAnswer: 2
-    },
-    {
-        question: "The movement of organisms towards light is called",
-        options: ["Phototropism", "Phototaxis", "Chemotropism", "Geotropism"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following diseases is caused by a virus?",
-        options: ["Tuberculosis", "Malaria", "Influenza", "Ringworm"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which enzyme breaks down starch into maltose?",
-        options: ["Lipase", "Amylase", "Protease", "Maltase"],
-        correctAnswer: 1
-    },
-    {
-        question: "The male gamete in plants is called",
-        options: ["Ovule", "Pollen grain", "Microspore", "Megaspore"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following is a nitrogenous base in DNA?",
-        options: ["Uracil", "Adenine", "Thymine", "Both B and C"],
-        correctAnswer: 3
-    },
-    {
-        question: "Which organ produces bile in humans?",
-        options: ["Pancreas", "Liver", "Stomach", "Gall bladder"],
-        correctAnswer: 1
-    },
-    {
-        question: "Succession in ecology refers to",
-        options: ["Migration of species", "Replacement of one community by another", "Evolution of species", "Feeding relationships"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which type of blood vessel carries oxygenated blood from the lungs to the heart?",
-        options: ["Pulmonary artery", "Pulmonary vein", "Aorta", "Vena cava"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which of the following shows the correct flow of blood in the heart?",
-        options: ["Vena cava → right atrium → right ventricle → lungs → left atrium → left ventricle → aorta", "Aorta → left atrium → left ventricle → lungs → right atrium → right ventricle → vena cava", "Lungs → left ventricle → left atrium → aorta → vena cava", "Right atrium → lungs → right ventricle → left atrium → aorta"],
-        correctAnswer: 0
-    },
-    {
-        question: "Fertilization in flowering plants occurs in",
-        options: ["Ovule", "Stigma", "Style", "Sepal"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which type of RNA carries amino acids to the ribosome?",
-        options: ["mRNA", "tRNA", "rRNA", "snRNA"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which structure in the human brain coordinates voluntary movements?",
-        options: ["Cerebrum", "Cerebellum", "Medulla oblongata", "Hypothalamus"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which organ system regulates water balance and excretion in humans?",
-        options: ["Digestive system", "Respiratory system", "Urinary system", "Circulatory system"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which process allows organisms to produce genetically identical offspring?",
-        options: ["Meiosis", "Fertilization", "Mitosis", "Pollination"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which biome is characterized by coniferous trees and cold winters?",
-        options: ["Tropical rainforest", "Desert", "Taiga", "Savannah"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which vitamin is necessary for blood clotting?",
-        options: ["Vitamin A", "Vitamin C", "Vitamin K", "Vitamin D"],
-        correctAnswer: 2
-    },
-    {
-        question: "In genetics, a cross between two heterozygous individuals (Aa × Aa) gives a phenotypic ratio of",
-        options: ["3:1", "1:2:1", "2:1", "1:1"],
-        correctAnswer: 0
-    },
-    {
-        question: "Which microorganism is used in the production of antibiotics?",
-        options: ["Virus", "Bacteria", "Fungi", "Protozoa"],
-        correctAnswer: 2
-    },
-    {
-        question: "Which of the following shows correct order of ecological organization from simplest to complex?",
-        options: ["Community → Population → Ecosystem → Organism", "Organism → Population → Community → Ecosystem", "Population → Organism → Community → Ecosystem", "Organism → Community → Population → Ecosystem"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which blood type is considered the universal recipient?",
-        options: ["A", "B", "AB", "O"],
-        correctAnswer: 2
-    },
-    {
-        question: "The stomata in leaves primarily function in",
-        options: ["Photosynthesis", "Gas exchange and transpiration", "Water absorption", "Storage of minerals"],
-        correctAnswer: 1
-    },
-    {
-        question: "Which part of the kidney filters blood?",
-        options: ["Ureter", "Nephron", "Bladder", "Renal artery"],
-        correctAnswer: 1
-    }
-]
-
-        };
-
-        // Function to initialize mock with configured questions
-        async function initializeQuestionsFromConfig() {
-            if (!USE_CONFIGURED_QUESTIONS) return;
-            
-            try {
-                // Update the mock with configured questions
-                const response = await fetch(`/api/admin/mocks/${mockId}/bulk-update`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({ subjects: CONFIGURED_QUESTIONS })
-                });
-
-                if (!response.ok) {
-                    console.warn('Bulk update endpoint not available, using local override');
-                }
-            } catch (error) {
-                console.warn('Could not sync to server, using local override:', error);
-            }
-        }
-        // ============================================
-
         // Tab switching
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', () => {
@@ -2019,16 +530,9 @@ physics: [
                 const data = await response.json();
                 currentMock = data.mock;
 
-                // Use configured questions if enabled
-                if (USE_CONFIGURED_QUESTIONS) {
-                    currentMock.subjects = CONFIGURED_QUESTIONS;
-                    // Try to sync to server in background
-                    initializeQuestionsFromConfig();
-                }
-
                 document.getElementById('mockName').textContent = currentMock.name;
                 document.getElementById('mockInfo').textContent = 
-                    `Duration: ${currentMock.duration} minutes | Created: ${new Date(currentMock.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}`;
+                    `Duration: ${currentMock.duration} minutes | Created: ${new Date(currentMock.createdAt).toLocaleDateString()}`;
 
                 displayQuestions();
             } catch (error) {
@@ -2158,79 +662,44 @@ physics: [
             const correctAnswer = parseInt(document.querySelector('input[name="correctAnswer"]:checked').value);
 
             const questionData = {
+                subject: currentSubject,
                 question,
                 options,
                 correctAnswer,
-                imageUrls: uploadedImages
+                images: uploadedImages
             };
 
             try {
-                if (USE_CONFIGURED_QUESTIONS) {
-                    // Update local configured questions
-                    if (editingQuestion !== null) {
-                        CONFIGURED_QUESTIONS[currentSubject][editingQuestion] = questionData;
-                        currentMock.subjects[currentSubject][editingQuestion] = questionData;
-                    } else {
-                        CONFIGURED_QUESTIONS[currentSubject].push(questionData);
-                        currentMock.subjects[currentSubject].push(questionData);
-                    }
-                    
-                    // Sync to server in background
-                    initializeQuestionsFromConfig().catch(err => console.warn('Background sync failed:', err));
-                    
-                    hideQuestionModal();
-                    displayQuestions();
+                let response;
+                if (editingQuestion !== null) {
+                    response = await fetch(`/api/admin/mocks/${mockId}/questions/${currentSubject}/${editingQuestion}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(questionData)
+                    });
                 } else {
-                    // Use API for updates
-                    let response;
-                    if (editingQuestion !== null) {
-                        response = await fetch(`/api/admin/mocks/${mockId}/questions/${currentSubject}/${editingQuestion}`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                subject: currentSubject,
-                                question,
-                                options,
-                                correctAnswer,
-                                images: uploadedImages
-                            })
-                        });
-                    } else {
-                        response = await fetch(`/api/admin/mocks/${mockId}/questions`, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'Authorization': `Bearer ${token}`
-                            },
-                            body: JSON.stringify({
-                                subject: currentSubject,
-                                question,
-                                options,
-                                correctAnswer,
-                                images: uploadedImages
-                            })
-                        });
-                    }
+                    response = await fetch(`/api/admin/mocks/${mockId}/questions`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify(questionData)
+                    });
+                }
 
-                    if (response.ok) {
-                        hideQuestionModal();
-                        loadMock();
-                    } else {
-                        alert('Failed to save question');
-                    }
+                if (response.ok) {
+                    hideQuestionModal();
+                    loadMock();
+                } else {
+                    alert('Failed to save question');
                 }
             } catch (error) {
                 console.error('Save question error:', error);
-                if (USE_CONFIGURED_QUESTIONS) {
-                    // Even if sync fails, local changes are preserved
-                    hideQuestionModal();
-                    displayQuestions();
-                } else {
-                    alert('An error occurred. Please try again.');
-                }
+                alert('An error occurred. Please try again.');
             }
         });
 
@@ -2240,36 +709,19 @@ physics: [
             }
 
             try {
-                if (USE_CONFIGURED_QUESTIONS) {
-                    // Delete from local configured questions
-                    CONFIGURED_QUESTIONS[subject].splice(index, 1);
-                    currentMock.subjects[subject].splice(index, 1);
-                    
-                    // Sync to server in background
-                    initializeQuestionsFromConfig().catch(err => console.warn('Background sync failed:', err));
-                    
-                    displayQuestions();
-                } else {
-                    // Use API for deletion
-                    const response = await fetch(`/api/admin/mocks/${mockId}/questions/${subject}/${index}`, {
-                        method: 'DELETE',
-                        headers: { 'Authorization': `Bearer ${token}` }
-                    });
+                const response = await fetch(`/api/admin/mocks/${mockId}/questions/${subject}/${index}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
 
-                    if (response.ok) {
-                        loadMock();
-                    } else {
-                        alert('Failed to delete question');
-                    }
+                if (response.ok) {
+                    loadMock();
+                } else {
+                    alert('Failed to delete question');
                 }
             } catch (error) {
                 console.error('Delete question error:', error);
-                if (USE_CONFIGURED_QUESTIONS) {
-                    // Even if sync fails, local changes are preserved
-                    displayQuestions();
-                } else {
-                    alert('An error occurred. Please try again.');
-                }
+                alert('An error occurred. Please try again.');
             }
         }
 

@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JAMB 2026 Mathematics Guide - Logarithms</title>
+     <link rel="stylesheet" href="header-style.css">
+    <script src="header-script.js" defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 0;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            margin: -20px -20px 30px -20px;
+            border-radius: 15px 15px 0 0;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            font-weight: 300;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h3 {
+            color: #667eea;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .intro {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            border-left: 5px solid #2196f3;
+        }
+
+        .definition {
+            background: linear-gradient(135deg, #e8f5e8, #f0f8f0);
+            border-left: 5px solid #4caf50;
+        }
+
+        .types {
+            background: linear-gradient(135deg, #fff3e0, #fce4ec);
+            border-left: 5px solid #ff9800;
+        }
+
+        .example {
+            background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+            border-left: 5px solid #9c27b0;
+            margin: 25px 0;
+        }
+
+        .formula {
+            background: #2c3e50;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            font-family: 'Times New Roman', serif;
+            text-align: center;
+            font-size: 1.2rem;
+        }
+
+        .fraction {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: center;
+            margin: 0 3px;
+            position: relative;
+        }
+
+        .fraction .numerator {
+            display: block;
+            border-bottom: 1px solid currentColor;
+            padding-bottom: 2px;
+            margin-bottom: 2px;
+        }
+
+        .fraction .denominator {
+            display: block;
+            padding-top: 2px;
+        }
+
+        .calculation-step {
+            margin: 15px 0;
+            padding: 12px 20px;
+            background: #fafafa;
+            border-left: 3px solid #667eea;
+            font-size: 1.1rem;
+            font-family: 'Times New Roman', serif;
+        }
+
+        .math-work {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+            font-family: 'Times New Roman', serif;
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .memory-tip {
+            background: linear-gradient(135deg, #fff9c4, #ffecb3);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+            position: relative;
+        }
+
+        .memory-tip h4 {
+            color: #f57c00;
+            margin-bottom: 10px;
+        }
+
+        .step-solution {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 20px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .step-solution h4 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .jamb-year {
+            background: #ff6b35;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .subscript {
+            font-size: 0.7em;
+            vertical-align: sub;
+        }
+
+        .superscript {
+            font-size: 0.7em;
+            vertical-align: super;
+        }
+
+        .math-expression {
+            font-size: 1.2rem;
+            margin: 12px 0;
+            line-height: 2;
+            text-align: center;
+        }
+
+        .equals {
+            margin: 8px 0;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .final-answer {
+            background: #e8f5e8;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #2e7d32;
+            border: 2px solid #4caf50;
+        }
+
+        .sqrt {
+            position: relative;
+        }
+
+        .sqrt::before {
+            content: "√";
+            font-size: 1.2em;
+        }
+
+        ul {
+            margin: 15px 0;
+            padding-left: 25px;
+        }
+
+        li {
+            margin: 8px 0;
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 10px;
+                padding: 15px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .header h2 {
+                font-size: 1.4rem;
+            }
+            
+            .section {
+                padding: 20px;
+                margin: 20px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+              <header class="main-header">
+    <nav class="nav-container">
+        <a href="#" class="logo">
+            <a href="#" class="logo"><img src="steps_smart.png" alt=""> Smart Steps</a>
+        <ul class="nav-menu">
+            <li class="nav-item"><a href="#" class="active">Mathematics</a></li>
+            <li class="nav-item"><a href="#">Physics</a></li>
+            <li class="nav-item"><a href="#">Chemistry</a></li>
+            <li class="nav-item"><a href="#">English</a></li>
+            <li class="nav-item"><a href="#">Biology</a></li>
+          
+        </ul>
+        
+        <div class="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </nav>
+</header>
+    <div class="container">
+        <div class="header">
+            <h1>SMART STEPS TUTORIALS</h1>
+            <h2>JAMB 2026 Mathematics Guide</h2>
+            <div class="subtitle">LOGARITHMS - Authentic JAMB Past Questions</div>
+        </div>
+
+        <div class="section intro">
+            <h3>🎯 Introduction</h3>
+            <p>Logarithms are the inverse operations of exponentials. Think of them as asking "what power must I raise a base to get this number?" For example, log<span class="subscript">2</span>8 = 3 because 2³ = 8. Logarithms are essential for solving exponential equations, working with scientific calculations, and understanding growth patterns in JAMB mathematics.</p>
+        </div>
+
+        <div class="section definition">
+            <h3>📝 Basic Definition and Laws</h3>
+            
+            <div class="formula">
+                If a<sup>x</sup> = N, then log<sub>a</sub>N = x
+            </div>
+            
+            <p><strong>Where:</strong></p>
+            <ul>
+                <li>a = base (a > 0, a ≠ 1)</li>
+                <li>N = number (N > 0)</li>
+                <li>x = logarithm</li>
+            </ul>
+
+            <h4>Laws of Logarithms:</h4>
+            <div class="formula">
+                log<sub>a</sub>(mn) = log<sub>a</sub>m + log<sub>a</sub>n
+            </div>
+            <div class="formula">
+                log<sub>a</sub>(<span class="fraction"><span class="numerator">m</span><span class="denominator">n</span></span>) = log<sub>a</sub>m - log<sub>a</sub>n
+            </div>
+            <div class="formula">
+                log<sub>a</sub>(m<sup>n</sup>) = n × log<sub>a</sub>m
+            </div>
+            <div class="formula">
+                log<sub>a</sub>a = 1
+            </div>
+            <div class="formula">
+                log<sub>a</sub>1 = 0
+            </div>
+        </div>
+
+        <div class="section types">
+            <h3>🔢 Special Logarithms</h3>
+            
+            <h4>1. Common Logarithms (Base 10)</h4>
+            <div class="formula">
+                log N = log<sub>10</sub>N
+            </div>
+            
+            <h4>2. Natural Logarithms (Base e)</h4>
+            <div class="formula">
+                ln N = log<sub>e</sub>N
+            </div>
+            
+            <h4>3. Change of Base Formula</h4>
+            <div class="formula">
+                log<sub>a</sub>N = <span class="fraction"><span class="numerator">log<sub>b</sub>N</span><span class="denominator">log<sub>b</sub>a</span></span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>📚 JAMB Past Questions with Solutions</h3>
+
+            <div class="example">
+                <h4>Question 1 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Evaluate: <span class="fraction"><span class="numerator">2log<span class="subscript">3</span>9 × log<span class="subscript">3</span>81<span class="superscript">-2</span></span><span class="denominator">log<span class="subscript">5</span>625</span></span></strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            <span class="fraction"><span class="numerator">2log<span class="subscript">3</span>9 × log<span class="subscript">3</span>81<span class="superscript">-2</span></span><span class="denominator">log<span class="subscript">5</span>625</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express each term as powers of their bases:
+                            <br>9 = 3², 81 = 3⁴, 625 = 5⁴
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">2log<span class="subscript">3</span>3² × log<span class="subscript">3</span>(3⁴)<span class="superscript">-2</span></span><span class="denominator">log<span class="subscript">5</span>5⁴</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply power law: log<span class="subscript">a</span>m<span class="superscript">n</span> = n × log<span class="subscript">a</span>m
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">2 × 2log<span class="subscript">3</span>3 × (-2) × 4log<span class="subscript">3</span>3</span><span class="denominator">4log<span class="subscript">5</span>5</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Since log<span class="subscript">3</span>3 = 1 and log<span class="subscript">5</span>5 = 1:
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">4 × 1 × (-8) × 1</span><span class="denominator">4 × 1</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">-32</span><span class="denominator">4</span></span>
+                        </div>
+                        
+                        <div class="final-answer">
+                            = -8
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 2 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Evaluate: log<span class="subscript">2</span>8 - log<span class="subscript">3</span><span class="fraction"><span class="numerator">1</span><span class="denominator">9</span></span></strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">2</span>8 - log<span class="subscript">3</span><span class="fraction"><span class="numerator">1</span><span class="denominator">9</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express each term as powers of their bases:
+                            <br>8 = 2³, <span class="fraction"><span class="numerator">1</span><span class="denominator">9</span></span> = 9<span class="superscript">-1</span> = (3²)<span class="superscript">-1</span> = 3<span class="superscript">-2</span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">2</span>2³ - log<span class="subscript">3</span>3<span class="superscript">-2</span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply power law: log<span class="subscript">a</span>m<span class="superscript">n</span> = n × log<span class="subscript">a</span>m
+                        </div>
+                        
+                        <div class="equals">
+                            = 3log<span class="subscript">2</span>2 - (-2)log<span class="subscript">3</span>3
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Since log<span class="subscript">2</span>2 = 1 and log<span class="subscript">3</span>3 = 1:
+                        </div>
+                        
+                        <div class="equals">
+                            = 3 × 1 - (-2) × 1
+                        </div>
+                        
+                        <div class="equals">
+                            = 3 + 2
+                        </div>
+                        
+                        <div class="final-answer">
+                            = 5
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 3 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Simplify: log<span class="subscript">10</span>1.5 + 3log<span class="subscript">10</span>2 - log<span class="subscript">10</span>0.3</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">10</span>1.5 + 3log<span class="subscript">10</span>2 - log<span class="subscript">10</span>0.3
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply power law: 3log<span class="subscript">10</span>2 = log<span class="subscript">10</span>2³ = log<span class="subscript">10</span>8
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span>1.5 + log<span class="subscript">10</span>8 - log<span class="subscript">10</span>0.3
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply addition and subtraction laws:
+                            <br>log(a) + log(b) - log(c) = log<span class="fraction"><span class="numerator">a × b</span><span class="denominator">c</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span><span class="fraction"><span class="numerator">1.5 × 8</span><span class="denominator">0.3</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express as fractions: 1.5 = <span class="fraction"><span class="numerator">15</span><span class="denominator">10</span></span>, 0.3 = <span class="fraction"><span class="numerator">3</span><span class="denominator">10</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span><span class="fraction"><span class="numerator"><span class="fraction"><span class="numerator">15</span><span class="denominator">10</span></span> × 8</span><span class="denominator"><span class="fraction"><span class="numerator">3</span><span class="denominator">10</span></span></span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span><span class="fraction"><span class="numerator">15 × 8 × 10</span><span class="denominator">10 × 3</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span><span class="fraction"><span class="numerator">1200</span><span class="denominator">30</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span>40
+                        </div>
+                        
+                        <div class="final-answer">
+                            = log<span class="subscript">10</span>40
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 4 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>If log<span class="subscript">5</span>20 = x, find x</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">5</span>20 = x
+                        </div>
+                        
+                        <div class="calculation-step">
+                            By definition: if log<span class="subscript">a</span>N = x, then a<span class="superscript">x</span> = N
+                        </div>
+                        
+                        <div class="equals">
+                            5<span class="superscript">x</span> = 20
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Take log<span class="subscript">10</span> of both sides:
+                        </div>
+                        
+                        <div class="equals">
+                            log<span class="subscript">10</span>(5<span class="superscript">x</span>) = log<span class="subscript">10</span>20
+                        </div>
+                        
+                        <div class="equals">
+                            x log<span class="subscript">10</span>5 = log<span class="subscript">10</span>20
+                        </div>
+                        
+                        <div class="equals">
+                            x = <span class="fraction"><span class="numerator">log<span class="subscript">10</span>20</span><span class="denominator">log<span class="subscript">10</span>5</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Using given values: log<span class="subscript">10</span>20 = 1.30103, log<span class="subscript">10</span>5 = 0.69897
+                        </div>
+                        
+                        <div class="equals">
+                            x = <span class="fraction"><span class="numerator">1.30103</span><span class="denominator">0.69897</span></span>
+                        </div>
+                        
+                        <div class="final-answer">
+                            x = 1.861
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 5 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Evaluate: log<span class="subscript">5</span>(<span class="fraction"><span class="numerator">y²x⁵</span><span class="denominator">125b<span class="superscript">½</span></span></span>)</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">5</span>(<span class="fraction"><span class="numerator">y²x⁵</span><span class="denominator">125b<span class="superscript">½</span></span></span>)
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply division law: log<span class="fraction"><span class="numerator">A</span><span class="denominator">B</span></span> = log A - log B
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">5</span>(y²x⁵) - log<span class="subscript">5</span>(125b<span class="superscript">½</span>)
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply multiplication law: log(AB) = log A + log B
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">5</span>y² + log<span class="subscript">5</span>x⁵ - [log<span class="subscript">5</span>125 + log<span class="subscript">5</span>b<span class="superscript">½</span>]
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply power law and note that 125 = 5³
+                        </div>
+                        
+                        <div class="equals">
+                            = 2log<span class="subscript">5</span>y + 5log<span class="subscript">5</span>x - log<span class="subscript">5</span>5³ - <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>log<span class="subscript">5</span>b
+                        </div>
+                        
+                        <div class="equals">
+                            = 2log<span class="subscript">5</span>y + 5log<span class="subscript">5</span>x - 3log<span class="subscript">5</span>5 - <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>log<span class="subscript">5</span>b
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Since log<span class="subscript">5</span>5 = 1:
+                        </div>
+                        
+                        <div class="final-answer">
+                            = 2log<span class="subscript">5</span>y + 5log<span class="subscript">5</span>x - 3 - <span class="fraction"><span class="numerator">1</span><span class="denominator">2</span></span>log<span class="subscript">5</span>b
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 6 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>If log 7.5 = 0.8751, evaluate 2log 75 + log 750</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="calculation-step">
+                            Note: 75 = 7.5 × 10 and 750 = 7.5 × 100
+                        </div>
+                        
+                        <div class="math-expression">
+                            2log 75 + log 750
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express 75 and 750 in terms of 7.5:
+                            <br>75 = 7.5 × 10, so log 75 = log(7.5 × 10) = log 7.5 + log 10 = 0.8751 + 1 = 1.8751
+                            <br>750 = 7.5 × 100, so log 750 = log(7.5 × 100) = log 7.5 + log 100 = 0.8751 + 2 = 2.8751
+                        </div>
+                        
+                        <div class="equals">
+                            = 2(1.8751) + 2.8751
+                        </div>
+                        
+                        <div class="equals">
+                            = 3.7502 + 2.8751
+                        </div>
+                        
+                        <div class="final-answer">
+                            = 6.6253
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 7 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Evaluate: log<span class="subscript">2</span>8 + log<span class="subscript">2</span>16 - log<span class="subscript">2</span>4</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">2</span>8 + log<span class="subscript">2</span>16 - log<span class="subscript">2</span>4
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply logarithm laws: log a + log b - log c = log<span class="fraction"><span class="numerator">a × b</span><span class="denominator">c</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">2</span><span class="fraction"><span class="numerator">8 × 16</span><span class="denominator">4</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">2</span><span class="fraction"><span class="numerator">128</span><span class="denominator">4</span></span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">2</span>32
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express 32 as a power of 2: 32 = 2⁵
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">2</span>2⁵
+                        </div>
+                        
+                        <div class="equals">
+                            = 5log<span class="subscript">2</span>2
+                        </div>
+                        
+                        <div class="equals">
+                            = 5 × 1
+                        </div>
+                        
+                        <div class="final-answer">
+                            = 5
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 8 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Find the value of log<span class="subscript">10</span><span class="fraction"><span class="numerator">1</span><span class="denominator">40</span></span>, given that log<span class="subscript">10</span>4 = 0.6021</strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">10</span><span class="fraction"><span class="numerator">1</span><span class="denominator">40</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express as negative power: <span class="fraction"><span class="numerator">1</span><span class="denominator">40</span></span> = 40<span class="superscript">-1</span>
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">10</span>40<span class="superscript">-1</span>
+                        </div>
+                        
+                        <div class="equals">
+                            = -1 × log<span class="subscript">10</span>40
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express 40 as 4 × 10:
+                        </div>
+                        
+                        <div class="equals">
+                            = -log<span class="subscript">10</span>(4 × 10)
+                        </div>
+                        
+                        <div class="equals">
+                            = -(log<span class="subscript">10</span>4 + log<span class="subscript">10</span>10)
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Since log<span class="subscript">10</span>10 = 1:
+                        </div>
+                        
+                        <div class="equals">
+                            = -(0.6021 + 1)
+                        </div>
+                        
+                        <div class="equals">
+                            = -1.6021
+                        </div>
+                        
+                        <div class="final-answer">
+                            = -1.6021
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 9 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>Simplify: <span class="fraction"><span class="numerator">log<span class="subscript">10</span>8</span><span class="denominator">log<span class="subscript">10</span>4</span></span></strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            <span class="fraction"><span class="numerator">log<span class="subscript">10</span>8</span><span class="denominator">log<span class="subscript">10</span>4</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express 8 and 4 as powers of 2:
+                            <br>8 = 2³, 4 = 2²
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">log<span class="subscript">10</span>2³</span><span class="denominator">log<span class="subscript">10</span>2²</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply power law: log a<span class="superscript">n</span> = n log a
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">3log<span class="subscript">10</span>2</span><span class="denominator">2log<span class="subscript">10</span>2</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Cancel log<span class="subscript">10</span>2:
+                        </div>
+                        
+                        <div class="equals">
+                            = <span class="fraction"><span class="numerator">3</span><span class="denominator">2</span></span>
+                        </div>
+                        
+                        <div class="final-answer">
+                            = <span class="fraction"><span class="numerator">3</span><span class="denominator">2</span></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="example">
+                <h4>Question 10 <span class="jamb-year">JAMB</span></h4>
+                <p><strong>If log<span class="subscript">e</span>4.4 = 1.4816 and log<span class="subscript">e</span>7.7 = 2.0142, find the value of log<span class="subscript">e</span><span class="fraction"><span class="numerator">7</span><span class="denominator">4</span></span></strong></p>
+                
+                <div class="step-solution">
+                    <h4>Solution:</h4>
+                    
+                    <div class="math-work">
+                        <div class="math-expression">
+                            log<span class="subscript">e</span><span class="fraction"><span class="numerator">7</span><span class="denominator">4</span></span>
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Apply division law: log<span class="fraction"><span class="numerator">a</span><span class="denominator">b</span></span> = log a - log b
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">e</span>7 - log<span class="subscript">e</span>4
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Express 7 and 4 in terms of given values:
+                            <br>From 7.7 = 7 × 1.1, we get log<span class="subscript">e</span>7 = log<span class="subscript">e</span>7.7 - log<span class="subscript">e</span>1.1
+                            <br>From 4.4 = 4 × 1.1, we get log<span class="subscript">e</span>4 = log<span class="subscript">e</span>4.4 - log<span class="subscript">e</span>1.1
+                        </div>
+                        
+                        <div class="calculation-step">
+                            Therefore: log<span class="subscript">e</span>7 - log<span class="subscript">e</span>4 = (log<span class="subscript">e</span>7.7 - log<span class="subscript">e</span>1.1) - (log<span class="subscript">e</span>4.4 - log<span class="subscript">e</span>1.1)
+                        </div>
+                        
+                        <div class="equals">
+                            = log<span class="subscript">e</span>7.7 - log<span class="subscript">e</span>4.4
+                        </div>
+                        
+                        <div class="equals">
+                            = 2.0142 - 1.4816
+                        </div>
+                        
+                        <div class="final-answer">
+                            = 0.5326
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h3>💡 Memory Tips for JAMB Success</h3>
+            
+            <div class="memory-tip">
+                <h4>The Fundamental Relationship</h4>
+                <p>Always remember: If a<sup>x</sup> = N, then log<sub>a</sub>N = x<br>
+                Logarithms and exponentials are inverse operations!</p>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Special Values to Remember</h4>
+                <p>log<sub>a</sub>a = 1 (any number to the power 1 is itself)<br>
+                log<sub>a</sub>1 = 0 (any number to the power 0 is 1)</p>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Product becomes Sum</h4>
+                <p>When you see multiplication inside a log, you can split it:<br>
+                log(AB) = log(A) + log(B)</p>
+            </div>
+
+            <div class="memory-tip">
+                <h4>Power comes Down</h4>
+                <p>When you see a power inside a log, bring it to the front:<br>
+                log(A<sup>n</sup>) = n × log(A)</p>
+            </div>
+        </div>
+
+        <div class="copyright">
+            © 2025 Smart Steps Tutorials | One Smart Step Closer to Success
+        </div>
+    </div>
+</body>
+</html>
