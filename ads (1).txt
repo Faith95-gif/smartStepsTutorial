@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard - Smart Steps Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Smart Steps Tutorial</span>
+            </div>
+            <div class="nav-links">
+                <span id="teacherName" class="text-primary"></span>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="fas fa-tachometer-alt"></i>
+                Teacher Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Welcome back! Manage your quizzes and track student performance.</p>
+            
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalQuizzes">0</div>
+                    <div class="stat-label">Total Quizzes</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalResponses">0</div>
+                    <div class="stat-label">Student Responses</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="averageScore">0%</div>
+                    <div class="stat-label">Average Score</div>
+                </div>
+            </div>
+
+            <div class="hero-actions">
+                <a href="/create-quiz" class="btn btn-primary btn-large">
+                    <i class="fas fa-plus"></i>
+                    Create New Quiz
+                </a>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <h2 class="section-title">
+                <i class="fas fa-list"></i>
+                Your Quizzes
+            </h2>
+            
+            <div id="quizzesContainer">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                    <p class="mt-2">Loading quizzes...</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="quiz-container">
+            <h2 class="section-title">
+                <i class="fas fa-chart-bar"></i>
+                Recent Student Responses
+            </h2>
+            
+            <div id="responsesContainer">
+                <div class="text-center">
+                    <i class="fas fa-spinner fa-spin fa-2x text-primary"></i>
+                    <p class="mt-2">Loading responses...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="js/teacher-dashboard.js"></script>
+</body>
+</html>

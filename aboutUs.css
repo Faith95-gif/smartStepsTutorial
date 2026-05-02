@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Quiz - Smart Steps Tutorial</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-graduation-cap"></i>
+                <span>Smart Steps Tutorial</span>
+            </div>
+            <div class="nav-links">
+                <a href="/teacher-dashboard" class="btn btn-outline">
+                    <i class="fas fa-tachometer-alt"></i>
+                    Dashboard
+                </a>
+                <button id="logoutBtn" class="btn btn-outline">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main">
+        <div class="quiz-container">
+            <h2 class="section-title">
+                <i class="fas fa-plus"></i>
+                Create New Quiz
+            </h2>
+            
+            <div id="alert-container"></div>
+            
+            <form id="quizForm">
+                <div class="form-group">
+                    <label for="quizTitle" class="form-label">
+                        <i class="fas fa-heading"></i>
+                        Quiz Title
+                    </label>
+                    <input type="text" id="quizTitle" name="title" class="form-input" required placeholder="Enter quiz title">
+                </div>
+
+                <div class="form-group">
+                    <label for="timeLimit" class="form-label">
+                        <i class="fas fa-clock"></i>
+                        Time Limit (minutes)
+                    </label>
+                    <input type="number" id="timeLimit" name="timeLimit" class="form-input" min="0" placeholder="0 = No time limit">
+                    <small class="text-secondary">Leave blank or enter 0 for no time limit</small>
+                </div>
+
+                <div id="questionsContainer">
+                    <h3 class="text-primary mb-3">
+                        <i class="fas fa-question-circle"></i>
+                        Questions
+                    </h3>
+                </div>
+
+                <div class="text-center mb-4">
+                    <button type="button" id="addQuestionBtn" class="btn btn-secondary">
+                        <i class="fas fa-plus"></i>
+                        Add Question
+                    </button>
+                    <button type="button" id="addPassageBtn" class="btn btn-primary">
+                        <i class="fas fa-book-open"></i>
+                        Add Reading Passage
+                    </button>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="fas fa-save"></i>
+                        Create Quiz
+                    </button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script src="/js/create-quiz.js"></script>
+</body>
+</html>
